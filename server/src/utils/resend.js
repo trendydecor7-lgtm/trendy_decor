@@ -1,8 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = 'Trendy Decor <noreply@ikeshav.in>'
-
+const FROM_EMAIL = 'Trendy Decor <noreply@trendydecor24.shop>'
 
 export const sendOtpEmail = async (to, otp) => {
     try {
@@ -44,7 +43,6 @@ export const sendOtpEmail = async (to, otp) => {
     }
 }
 
-
 export const sendWelcomeEmail = async (to, username) => {
     try {
         const html = `
@@ -63,7 +61,7 @@ export const sendWelcomeEmail = async (to, username) => {
                         Whether you are looking for handcrafted gift hampers, bespoke floral backdrops, or celebratory room setups, our family-led atelier is dedicated to turning every moment into an unforgettable memory.
                     </p>
                     <div style="margin: 30px 0; text-align: center;">
-                        <a href="http://ikeshav.in" style="background-color: #1c1c1c; color: #f4f1ea; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-block;">
+                        <a href="https://trendydecor24.shop" style="background-color: #1c1c1c; color: #f4f1ea; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-block;">
                             Explore Catalog
                         </a>
                     </div>
@@ -91,7 +89,6 @@ export const sendWelcomeEmail = async (to, username) => {
         console.error('Error sending Welcome email via Resend:', err)
     }
 }
-
 
 export const sendNewsletterConfirmationEmail = async (to) => {
     try {
@@ -126,7 +123,6 @@ export const sendNewsletterConfirmationEmail = async (to) => {
     }
 }
 
-
 export const sendNewProductNotificationEmail = async (recipients, product) => {
     if (!recipients || recipients.length === 0) return
 
@@ -139,14 +135,15 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
                     <h1 style="margin: 6px 0 0 0; font-size: 22px; font-weight: 300; letter-spacing: 2px;">Trendy Decor</h1>
                 </div>
                 <div style="padding: 30px;">
-                    ${product.image || product.thumbnail
-                ? `
+                    ${
+                        product.image || product.thumbnail
+                            ? `
                         <div style="width: 100%; height: 260px; overflow: hidden; border-radius: 8px; margin-bottom: 20px; background-color: #e8e3da;">
                             <img src="${product.image || product.thumbnail}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
                         </div>
                     `
-                : ''
-            }
+                            : ''
+                    }
                     <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #964B00;">${product.category || 'Collection Item'}</span>
                     <h2 style="font-size: 22px; font-weight: 400; margin: 6px 0 10px 0; color: #1c1c1c;">${product.name}</h2>
                     <p style="font-size: 20px; font-weight: 700; color: #1c1c1c; margin-bottom: 16px;">${product.price}</p>
@@ -154,7 +151,7 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
                         ${product.description || 'Discover our newest addition handcrafted with premium quality materials.'}
                     </p>
                     <div style="text-align: center;">
-                        <a href="http://ikeshav.in" style="background-color: #1c1c1c; color: #f4f1ea; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-block;">
+                        <a href="https://trendydecor24.shop" style="background-color: #1c1c1c; color: #f4f1ea; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-block;">
                             View Item Details
                         </a>
                     </div>
@@ -165,7 +162,6 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
             </div>
         </div>
         `
-
 
         const data = await resend.emails.send({
             from: FROM_EMAIL,

@@ -20,6 +20,6 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
     keepAwake({
         url: process.env.APP_URL,
-        interval: 10
-    });
+        interval: 10,
+    })
 })

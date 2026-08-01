@@ -174,7 +174,7 @@ const Footer: React.FC = () => {
                             <Instagram size={15} strokeWidth={1.5} />
                         </a>
                         <a
-                            href="https://ikeshav.in"
+                            href="https://trendydecor24.shop"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 hover:text-black transition-colors"

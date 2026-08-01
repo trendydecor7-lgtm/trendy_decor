@@ -3,14 +3,7 @@ import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { API_BASE_URL } from '../config/api'
-import {
-    ArrowLeft,
-    Upload,
-    Plus,
-    X,
-    Loader2,
-    PackagePlus,
-} from 'lucide-react'
+import { ArrowLeft, Upload, Plus, X, Loader2, PackagePlus } from 'lucide-react'
 
 const AddProduct: React.FC = () => {
     const { user, token, isLoading } = useAuth()
@@ -58,8 +51,6 @@ const AddProduct: React.FC = () => {
         }
         reader.readAsDataURL(file)
     }
-
-
 
     // Handle multiple gallery images
     const handleMultipleImagesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
