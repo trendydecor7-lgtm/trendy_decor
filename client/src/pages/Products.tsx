@@ -128,7 +128,7 @@ const Products: React.FC = () => {
     >('Hampers')
     const [price, setPrice] = useState('')
     const [stock, setStock] = useState(50)
-    const [inStock, setInStock] = useState(true)
+    const [inStock] = useState(true)
     const [bgColor] = useState('#cec9be')
     const [thumbnail, setThumbnail] = useState('')
     const [image, setImage] = useState('')

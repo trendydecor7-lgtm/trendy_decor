@@ -275,7 +275,7 @@ const Home = () => {
                             className="flex-1 relative overflow-hidden cursor-pointer group bg-[#d4cec5]"
                         >
                             <img
-                                src="/hero-assets/hero1.png"
+                                src="/hero-assets/hero3.jpeg"
                                 alt="Signature Collection"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             />
@@ -287,7 +287,7 @@ const Home = () => {
                             className="flex-1 relative overflow-hidden cursor-pointer group bg-[#c9c3b8]"
                         >
                             <img
-                                src="/hero-assets/hero2.png"
+                                src="/hero-assets/hero4.jpeg"
                                 alt="Artisanal Decor"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             />

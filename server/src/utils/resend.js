@@ -3,9 +3,7 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_EMAIL = 'Trendy Decor <noreply@ikeshav.in>'
 
-/**
- * 1. Send OTP Email for Authentication / Email Verification
- */
+
 export const sendOtpEmail = async (to, otp) => {
     try {
         const html = `
@@ -46,9 +44,7 @@ export const sendOtpEmail = async (to, otp) => {
     }
 }
 
-/**
- * 2. Send Welcome Email upon User Registration
- */
+
 export const sendWelcomeEmail = async (to, username) => {
     try {
         const html = `
@@ -96,9 +92,7 @@ export const sendWelcomeEmail = async (to, username) => {
     }
 }
 
-/**
- * 3. Send Newsletter Subscription Confirmation Email
- */
+
 export const sendNewsletterConfirmationEmail = async (to) => {
     try {
         const html = `
@@ -132,9 +126,7 @@ export const sendNewsletterConfirmationEmail = async (to) => {
     }
 }
 
-/**
- * 4. Send New Product Broadcast Email to Newsletter Subscribers
- */
+
 export const sendNewProductNotificationEmail = async (recipients, product) => {
     if (!recipients || recipients.length === 0) return
 
@@ -147,15 +139,14 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
                     <h1 style="margin: 6px 0 0 0; font-size: 22px; font-weight: 300; letter-spacing: 2px;">Trendy Decor</h1>
                 </div>
                 <div style="padding: 30px;">
-                    ${
-                        product.image || product.thumbnail
-                            ? `
+                    ${product.image || product.thumbnail
+                ? `
                         <div style="width: 100%; height: 260px; overflow: hidden; border-radius: 8px; margin-bottom: 20px; background-color: #e8e3da;">
                             <img src="${product.image || product.thumbnail}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
                         </div>
                     `
-                            : ''
-                    }
+                : ''
+            }
                     <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: #964B00;">${product.category || 'Collection Item'}</span>
                     <h2 style="font-size: 22px; font-weight: 400; margin: 6px 0 10px 0; color: #1c1c1c;">${product.name}</h2>
                     <p style="font-size: 20px; font-weight: 700; color: #1c1c1c; margin-bottom: 16px;">${product.price}</p>
@@ -175,7 +166,7 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
         </div>
         `
 
-        // Send in batches if recipients list is non-empty
+
         const data = await resend.emails.send({
             from: FROM_EMAIL,
             to: recipients,

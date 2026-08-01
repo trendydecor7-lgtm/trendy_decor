@@ -12,7 +12,6 @@ import {
     Image as ImageIcon,
     Loader2,
     SlidersHorizontal,
-    AlertCircle,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'

@@ -7,11 +7,9 @@ import {
     ArrowLeft,
     Upload,
     Image as ImageIcon,
-    Plus,
     X,
     Trash2,
     Loader2,
-    AlertCircle,
     Star,
     Sparkles,
 } from 'lucide-react'

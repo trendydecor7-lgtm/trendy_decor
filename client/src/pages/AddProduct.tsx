@@ -6,13 +6,10 @@ import { API_BASE_URL } from '../config/api'
 import {
     ArrowLeft,
     Upload,
-    Film,
-    Image as ImageIcon,
     Plus,
     X,
     Loader2,
     PackagePlus,
-    ShieldAlert,
 } from 'lucide-react'
 
 const AddProduct: React.FC = () => {
@@ -31,15 +28,14 @@ const AddProduct: React.FC = () => {
 
     // Media & Thumbnail state
     const [prodThumbnail, setProdThumbnail] = useState('')
-    const [prodImage, setProdImage] = useState('')
-    const [prodVideo, setProdVideo] = useState('')
-    const [prodMediaType, setProdMediaType] = useState<'image' | 'video'>('image')
+    const [prodImage] = useState('')
+    const [prodVideo] = useState('')
+    const [prodMediaType] = useState<'image' | 'video'>('image')
 
     // Staged files for Cloudinary upload
     const [stagedThumbnailBase64, setStagedThumbnailBase64] = useState<string>('')
     const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
-    const [stagedMediaBase64, setStagedMediaBase64] = useState<string>('')
-    const [mediaPreview, setMediaPreview] = useState<string>('')
+    const [stagedMediaBase64] = useState<string>('')
     const [stagedImagesBase64, setStagedImagesBase64] = useState<string[]>([])
     const [extraImageUrl, setExtraImageUrl] = useState<string>('')
     const [extraImageUrls, setExtraImageUrls] = useState<string[]>([])
@@ -63,24 +59,7 @@ const AddProduct: React.FC = () => {
         reader.readAsDataURL(file)
     }
 
-    // Handle main media selection
-    const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (!file) return
 
-        const isVideo = file.type.startsWith('video/')
-        const type: 'image' | 'video' = isVideo ? 'video' : 'image'
-        setProdMediaType(type)
-
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            const base64Data = reader.result as string
-            setStagedMediaBase64(base64Data)
-            setMediaPreview(base64Data)
-            toast.info(`${isVideo ? 'Video' : 'Image'} file selected (will upload on submit)`)
-        }
-        reader.readAsDataURL(file)
-    }
 
     // Handle multiple gallery images
     const handleMultipleImagesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
