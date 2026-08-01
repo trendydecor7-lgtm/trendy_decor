@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import app from './src/app.js'
-
+import keepAwake from '@ikeshav26/keep-awake'
 dotenv.config()
 
 const PORT = process.env.PORT || 4000
