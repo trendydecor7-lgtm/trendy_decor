@@ -70,6 +70,7 @@ const Home = () => {
                             <img
                                 src="/hero-assets/hero1.png"
                                 alt="Rakhi Hamper"
+                                fetchPriority="high"
                                 className="absolute inset-0 w-full h-full object-cover"
                             />
                             {/* Gradient overlay for label readability */}
@@ -85,6 +86,7 @@ const Home = () => {
                             <img
                                 src="/hero-assets/hero2.png"
                                 alt="Rakhi Hamper"
+                                fetchPriority="high"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hover:scale-105"
                             />
                             {/* Gradient overlay */}
@@ -143,6 +145,7 @@ const Home = () => {
                                 <img
                                     src="/category/hamper.png"
                                     alt="Hampers"
+                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/75 transition-all duration-500" />
@@ -164,6 +167,7 @@ const Home = () => {
                                 <img
                                     src="/category/rakhi.png"
                                     alt="Rakhis"
+                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform "
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/75 transition-all duration-500" />
@@ -185,6 +189,7 @@ const Home = () => {
                                 <img
                                     src="/category/choco.png"
                                     alt="Customizable Chocolates"
+                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/75 transition-all duration-500" />
@@ -206,6 +211,7 @@ const Home = () => {
                                 <img
                                     src="/category/bouque.png"
                                     alt="Bouquets"
+                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent group-hover:from-black/75 transition-all duration-500" />
@@ -277,6 +283,7 @@ const Home = () => {
                             <img
                                 src="/hero-assets/hero3.jpeg"
                                 alt="Signature Collection"
+                                loading="lazy"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-500" />
@@ -289,6 +296,7 @@ const Home = () => {
                             <img
                                 src="/hero-assets/hero4.jpeg"
                                 alt="Artisanal Decor"
+                                loading="lazy"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-500" />
