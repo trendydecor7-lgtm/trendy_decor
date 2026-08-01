@@ -1,0 +1,29 @@
+{
+    "name": "trendy",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"pnpm --prefix server dev\" \"pnpm --prefix client dev\"",
+        "dev:server": "pnpm --prefix server dev",
+        "dev:client": "pnpm --prefix client dev",
+        "start": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"pnpm --prefix server start\" \"pnpm --prefix client dev\"",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/trendydecor7-lgtm/trendy_decor.git"
+    },
+    "keywords": [],
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/trendydecor7-lgtm/trendy_decor/issues"
+    },
+    "homepage": "https://github.com/trendydecor7-lgtm/trendy_decor#readme",
+    "devDependencies": {
+        "concurrently": "^10.0.4",
+        "prettier": "^3.9.6"
+    }
+}
