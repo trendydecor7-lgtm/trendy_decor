@@ -28,7 +28,7 @@ const Navbar = () => {
                     <div className="flex-1 flex items-center">
                         <Link
                             to="/"
-                            className="text-4xl font-normal tracking-tight text-[#1c1c1c] hover:opacity-75 transition-opacity shrink-0"
+                            className="text-2xl sm:text-3xl md:text-4xl font-normal tracking-tight text-[#1c1c1c] hover:opacity-75 transition-opacity shrink-0"
                             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
                         >
                             Trendy Decor
@@ -63,7 +63,7 @@ const Navbar = () => {
                     <div className="flex-1 flex items-center justify-end gap-5">
                         <Link
                             to="/profile"
-                            className="p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors"
+                            className="hidden md:flex p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors"
                             aria-label="Profile"
                         >
                             <User size={25} strokeWidth={1.5} />
@@ -102,7 +102,7 @@ const Navbar = () => {
                         onClick={() => setIsMobileOpen(false)}
                     />
                     <div
-                        className="relative w-72 max-w-full bg-[#f4f1ea] h-full shadow-xl flex flex-col border-r border-black/10"
+                        className="relative w-72 max-w-full bg-[#f4f1ea] h-full shadow-xl flex flex-col border-r border-black/10 drawer-slide-in"
                         style={{ fontFamily: "'Playpen Sans', sans-serif" }}
                     >
                         <div className="flex items-center justify-between px-6 h-16 border-b border-black/10">
@@ -135,6 +135,18 @@ const Navbar = () => {
                                     {link.label}
                                 </Link>
                             ))}
+                            <Link
+                                to="/profile"
+                                onClick={() => setIsMobileOpen(false)}
+                                className={`py-3 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors flex items-center gap-2.5 ${
+                                    isActive('/profile')
+                                        ? 'text-[#1c1c1c] underline underline-offset-4'
+                                        : 'text-neutral-500 hover:text-[#1c1c1c]'
+                                }`}
+                            >
+                                <User size={19} strokeWidth={1.5} />
+                                Profile
+                            </Link>
                         </nav>
                     </div>
                 </div>

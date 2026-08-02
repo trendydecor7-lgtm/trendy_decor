@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import SEO from '../components/common/SEO'
 import {
     Trash2,
@@ -33,6 +33,7 @@ const Cart: React.FC = () => {
     const [newAddrState, setNewAddrState] = useState('')
     const [newAddrZip, setNewAddrZip] = useState('')
     const [newAddrPhone, setNewAddrPhone] = useState('')
+    const navigate = useNavigate();
 
     // Set default selected address on load / user change
     useEffect(() => {
@@ -109,6 +110,7 @@ const Cart: React.FC = () => {
         }
         if (!user) {
             toast.info('Please sign in to complete your checkout.')
+            navigate('/auth')
             return
         }
 
@@ -415,11 +417,10 @@ const Cart: React.FC = () => {
                                                     <label
                                                         key={addrId}
                                                         onClick={() => setSelectedAddressId(addrId)}
-                                                        className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${
-                                                            isSelected
+                                                        className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${isSelected
                                                                 ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c]'
                                                                 : 'bg-[#e8e3da]/60 text-[#1c1c1c] border-[#b6ac9f]/40 hover:border-[#1c1c1c]/50'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <input
                                                             type="radio"

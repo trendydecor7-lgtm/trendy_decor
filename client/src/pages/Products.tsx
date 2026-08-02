@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SEO from '../components/common/SEO'
 import {
@@ -55,9 +55,8 @@ const ProductMediaWithSkeleton: React.FC<{
                         playsInline
                         onLoadedData={() => setIsLoaded(true)}
                         onError={() => setHasError(true)}
-                        className={`${className} ${
-                            isLoaded ? 'opacity-100' : 'opacity-0'
-                        } transition-opacity duration-500`}
+                        className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                            } transition-opacity duration-500`}
                     />
                 ) : (
                     <img
@@ -65,9 +64,8 @@ const ProductMediaWithSkeleton: React.FC<{
                         alt={alt}
                         onLoad={() => setIsLoaded(true)}
                         onError={() => setHasError(true)}
-                        className={`${className} ${
-                            isLoaded ? 'opacity-100' : 'opacity-0'
-                        } transition-opacity duration-500`}
+                        className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                            } transition-opacity duration-500`}
                     />
                 )
             ) : (
@@ -97,6 +95,7 @@ const Products: React.FC = () => {
             : 'All'
     )
     const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+    const observerRef = useRef<IntersectionObserver | null>(null)
 
     // Keep category state in sync with URL search parameter
     useEffect(() => {
@@ -185,6 +184,33 @@ const Products: React.FC = () => {
     useEffect(() => {
         fetchProducts()
     }, [])
+
+    // IntersectionObserver for scroll-triggered card reveal
+    const attachObserver = useCallback(() => {
+        if (observerRef.current) observerRef.current.disconnect()
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible')
+                        observerRef.current?.unobserve(entry.target)
+                    }
+                })
+            },
+            { threshold: 0.08 }
+        )
+        document.querySelectorAll('.card-reveal').forEach((el) => {
+            observerRef.current?.observe(el)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (!loading) {
+            // Short timeout to let DOM paint first
+            const t = setTimeout(attachObserver, 60)
+            return () => clearTimeout(t)
+        }
+    }, [loading, attachObserver])
 
     const handleAddToCart = (product: ProductItem, e: React.MouseEvent) => {
         e.stopPropagation()
@@ -415,10 +441,13 @@ const Products: React.FC = () => {
 
     const getRowGridContainerClass = (type: LayoutType) => {
         if (type === 'MONO_HERO') return 'grid grid-cols-1'
-        if (type === 'DUO_HERO') return 'grid grid-cols-1 md:grid-cols-2'
-        return 'grid grid-cols-1 md:grid-cols-3'
+        if (type === 'DUO_HERO') return 'grid grid-cols-1 sm:grid-cols-2'
+        if (type === 'TRIO_BALANCED') return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
+        // ASYMMETRIC types: collapse to 2-col on sm, grid-cols-3 on md
+        return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
     }
     const getItemColSpanClass = (type: LayoutType, itemIndex: number) => {
+        // On md+ apply asymmetric spans; on mobile always full-width
         if (type === 'ASYMMETRIC_LEFT')
             return itemIndex === 0 ? 'col-span-1 md:col-span-2' : 'col-span-1'
         if (type === 'ASYMMETRIC_RIGHT')
@@ -426,8 +455,10 @@ const Products: React.FC = () => {
         return 'col-span-1'
     }
     const getItemImageHeightClass = (type: LayoutType) => {
-        if (type === 'MONO_HERO' || type === 'DUO_HERO') return 'h-[460px] md:h-[540px]'
-        return 'h-[380px] md:h-[440px]'
+        // Shorter on mobile, grow on tablet/desktop
+        if (type === 'MONO_HERO' || type === 'DUO_HERO')
+            return 'h-[240px] xs:h-[300px] sm:h-[380px] md:h-[460px] lg:h-[540px]'
+        return 'h-[200px] xs:h-[260px] sm:h-[320px] md:h-[380px] lg:h-[440px]'
     }
 
     return (
@@ -444,7 +475,7 @@ const Products: React.FC = () => {
                 {/* ── HEADER BANNER ── */}
                 <section className="w-full bg-[#f4f1ea] py-16 md:py-20 px-6 md:px-12 text-center border-b border-[#b6ac9f]/30">
                     <div className="max-w-3xl mx-auto space-y-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#e8e3da]/80 border border-[#b6ac9f]/40 text-[11px] font-medium uppercase tracking-[0.2em] text-[#1c1c1c]/80 rounded-full">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#e8e3da]/80 border border-[#b6ac9f]/40 text-[11px] font-medium uppercase tracking-[0.2em] text-[#1c1c1c]/80 ">
                             <Sparkles size={13} className="text-[#1c1c1c]/70" /> Artisanal &
                             Handcrafted
                         </div>
@@ -459,42 +490,22 @@ const Products: React.FC = () => {
                 </section>
 
                 {/* ── MAIN CONTENT CONTAINER (ALIGNED WITH NAVBAR) ── */}
-                <div className="w-full max-w-[1600px] mx-auto px-8 md:px-12 py-10">
+                <div className="w-full max-w-[1600px] mx-auto px-2.5 sm:px-6 md:px-12 py-5 md:py-10">
                     {/* ── MAIN PRODUCT CATALOG GRID ── */}
                     <div className="w-full flex flex-col min-w-0" style={{ gap: '4px' }}>
                         {loading ? (
                             <div className="w-full flex flex-col gap-[4px] py-2">
                                 {/* Skeleton Row 1: 3-column product cards */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-[4px] w-full">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-[4px] w-full">
                                     {[1, 2, 3].map((i) => (
                                         <div
                                             key={i}
-                                            className="flex flex-col bg-[#f4f1ea] overflow-hidden"
+                                            className="flex flex-col bg-[#f4f1ea] overflow-hidden rounded-xl md:rounded-none"
                                         >
-                                            <div className="relative w-full h-[380px] md:h-[450px] overflow-hidden skeleton-shimmer">
+                                            <div className="relative w-full h-[220px] md:h-[450px] overflow-hidden skeleton-shimmer">
                                                 <div className="absolute top-4 left-4 h-5 w-20 rounded-full bg-[#1c1c1c]/10 animate-pulse" />
                                             </div>
-                                            <div className="p-4 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between gap-3">
-                                                <div className="h-2.5 w-24 rounded-full bg-[#dcd6ca] animate-pulse" />
-                                                <div className="flex items-center justify-between gap-4">
-                                                    <div className="h-4 w-3/5 rounded bg-[#d2cbc0] animate-pulse" />
-                                                    <div className="h-4 w-14 rounded bg-[#d2cbc0] animate-pulse" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                {/* Skeleton Row 2: 2-column product cards */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-[4px] w-full">
-                                    {[4, 5].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="flex flex-col bg-[#f4f1ea] overflow-hidden"
-                                        >
-                                            <div className="relative w-full h-[380px] md:h-[450px] overflow-hidden skeleton-shimmer">
-                                                <div className="absolute top-4 left-4 h-5 w-20 rounded-full bg-[#1c1c1c]/10 animate-pulse" />
-                                            </div>
-                                            <div className="p-4 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between gap-3">
+                                            <div className="p-3 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between gap-3">
                                                 <div className="h-2.5 w-24 rounded-full bg-[#dcd6ca] animate-pulse" />
                                                 <div className="flex items-center justify-between gap-4">
                                                     <div className="h-4 w-3/5 rounded bg-[#d2cbc0] animate-pulse" />
@@ -517,235 +528,302 @@ const Products: React.FC = () => {
                                 </p>
                             </div>
                         ) : (
-                            productRows.map((row, rowIndex) => {
-                                const { items, type } = row
-                                const zIndex = 10 + rowIndex * 10
-                                const topStickyOffset = 80 + rowIndex * 8
-                                const gridContainerClass = getRowGridContainerClass(type)
-                                const imageHeightClass = getItemImageHeightClass(type)
+                            <>
+                                {/* ── MOBILE-ONLY E-COMMERCE CARD GRID (< md) ── */}
+                                <div className="md:hidden grid grid-cols-2 gap-2.5 sm:gap-3.5 pb-6">
+                                    {filteredProducts.map((product) => {
+                                        const productId = (
+                                            product._id ||
+                                            product.id ||
+                                            ''
+                                        ).toString()
+                                        const cartItem = cartItems.find((item) => {
+                                            const id = (
+                                                item.product._id ||
+                                                item.product.id ||
+                                                ''
+                                            ).toString()
+                                            return id === productId
+                                        })
+                                        const quantityInCart = cartItem ? cartItem.quantity : 0
 
-                                return (
-                                    <div
-                                        key={rowIndex}
-                                        className="sticky transition-all duration-300 shadow-[0_-12px_30px_rgba(0,0,0,0.05)] bg-[#e8e3da]"
-                                        style={{
-                                            top: `${topStickyOffset}px`,
-                                            zIndex: zIndex,
-                                        }}
-                                    >
-                                        <div className={gridContainerClass} style={{ gap: '4px' }}>
-                                            {items.map((product, itemIndex) => {
-                                                const colSpanClass = getItemColSpanClass(
-                                                    type,
-                                                    itemIndex
-                                                )
+                                        return (
+                                            <div
+                                                key={productId}
+                                                onClick={() => navigate(`/product/${productId}`)}
+                                                className="group relative flex flex-col bg-[#f4f1ea] rounded-xl overflow-hidden border border-[#b6ac9f]/30 p-1.5 cursor-pointer shadow-sm active:scale-[0.98] transition-transform justify-between"
+                                            >
+                                                {/* Image Box */}
+                                                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#cec9be]">
+                                                    <ProductMediaWithSkeleton
+                                                        mediaType={product.mediaType}
+                                                        image={product.image}
+                                                        video={product.video}
+                                                        alt={product.name}
+                                                        bgColor={product.bgColor || '#cec9be'}
+                                                        className="w-full h-full object-cover"
+                                                    />
 
-                                                const productId = (
-                                                    product._id ||
-                                                    product.id ||
-                                                    ''
-                                                ).toString()
-                                                const cartItem = cartItems.find((item) => {
-                                                    const id = (
-                                                        item.product._id ||
-                                                        item.product.id ||
-                                                        ''
-                                                    ).toString()
-                                                    return id === productId
-                                                })
-                                                const quantityInCart = cartItem
-                                                    ? cartItem.quantity
-                                                    : 0
+                                                    {/* Top Left Badge: NEW */}
+                                                    {product.isNewProduct && (
+                                                        <span className="absolute top-2 left-2 z-10 text-[9px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-2 py-0.5 rounded-md shadow-sm">
+                                                            NEW
+                                                        </span>
+                                                    )}
 
-                                                return (
-                                                    <div
-                                                        key={
+                                                </div>
+
+                                                {/* Product Info */}
+                                                <div className="p-1.5 pt-2.5 flex flex-col justify-between flex-1 gap-1">
+                                                    {/* Category / Brand */}
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-[#1c1c1c]/50 truncate">
+                                                        {product.category}
+                                                    </p>
+
+                                                    {/* Product Name */}
+                                                    <h4 className="text-[12px] font-normal text-[#1c1c1c]/90 line-clamp-2 leading-tight min-h-[2.1rem]">
+                                                        {product.name}
+                                                    </h4>
+
+                                                    {/* Price */}
+                                                    <p className="text-[14px] font-bold text-[#1c1c1c] font-mono tracking-tight mt-0.5">
+                                                        {product.price}
+                                                    </p>
+
+                                                    {/* Mobile Add to Cart / Quantity Stepper Button */}
+                                                    <div className="pt-1.5 mt-auto">
+                                                        {quantityInCart > 0 ? (
+                                                            <div className="flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-2.5 py-1.5 rounded-xl w-full">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        updateQuantity(
+                                                                            productId,
+                                                                            quantityInCart - 1
+                                                                        )
+                                                                    }}
+                                                                    className="p-0.5 text-[#f4f1ea] hover:opacity-80 cursor-pointer"
+                                                                >
+                                                                    <Minus size={12} />
+                                                                </button>
+                                                                <span className="text-[10px] font-semibold font-mono text-[#f4f1ea]">
+                                                                    {quantityInCart} in Cart
+                                                                </span>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        updateQuantity(
+                                                                            productId,
+                                                                            quantityInCart + 1
+                                                                        )
+                                                                    }}
+                                                                    className="p-0.5 text-[#f4f1ea] hover:opacity-80 cursor-pointer"
+                                                                >
+                                                                    <Plus size={12} />
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <button
+                                                                onClick={(e) =>
+                                                                    handleAddToCart(product, e)
+                                                                }
+                                                                className="w-full py-1.5 bg-[#1c1c1c] text-[#f4f1ea] text-[10px] font-medium uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 hover:bg-black transition-colors cursor-pointer"
+                                                            >
+                                                                <ShoppingBag size={12} /> Add to Cart
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+                                {/* ── DESKTOP-ONLY EDITORIAL PRODUCT GRID (>= md) ── */}
+                                <div className="hidden md:flex md:flex-col gap-[4px]">
+                                    {productRows.map((row, rowIndex) => {
+                                        const { items, type } = row
+                                        // Sticky stacking only on md+ to avoid mobile overlap
+                                        const topStickyOffset = 64 + rowIndex * 6
+                                        const gridContainerClass = getRowGridContainerClass(type)
+                                        const imageHeightClass = getItemImageHeightClass(type)
+
+                                        return (
+                                            <div
+                                                key={rowIndex}
+                                                className="sticky bg-[#e8e3da] shadow-[0_-8px_24px_rgba(0,0,0,0.04)] card-reveal"
+                                                style={{
+                                                    top: `${topStickyOffset}px`,
+                                                    zIndex: 10 + rowIndex * 10,
+                                                    animationDelay: `${rowIndex * 60}ms`,
+                                                }}
+                                            >
+                                                <div className={gridContainerClass} style={{ gap: '4px' }}>
+                                                    {items.map((product, itemIndex) => {
+                                                        const colSpanClass = getItemColSpanClass(
+                                                            type,
+                                                            itemIndex
+                                                        )
+
+                                                        const productId = (
                                                             product._id ||
                                                             product.id ||
-                                                            product.name
-                                                        }
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/product/${product._id || product.id}`
-                                                            )
-                                                        }
-                                                        className={`group relative flex flex-col bg-[#f4f1ea] overflow-hidden cursor-pointer ${colSpanClass}`}
-                                                    >
-                                                        {/* Product Image Box */}
-                                                        <div
-                                                            className={`relative w-full ${imageHeightClass} overflow-hidden transition-colors`}
-                                                            style={{
-                                                                backgroundColor:
-                                                                    product.bgColor || '#cec9be',
-                                                            }}
-                                                        >
-                                                            <ProductMediaWithSkeleton
-                                                                mediaType={product.mediaType}
-                                                                image={product.image}
-                                                                video={product.video}
-                                                                alt={product.name}
-                                                                bgColor={
-                                                                    product.bgColor || '#cec9be'
+                                                            ''
+                                                        ).toString()
+                                                        const cartItem = cartItems.find((item) => {
+                                                            const id = (
+                                                                item.product._id ||
+                                                                item.product.id ||
+                                                                ''
+                                                            ).toString()
+                                                            return id === productId
+                                                        })
+                                                        const quantityInCart = cartItem
+                                                            ? cartItem.quantity
+                                                            : 0
+
+                                                        return (
+                                                            <div
+                                                                key={
+                                                                    product._id ||
+                                                                    product.id ||
+                                                                    product.name
                                                                 }
-                                                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                                            />
-
-                                                            {/* Subtle Hover Gradient Overlay */}
-                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                                                            {/* In-Cart Badge / New Tag */}
-                                                            <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
-                                                                {quantityInCart > 0 ? (
-                                                                    <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#f4f1ea] bg-[#1c1c1c]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
-                                                                        <ShoppingBag size={11} />{' '}
-                                                                        {quantityInCart} in Cart
-                                                                    </span>
-                                                                ) : (
-                                                                    <div />
-                                                                )}
-
-                                                                {product.isNewProduct && (
-                                                                    <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#1c1c1c] bg-[#f4f1ea]/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#b6ac9f]/30 shadow-sm">
-                                                                        New
-                                                                    </span>
-                                                                )}
-                                                            </div>
-
-                                                            {/* Quick Add to Cart or Stepper Controls on Hover */}
-                                                            <div className="absolute bottom-4 left-4 right-4 z-20 transform translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                                                {quantityInCart > 0 ? (
-                                                                    <div className="flex items-center justify-between w-full bg-[#1c1c1c] text-[#f4f1ea] rounded-xl px-3 py-2 shadow-xl border border-white/10">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation()
-                                                                                updateQuantity(
-                                                                                    productId,
-                                                                                    quantityInCart -
-                                                                                        1
-                                                                                )
-                                                                            }}
-                                                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/15 hover:bg-white/30 text-[#f4f1ea] transition-colors cursor-pointer active:scale-95"
-                                                                            title="Decrease quantity"
-                                                                        >
-                                                                            <Minus size={14} />
-                                                                        </button>
-                                                                        <span className="text-[12px] font-semibold uppercase tracking-wider text-[#f4f1ea]">
-                                                                            {quantityInCart} in Cart
-                                                                        </span>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation()
-                                                                                updateQuantity(
-                                                                                    productId,
-                                                                                    quantityInCart +
-                                                                                        1
-                                                                                )
-                                                                            }}
-                                                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/15 hover:bg-white/30 text-[#f4f1ea] transition-colors cursor-pointer active:scale-95"
-                                                                            title="Increase quantity"
-                                                                        >
-                                                                            <Plus size={14} />
-                                                                        </button>
-                                                                    </div>
-                                                                ) : (
-                                                                    <button
-                                                                        onClick={(e) =>
-                                                                            handleAddToCart(
-                                                                                product,
-                                                                                e
-                                                                            )
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        `/product/${product._id || product.id}`
+                                                                    )
+                                                                }
+                                                                className={`group relative flex flex-col bg-[#f4f1ea] overflow-hidden cursor-pointer ${colSpanClass}`}
+                                                            >
+                                                                {/* Product Image Box */}
+                                                                <div
+                                                                    className={`relative w-full ${imageHeightClass} overflow-hidden transition-colors`}
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            product.bgColor || '#cec9be',
+                                                                    }}
+                                                                >
+                                                                    <ProductMediaWithSkeleton
+                                                                        mediaType={product.mediaType}
+                                                                        image={product.image}
+                                                                        video={product.video}
+                                                                        alt={product.name}
+                                                                        bgColor={
+                                                                            product.bgColor || '#cec9be'
                                                                         }
-                                                                        className="w-full py-3 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-medium uppercase tracking-widest hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer rounded-xl"
-                                                                    >
-                                                                        <ShoppingBag size={15} />{' '}
-                                                                        Add to Cart
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        </div>
+                                                                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                                    />
 
-                                                        {/* Product Info below image box */}
-                                                        <div className="p-4 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between flex-1 gap-2">
-                                                            <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#1c1c1c]/50">
-                                                                {product.category}
-                                                            </p>
+                                                                    {/* Subtle Hover Gradient Overlay */}
+                                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                                                            {/* Product Name & Price in Same Row */}
-                                                            <div className="flex items-baseline justify-between gap-3">
-                                                                <h3 className="text-[15px] font-normal text-[#1c1c1c] group-hover:text-[#1c1c1c]/80 transition-colors truncate">
-                                                                    {product.name}
-                                                                </h3>
-                                                                <p className="text-[17px] md:text-[18px] font-bold text-[#1c1c1c] shrink-0 font-mono tracking-tight">
-                                                                    {product.price}
-                                                                </p>
-                                                            </div>
+                                                                    {/* In-Cart Badge / New Tag */}
+                                                                    <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
+                                                                        {quantityInCart > 0 ? (
+                                                                            <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#f4f1ea] bg-[#1c1c1c]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+                                                                                <ShoppingBag size={11} />{' '}
+                                                                                {quantityInCart} in Cart
+                                                                            </span>
+                                                                        ) : (
+                                                                            <div />
+                                                                        )}
 
-                                                            {/* Mobile Add to Cart / Quantity Controls */}
-                                                            <div className="md:hidden pt-1">
-                                                                {quantityInCart > 0 ? (
-                                                                    <div className="flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-3 py-1.5 rounded-lg w-full">
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation()
-                                                                                updateQuantity(
-                                                                                    productId,
-                                                                                    quantityInCart -
-                                                                                        1
-                                                                                )
-                                                                            }}
-                                                                            className="p-1 text-[#f4f1ea] hover:opacity-80 cursor-pointer"
-                                                                        >
-                                                                            <Minus size={12} />
-                                                                        </button>
-                                                                        <span className="text-[11px] font-semibold font-mono text-[#f4f1ea]">
-                                                                            {quantityInCart} in Cart
-                                                                        </span>
-                                                                        <button
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation()
-                                                                                updateQuantity(
-                                                                                    productId,
-                                                                                    quantityInCart +
-                                                                                        1
-                                                                                )
-                                                                            }}
-                                                                            className="p-1 text-[#f4f1ea] hover:opacity-80 cursor-pointer"
-                                                                        >
-                                                                            <Plus size={12} />
-                                                                        </button>
+                                                                        {product.isNewProduct && (
+                                                                            <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#1c1c1c] bg-[#f4f1ea]/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#b6ac9f]/30 shadow-sm">
+                                                                                New
+                                                                            </span>
+                                                                        )}
                                                                     </div>
-                                                                ) : (
-                                                                    <button
-                                                                        onClick={(e) =>
-                                                                            handleAddToCart(
-                                                                                product,
-                                                                                e
-                                                                            )
-                                                                        }
-                                                                        className="w-full py-2 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-medium uppercase tracking-wider rounded-lg hover:bg-black transition-colors cursor-pointer"
-                                                                    >
-                                                                        Add to Cart
-                                                                    </button>
-                                                                )}
+
+                                                                    {/* Quick Add to Cart or Stepper Controls on Hover — always visible on touch */}
+                                                                    <div className="absolute bottom-4 left-4 right-4 z-20 transform translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 touch-cart-visible">
+                                                                        {quantityInCart > 0 ? (
+                                                                            <div className="flex items-center justify-between w-full bg-[#1c1c1c] text-[#f4f1ea] rounded-xl px-3 py-2 shadow-xl border border-white/10">
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation()
+                                                                                        updateQuantity(
+                                                                                            productId,
+                                                                                            quantityInCart -
+                                                                                            1
+                                                                                        )
+                                                                                    }}
+                                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/15 hover:bg-white/30 text-[#f4f1ea] transition-colors cursor-pointer active:scale-95"
+                                                                                    title="Decrease quantity"
+                                                                                >
+                                                                                    <Minus size={14} />
+                                                                                </button>
+                                                                                <span className="text-[12px] font-semibold uppercase tracking-wider text-[#f4f1ea]">
+                                                                                    {quantityInCart} in Cart
+                                                                                </span>
+                                                                                <button
+                                                                                    onClick={(e) => {
+                                                                                        e.stopPropagation()
+                                                                                        updateQuantity(
+                                                                                            productId,
+                                                                                            quantityInCart +
+                                                                                            1
+                                                                                        )
+                                                                                    }}
+                                                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/15 hover:bg-white/30 text-[#f4f1ea] transition-colors cursor-pointer active:scale-95"
+                                                                                    title="Increase quantity"
+                                                                                >
+                                                                                    <Plus size={14} />
+                                                                                </button>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <button
+                                                                                onClick={(e) =>
+                                                                                    handleAddToCart(
+                                                                                        product,
+                                                                                        e
+                                                                                    )
+                                                                                }
+                                                                                className="w-full py-3 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-medium uppercase tracking-widest hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg cursor-pointer rounded-xl"
+                                                                            >
+                                                                                <ShoppingBag size={15} />{' '}
+                                                                                Add to Cart
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Product Info below image box */}
+                                                                <div className="p-4 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between flex-1 gap-2">
+                                                                    <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#1c1c1c]/50">
+                                                                        {product.category}
+                                                                    </p>
+
+                                                                    {/* Product Name & Price in Same Row */}
+                                                                    <div className="flex items-baseline justify-between gap-3">
+                                                                        <h3 className="text-[15px] font-normal text-[#1c1c1c] group-hover:text-[#1c1c1c]/80 transition-colors truncate">
+                                                                            {product.name}
+                                                                        </h3>
+                                                                        <p className="text-[17px] md:text-[18px] font-bold text-[#1c1c1c] shrink-0 font-mono tracking-tight">
+                                                                            {product.price}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )
-                            })
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
             </div>
 
             {/* ── STICKY FLOATING BOTTOM FILTER BAR ── */}
-            <div className="fixed bottom-6 left-6 md:left-12 z-40 flex flex-col items-start">
+            <div className="fixed bottom-6 left-4 md:left-12 z-40 flex flex-col items-start">
                 {/* Expandable Category Menu */}
                 {isFilterOpen && (
-                    <div className="mb-3 w-80 max-w-[90vw] bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.25)] space-y-3 animate-fadeIn">
+                    <div className="mb-3 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.25)] space-y-3 animate-fadeIn">
                         <div className="flex items-center justify-between pb-2 border-b border-[#b6ac9f]/20">
                             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/60">
                                 <SlidersHorizontal size={14} /> Filter Categories
@@ -773,11 +851,10 @@ const Products: React.FC = () => {
                                             handleSelectCategory(cat)
                                             setIsFilterOpen(false)
                                         }}
-                                        className={`w-full text-left px-3.5 py-2.5 rounded-xl text-[13px] tracking-wide transition-all flex items-center justify-between cursor-pointer ${
-                                            isSelected
-                                                ? 'bg-[#1c1c1c] text-[#f4f1ea] font-medium shadow-sm'
-                                                : 'text-[#1c1c1c]/70 hover:bg-[#e8e3da] hover:text-[#1c1c1c]'
-                                        }`}
+                                        className={`w-full text-left px-3.5 py-2.5 rounded-xl text-[13px] tracking-wide transition-all flex items-center justify-between cursor-pointer ${isSelected
+                                            ? 'bg-[#1c1c1c] text-[#f4f1ea] font-medium shadow-sm'
+                                            : 'text-[#1c1c1c]/70 hover:bg-[#e8e3da] hover:text-[#1c1c1c]'
+                                            }`}
                                     >
                                         <span className="flex items-center gap-2">
                                             {isSelected && (
@@ -786,11 +863,10 @@ const Products: React.FC = () => {
                                             {cat}
                                         </span>
                                         <span
-                                            className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${
-                                                isSelected
-                                                    ? 'bg-white/20 text-[#f4f1ea]'
-                                                    : 'bg-[#e8e3da] text-[#1c1c1c]/60'
-                                            }`}
+                                            className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${isSelected
+                                                ? 'bg-white/20 text-[#f4f1ea]'
+                                                : 'bg-[#e8e3da] text-[#1c1c1c]/60'
+                                                }`}
                                         >
                                             {count}
                                         </span>

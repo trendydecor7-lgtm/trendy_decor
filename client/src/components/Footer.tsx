@@ -83,8 +83,8 @@ const Footer: React.FC = () => {
                         </a>
                     </div>
 
-                    {/* Center Column: Company Links */}
-                    <div className="md:col-span-3 space-y-4">
+                    {/* Center Column: Company Links (Hidden on small screens) */}
+                    <div className="hidden md:block md:col-span-3 space-y-4">
                         <h3 className="text-[16px] font-medium tracking-wide text-[#1c1c1c]">
                             Company
                         </h3>

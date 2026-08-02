@@ -127,13 +127,13 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     style={{
                         display: 'flex',
                         alignItems: 'flex-end',
-                        fontSize: 'clamp(3.2rem, 12.5vw, 10.5rem)',
+                        fontSize: 'clamp(2.4rem, 11vw, 10.5rem)',
                         fontWeight: 200,
-                        letterSpacing: '0.24em',
+                        letterSpacing: 'clamp(0.08em, 1.5vw, 0.24em)',
                         color: '#f4f1ea',
                         lineHeight: 0.9,
                         gap: '0.01em',
-                        paddingRight: '0.24em', /* compensate letter-spacing at end */
+                        paddingRight: 'clamp(0.08em, 1.5vw, 0.24em)',
                     }}
                 >
                     {WORD1.split('').map((letter, i) => (
@@ -187,12 +187,12 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     style={{
                         display: 'flex',
                         alignItems: 'flex-end',
-                        fontSize: 'clamp(3.2rem, 12.5vw, 10.5rem)',
+                        fontSize: 'clamp(2.4rem, 11vw, 10.5rem)',
                         fontWeight: 200,
-                        letterSpacing: '0.24em',
+                        letterSpacing: 'clamp(0.08em, 1.5vw, 0.24em)',
                         lineHeight: 0.9,
                         gap: '0.01em',
-                        paddingRight: '0.24em',
+                        paddingRight: 'clamp(0.08em, 1.5vw, 0.24em)',
                         WebkitTextStroke: '1.2px #b6ac9f',
                         color: 'transparent',
                     }}
@@ -260,46 +260,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     </div>
                 </div>
             </div>
-
-            {/* ── SKIP ── */}
-            <button
-                onClick={() => {
-                    if (intervalRef.current) clearInterval(intervalRef.current)
-                    setPhase('done')
-                    document.body.style.overflow = ''
-                    onComplete?.()
-                }}
-                style={{
-                    fontFamily: "'Playpen Sans', sans-serif",
-                    position: 'absolute',
-                    top: '1.5rem',
-                    right: '1.75rem',
-                    zIndex: 100,
-                    fontSize: '0.58rem',
-                    letterSpacing: '0.35em',
-                    textTransform: 'uppercase',
-                    color: 'rgba(244,241,234,0.3)',
-                    cursor: 'pointer',
-                    background: 'transparent',
-                    border: '1px solid rgba(182,172,159,0.15)',
-                    borderRadius: '100px',
-                    padding: '0.4rem 1rem',
-                    transition: 'color 200ms, border-color 200ms',
-                    pointerEvents: 'auto',
-                }}
-                onMouseEnter={e => {
-                    const btn = e.currentTarget
-                    btn.style.color = 'rgba(244,241,234,0.75)'
-                    btn.style.borderColor = 'rgba(182,172,159,0.45)'
-                }}
-                onMouseLeave={e => {
-                    const btn = e.currentTarget
-                    btn.style.color = 'rgba(244,241,234,0.3)'
-                    btn.style.borderColor = 'rgba(182,172,159,0.15)'
-                }}
-            >
-                Skip
-            </button>
         </div>
     )
 }
