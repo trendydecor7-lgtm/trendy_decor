@@ -6,6 +6,8 @@ import { verifyTokenAndGetUser } from '@/lib/auth'
 import { sendNewProductNotificationEmail } from '@/lib/resend'
 import { getProductsFast, clearProductsCache } from '@/lib/productsCache'
 
+export const revalidate = 86400
+
 export async function GET() {
     try {
         const products = await getProductsFast()
@@ -14,7 +16,7 @@ export async function GET() {
             {
                 status: 200,
                 headers: {
-                    'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+                    'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
                 },
             }
         )

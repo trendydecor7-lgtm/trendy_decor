@@ -195,8 +195,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     }
                     setUser(newUser)
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
-
-                    window.history.replaceState({}, document.title, window.location.pathname)
                 } else if (activeToken) {
                     if (isTokenExpired(activeToken)) {
                         console.warn(
@@ -222,6 +220,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setToken(null)
                     setUser(null)
                     localStorage.removeItem(STORAGE_KEY)
+                }
+
+                if (
+                    typeof window !== 'undefined' &&
+                    window.location.search &&
+                    (window.location.search.includes('oauth') ||
+                        window.location.search.includes('token') ||
+                        window.location.search.includes('user'))
+                ) {
+                    window.history.replaceState(null, '', window.location.pathname)
                 }
 
                 if (activeToken && !isTokenExpired(activeToken)) {

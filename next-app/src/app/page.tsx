@@ -59,21 +59,9 @@ export default function Home() {
     const secondSectionRef = useRef<HTMLDivElement>(null)
     const [parallaxY1, setParallaxY1] = useState(0)
     const [parallaxY2, setParallaxY2] = useState(0)
-    const [showIntro, setShowIntro] = useState<boolean>(false)
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const hasSeen = sessionStorage.getItem('trendy_has_seen_intro')
-            if (!hasSeen) {
-                setShowIntro(true)
-            }
-        }
-    }, [])
+    const [showIntro, setShowIntro] = useState<boolean>(true)
 
     const handleIntroComplete = () => {
-        if (typeof window !== 'undefined') {
-            sessionStorage.setItem('trendy_has_seen_intro', 'true')
-        }
         setShowIntro(false)
     }
 
@@ -133,7 +121,7 @@ export default function Home() {
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 <section
                     ref={heroSectionRef}
-                    className="relative md:sticky top-0 w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[220px] xs:h-[270px] sm:h-[360px] md:h-[calc(85vh-64px)]"
+                    className="relative md:sticky top-0 w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[50vh] xs:h-[60vh] sm:h-[65vh] md:h-[calc(85vh-64px)]"
                 >
                     <div
                         className="relative overflow-hidden cursor-pointer w-full h-full grid grid-cols-2 will-change-transform"
@@ -329,7 +317,7 @@ export default function Home() {
                 </div>
                 <section
                     ref={secondSectionRef}
-                    className="hidden md:block sticky top-0 w-full overflow-hidden z-10 h-screen"
+                    className="block relative md:sticky top-0 w-full overflow-hidden z-10 h-[50vh] sm:h-[65vh] md:h-screen"
                 >
                     <div
                         className="absolute inset-0 bg-[#bfb9ae] will-change-transform"

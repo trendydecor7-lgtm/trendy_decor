@@ -79,7 +79,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
     return (
         <div
             aria-hidden="true"
-            className="fixed inset-0 z-[99999] overflow-hidden select-none"
+            className="fixed inset-0 w-screen h-[100dvh] z-[99999] overflow-hidden select-none"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
             <div
@@ -119,7 +119,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     style={{
                         display: 'flex',
                         alignItems: 'flex-end',
-                        fontSize: 'clamp(2.4rem, 11vw, 10.5rem)',
+                        fontSize: 'clamp(2rem, 9.5vw, 10.5rem)',
                         fontWeight: 200,
                         letterSpacing: 'clamp(0.08em, 1.5vw, 0.24em)',
                         color: '#f4f1ea',
