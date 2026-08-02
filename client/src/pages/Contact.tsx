@@ -48,7 +48,6 @@ const Contact = () => {
                 description="Get in touch with Trendy Decor for custom home decor consultation, orders, and inquiries."
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
-                {/* ── HEADER BANNER ─────────────────────────────────── */}
                 <section className="w-full bg-[#f4f1ea] py-14 md:py-20 px-8 text-center border-b border-[#b6ac9f]/30">
                     <div className="max-w-[1600px] mx-auto px-8 md:px-12">
                         <div className="max-w-xl mx-auto space-y-3">
@@ -66,11 +65,9 @@ const Contact = () => {
                     </div>
                 </section>
 
-                {/* ── 2-COLUMN CONTAINER ── */}
                 <section className="w-full bg-[#e8e3da] py-8 md:py-12">
                     <div className="max-w-[1600px] mx-auto px-8 md:px-12">
                         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '3px' }}>
-                            {/* Left: Contact Info */}
                             <div className="bg-[#f4f1ea] p-8 md:p-14 flex flex-col justify-between space-y-8">
                                 <div className="space-y-2">
                                     <p className="text-[12px] font-light uppercase tracking-widest text-[#1c1c1c]/50">
@@ -134,7 +131,6 @@ const Contact = () => {
                                 </div>
                             </div>
 
-                            {/* Right: Simple Form */}
                             <div className="bg-[#f4f1ea] p-8 md:p-14 flex flex-col justify-center">
                                 {submitted ? (
                                     <div className="p-8 bg-[#e8e3da]/60 border border-[#b6ac9f]/60 rounded-md text-[#1c1c1c] text-center space-y-3">

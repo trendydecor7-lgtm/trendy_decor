@@ -11,11 +11,9 @@ import { verifyToken, isOwnerMiddleware } from '../middleware/auth.middleware.js
 
 const router = express.Router()
 
-// Public routes
 router.get('/', getAllProducts)
 router.get('/:id', getProductById)
 
-// Owner protected routes
 router.post('/upload-media', verifyToken, isOwnerMiddleware, uploadMedia)
 router.post('/', verifyToken, isOwnerMiddleware, createProduct)
 router.put('/:id', verifyToken, isOwnerMiddleware, updateProduct)

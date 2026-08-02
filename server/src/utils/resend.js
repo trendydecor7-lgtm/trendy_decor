@@ -174,15 +174,10 @@ export const sendNewProductNotificationEmail = async (recipients, product) => {
         console.error('Error broadcasting New Product notification email:', err)
     }
 }
-
-/**
- * 5. Send Contact Form Submission Email
- */
 export const sendContactUsEmail = async ({ name, email, phone, message }) => {
     try {
         const formattedDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
 
-        // A. Admin Email Notification to trendydecor7@gmail.com
         const adminHtml = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 30px 20px; color: #1c1c1c; background-color: #f4f1ea;">
             <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2dbce; padding: 30px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
@@ -230,7 +225,6 @@ export const sendContactUsEmail = async ({ name, email, phone, message }) => {
             html: adminHtml,
         })
 
-        // B. Thank You Confirmation Email to Sender
         const customerHtml = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 30px 20px; color: #1c1c1c; background-color: #f4f1ea;">
             <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2dbce; padding: 32px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">

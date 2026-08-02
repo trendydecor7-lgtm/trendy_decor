@@ -3,7 +3,6 @@ import Newsletter from '../models/newsletter.model.js'
 import cloudinary from '../config/cloudinary.js'
 import { sendNewProductNotificationEmail } from '../utils/resend.js'
 
-// POST /products/upload-media (Cloudinary Base64 upload for image & video)
 export const uploadMedia = async (req, res) => {
     try {
         const { media, resourceType } = req.body
@@ -15,10 +14,9 @@ export const uploadMedia = async (req, res) => {
             })
         }
 
-        // Upload Base64 string directly to Cloudinary
         const uploadResponse = await cloudinary.uploader.upload(media, {
             folder: 'trendy_products',
-            resource_type: resourceType || 'auto', // 'image', 'video', or 'auto'
+            resource_type: resourceType || 'auto', 
         })
 
         return res.status(200).json({
@@ -36,7 +34,6 @@ export const uploadMedia = async (req, res) => {
     }
 }
 
-// GET /products
 export const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 })
@@ -53,7 +50,6 @@ export const getAllProducts = async (req, res) => {
     }
 }
 
-// GET /products/:id
 export const getProductById = async (req, res) => {
     try {
         const { id } = req.params
@@ -79,7 +75,6 @@ export const getProductById = async (req, res) => {
     }
 }
 
-// POST /products (Owner created)
 export const createProduct = async (req, res) => {
     try {
         const {
@@ -127,7 +122,6 @@ export const createProduct = async (req, res) => {
 
         await newProduct.save()
 
-        // Broadcast notification email to newsletter subscribers asynchronously via Resend
         Newsletter.find({ isSubscribed: true })
             .then((subscribers) => {
                 if (subscribers && subscribers.length > 0) {
@@ -153,7 +147,6 @@ export const createProduct = async (req, res) => {
     }
 }
 
-// PUT /products/:id
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params
@@ -189,7 +182,6 @@ export const updateProduct = async (req, res) => {
     }
 }
 
-// DELETE /products/:id
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params

@@ -4,7 +4,6 @@ interface IntroAnimationProps {
     onComplete?: () => void
 }
 
-// Individual animated letter component
 const AnimatedLetter = ({
     letter,
     delay,
@@ -41,21 +40,17 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
     useEffect(() => {
         document.body.style.overflow = 'hidden'
 
-        // Short delay then start loading animation
         const startDelay = setTimeout(() => {
             setPhase('loading')
 
             let count = 0
-            // Total duration ~2.4s for counter (0 → 100)
             intervalRef.current = setInterval(() => {
-                // Ease-out: slow down near the end
                 const step = count < 60 ? 2 : count < 88 ? 1.2 : 0.6
                 count = Math.min(count + step, 100)
                 setProgress(Math.floor(count))
 
                 if (count >= 100) {
                     if (intervalRef.current) clearInterval(intervalRef.current)
-                    // Brief hold at 100%
                     setTimeout(() => setPhase('complete'), 100)
                     setTimeout(() => setPhase('curtain-out'), 600)
                     setTimeout(() => {
@@ -85,7 +80,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
             className="fixed inset-0 z-[99999] overflow-hidden select-none"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
-            {/* ── LEFT CURTAIN ── */}
             <div
                 className="absolute inset-y-0 left-0 w-1/2 will-change-transform"
                 style={{
@@ -98,7 +92,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                 }}
             />
 
-            {/* ── RIGHT CURTAIN ── */}
             <div
                 className="absolute inset-y-0 right-0 w-1/2 will-change-transform"
                 style={{
@@ -111,7 +104,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                 }}
             />
 
-            {/* ── CONTENT LAYER (above curtains) ── */}
             <div
                 className="absolute inset-0 flex flex-col items-center justify-center"
                 style={{
@@ -122,7 +114,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                 }}
             >
 
-                {/* ── TRENDY — staggered letter drop ── */}
                 <div
                     style={{
                         display: 'flex',
@@ -145,8 +136,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                         />
                     ))}
                 </div>
-
-                {/* ── Divider rule with italic tagline ── */}
                 <div
                     style={{
                         width: 'clamp(14rem, 46vw, 44rem)',
@@ -182,7 +171,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     }} />
                 </div>
 
-                {/* ── DECOR — staggered letter drop, outline style ── */}
                 <div
                     style={{
                         display: 'flex',
@@ -207,7 +195,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     ))}
                 </div>
 
-                {/* ── PROGRESS COUNTER ── */}
                 <div
                     style={{
                         position: 'absolute',
@@ -220,7 +207,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                         transition: 'opacity 600ms ease 200ms',
                     }}
                 >
-                    {/* Percentage number */}
                     <span
                         style={{
                             fontWeight: 300,
@@ -236,7 +222,6 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                         {progress}&nbsp;%
                     </span>
 
-                    {/* Progress bar track */}
                     <div
                         style={{
                             width: 'clamp(5rem, 12vw, 9rem)',

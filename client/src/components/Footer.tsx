@@ -58,7 +58,6 @@ const Footer: React.FC = () => {
         >
             <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-12 md:py-16">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start">
-                    {/* Left Column: Brand & Description */}
                     <div className="md:col-span-5 space-y-4">
                         <Link
                             to="/"
@@ -83,7 +82,6 @@ const Footer: React.FC = () => {
                         </a>
                     </div>
 
-                    {/* Center Column: Company Links (Hidden on small screens) */}
                     <div className="hidden md:block md:col-span-3 space-y-4">
                         <h3 className="text-[16px] font-medium tracking-wide text-[#1c1c1c]">
                             Company
@@ -115,7 +113,6 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Right Column: Newsletter Subscription */}
                     <div className="md:col-span-4 space-y-4">
                         <h3 className="text-[16px] font-medium tracking-wide text-[#1c1c1c]">
                             Subscribe to our newsletter
@@ -152,7 +149,6 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Bottom Bar / Copyright & Author Info */}
                 <div className="mt-12 md:mt-16 pt-6 border-t border-[#b6ac9f]/70 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                     <p className="text-[13px] font-light text-[#1c1c1c]/65">
                         Copyright {new Date().getFullYear()} © Trendy Decor. All Rights Reserved.

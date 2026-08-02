@@ -30,7 +30,6 @@ const Inventory: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [selectedCategory, setSelectedCategory] = useState<string>('All')
 
-    // Fetch Inventory Products from API
     const fetchProducts = async () => {
         setLoading(true)
         try {
@@ -50,7 +49,6 @@ const Inventory: React.FC = () => {
         fetchProducts()
     }, [])
 
-    // Filter products by search & category
     const filteredProducts = products.filter((p) => {
         const matchesSearch =
             p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,13 +57,11 @@ const Inventory: React.FC = () => {
         return matchesSearch && matchesCategory
     })
 
-    // Quick Update Stock Count
     const handleQuickStockChange = async (p: ProductItem, newStock: number) => {
         const targetStock = Math.max(0, newStock)
         const productId = p._id || p.id
         const activeToken = token || localStorage.getItem('trendy_auth_token')
 
-        // Optimistic local update
         setProducts((prev) =>
             prev.map((prod) => {
                 if ((prod._id || prod.id) === productId) {
@@ -93,7 +89,6 @@ const Inventory: React.FC = () => {
         }
     }
 
-    // Quick Toggle In Stock Status
     const handleToggleInStock = async (p: ProductItem) => {
         const newInStock = !p.inStock
         const productId = p._id || p.id
@@ -124,7 +119,6 @@ const Inventory: React.FC = () => {
         }
     }
 
-    // Delete Product
     const handleDeleteProduct = async (p: ProductItem) => {
         if (!window.confirm(`Are you sure you want to delete "${p.name}"?`)) return
 
@@ -167,9 +161,7 @@ const Inventory: React.FC = () => {
             className="w-full min-h-screen bg-[#e8e3da] py-10 md:py-16 select-none animate-smooth-appear"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
-            {/* Exactly aligned with Navbar (max-w-[1600px] px-8 md:px-12) */}
             <div className="max-w-[1600px] mx-auto px-8 md:px-12 space-y-8">
-                {/* ── HEADER & BREADCRUMB ── */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#b6ac9f]/40 pb-8">
                     <div>
                         <Link
@@ -194,10 +186,7 @@ const Inventory: React.FC = () => {
                         </Link>
                     </div>
                 </div>
-
-                {/* ── SEARCH & CATEGORY FILTER BAR ── */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#f4f1ea] p-5 border border-[#b6ac9f]/40 rounded-none shadow-xs">
-                    {/* Search Input */}
                     <div className="relative w-full md:w-96">
                         <Search
                             size={16}
@@ -211,8 +200,6 @@ const Inventory: React.FC = () => {
                             className="w-full pl-10 pr-4 py-3 bg-[#e8e3da]/80 border border-[#b6ac9f]/50 rounded-none text-[12px] uppercase tracking-wider text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] transition-colors placeholder:text-[#1c1c1c]/40 font-mono"
                         />
                     </div>
-
-                    {/* Category Filter Pills (Sharp Rectangles) */}
                     <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
                         <SlidersHorizontal size={14} className="text-[#1c1c1c]/60 shrink-0 mr-1" />
                         {CATEGORIES.map((cat) => (
@@ -230,8 +217,6 @@ const Inventory: React.FC = () => {
                         ))}
                     </div>
                 </div>
-
-                {/* ── PRODUCTS INVENTORY TABLE ── */}
                 {loading ? (
                     <div className="py-28 text-center space-y-4 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-none">
                         <Loader2 className="animate-spin mx-auto text-[#1c1c1c]/60" size={32} />
@@ -280,7 +265,6 @@ const Inventory: React.FC = () => {
                                                 key={prodId}
                                                 className="hover:bg-[#e8e3da]/50 transition-colors group"
                                             >
-                                                {/* Product Info & Sharp Square Thumbnail */}
                                                 <td className="py-4.5 px-6">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-14 bg-[#e8e3da] rounded-none overflow-hidden shrink-0 border border-[#b6ac9f]/40">
@@ -307,22 +291,16 @@ const Inventory: React.FC = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-
-                                                {/* Sharp Theme Category Tag */}
                                                 <td className="py-4.5 px-6">
                                                     <span className="px-3 py-1 bg-[#e8e3da]/80 border border-[#b6ac9f]/40 rounded-none text-[10px] font-semibold uppercase tracking-widest text-[#1c1c1c] font-mono">
                                                         {p.category}
                                                     </span>
                                                 </td>
-
-                                                {/* Price */}
                                                 <td className="py-4.5 px-6 font-bold font-mono text-[#1c1c1c] text-[14px]">
                                                     {p.price.startsWith('₹')
                                                         ? p.price
                                                         : `₹${p.price}`}
                                                 </td>
-
-                                                {/* Sharp Stock Stepper */}
                                                 <td className="py-4.5 px-6 text-center">
                                                     <div className="inline-flex items-center border border-[#b6ac9f]/50 rounded-none bg-[#e8e3da]/80 overflow-hidden">
                                                         <button
@@ -354,8 +332,6 @@ const Inventory: React.FC = () => {
                                                         </button>
                                                     </div>
                                                 </td>
-
-                                                {/* Sharp Status Badge */}
                                                 <td className="py-4.5 px-6 text-center">
                                                     <button
                                                         onClick={() => handleToggleInStock(p)}
@@ -369,8 +345,6 @@ const Inventory: React.FC = () => {
                                                         {isAvailable ? 'In Stock' : 'Out of Stock'}
                                                     </button>
                                                 </td>
-
-                                                {/* Sharp Action Buttons */}
                                                 <td className="py-4.5 px-6 text-right">
                                                     <div className="flex items-center justify-end gap-2">
                                                         <button

@@ -21,12 +21,11 @@ const Cart: React.FC = () => {
     const { toast } = useToast()
     const { user, addAddress } = useAuth()
 
-    // Address selection state
     const [selectedAddressId, setSelectedAddressId] = useState<string>('')
     const [isAddAddressOpen, setIsAddAddressOpen] = useState<boolean>(false)
     const [isSavingAddress, setIsSavingAddress] = useState<boolean>(false)
 
-    // New Address Form state
+
     const [newAddrLabel, setNewAddrLabel] = useState('Home')
     const [newAddrStreet, setNewAddrStreet] = useState('')
     const [newAddrCity, setNewAddrCity] = useState('')
@@ -35,7 +34,7 @@ const Cart: React.FC = () => {
     const [newAddrPhone, setNewAddrPhone] = useState('')
     const navigate = useNavigate();
 
-    // Set default selected address on load / user change
+
     useEffect(() => {
         if (user?.addresses && user.addresses.length > 0) {
             const defaultAddr = user.addresses.find((a) => a.isDefault) || user.addresses[0]
@@ -44,7 +43,6 @@ const Cart: React.FC = () => {
         }
     }, [user])
 
-    // Free shipping threshold above ₹1,500
     const shippingFee = subtotal >= 1500 || cartItems.length === 0 ? 0 : 150
     const finalTotal = Math.max(0, subtotal + shippingFee)
 
@@ -124,10 +122,8 @@ const Cart: React.FC = () => {
             return
         }
 
-        // Construct formatted WhatsApp message (clean text only)
         let message = `*NEW ORDER - TRENDY DECOR*\n\n`
 
-        // Customer Details
         message += `*Customer Details:*\n`
         message += `• Name: ${user.name || user.email || 'Customer'}\n`
         message += `• Email: ${user.email || 'N/A'}\n`
@@ -136,7 +132,6 @@ const Cart: React.FC = () => {
         }
         message += `\n`
 
-        // Address Details
         if (selectedAddress) {
             message += `*Delivery Address (${selectedAddress.label || 'Home'}):*\n`
             message += `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.zip}\n`
@@ -146,7 +141,6 @@ const Cart: React.FC = () => {
             message += `${user.address.street}, ${user.address.city}, ${user.address.state} - ${user.address.zip}\n\n`
         }
 
-        // Order Items List
         message += `*Order Items (${totalCount} ${totalCount === 1 ? 'item' : 'items'}):*\n`
         cartItems.forEach((item, index) => {
             const numericPrice = parseNumericPrice(item.product.price)
@@ -183,7 +177,6 @@ const Cart: React.FC = () => {
                 description="Review your curated home decor items in your shopping bag and proceed to order."
             />
             <div className="max-w-[1600px] mx-auto px-2 md:px-6 space-y-8">
-                {/* ── HEADER ── */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#b6ac9f]/40 pb-6">
                     <div>
                         <Link
@@ -211,7 +204,6 @@ const Cart: React.FC = () => {
                 </div>
 
                 {cartItems.length === 0 ? (
-                    /* ── EMPTY CART STATE ── */
                     <div className="py-20 bg-[#f4f1ea] border border-[#b6ac9f]/40 text-center space-y-6 max-w-xl mx-auto shadow-sm">
                         <div className="w-16 h-16 bg-[#e8e3da] text-[#1c1c1c]/60 flex items-center justify-center mx-auto">
                             <ShoppingBag size={28} strokeWidth={1.5} />
@@ -233,9 +225,7 @@ const Cart: React.FC = () => {
                         </Link>
                     </div>
                 ) : (
-                    /* ── CART ITEMS & SUMMARY GRID ── */
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                        {/* LEFT: Cart Items List (7 Cols) */}
                         <div className="lg:col-span-7 space-y-4">
                             {cartItems.map((item) => {
                                 const prodId = getProductId(item.product)
@@ -248,7 +238,6 @@ const Cart: React.FC = () => {
                                         className="p-4 md:p-6 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xs"
                                     >
                                         <div className="flex items-center gap-4 w-full sm:w-auto">
-                                            {/* Thumbnail */}
                                             <div
                                                 className="w-20 h-24 md:w-24 md:h-28 shrink-0 overflow-hidden relative border border-[#b6ac9f]/30"
                                                 style={{
@@ -268,8 +257,6 @@ const Cart: React.FC = () => {
                                                     </div>
                                                 )}
                                             </div>
-
-                                            {/* Product Info */}
                                             <div className="space-y-1">
                                                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#1c1c1c]/50">
                                                     {item.product.category}
@@ -283,9 +270,7 @@ const Cart: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        {/* Right Controls: Quantity & Total */}
                                         <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 border-[#b6ac9f]/30 pt-4 sm:pt-0">
-                                            {/* Quantity Counter */}
                                             <div className="flex items-center border border-[#b6ac9f]/40 bg-[#e8e3da]/70 overflow-hidden">
                                                 <button
                                                     onClick={() =>
@@ -310,7 +295,6 @@ const Cart: React.FC = () => {
                                                 </button>
                                             </div>
 
-                                            {/* Total Price & Remove */}
                                             <div className="text-right space-y-1">
                                                 <p className="text-[16px] font-bold text-[#1c1c1c] font-mono">
                                                     ₹{itemTotal.toLocaleString('en-IN')}
@@ -330,7 +314,6 @@ const Cart: React.FC = () => {
                                 )
                             })}
 
-                            {/* Perks Badge Row */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                                 <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex items-center gap-3">
                                     <Truck size={20} className="text-[#1c1c1c]/70" />
@@ -357,7 +340,6 @@ const Cart: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* RIGHT: Order Summary Card (5 Cols) */}
                         <div className="lg:col-span-5 space-y-6">
                             <div className="p-6 md:p-8 bg-[#f4f1ea] border border-[#b6ac9f]/30 shadow-sm space-y-6 sticky top-24">
                                 <h2 className="text-xl font-normal text-[#1c1c1c] border-b border-[#b6ac9f]/30 pb-3">
@@ -384,7 +366,6 @@ const Cart: React.FC = () => {
                                     </div>
                                 </div>
 
-                                {/* ── DELIVERY ADDRESS SELECTION / ADD ADDRESS ── */}
                                 <div className="space-y-3 pt-4 border-t border-[#b6ac9f]/30">
                                     <div className="flex items-center justify-between">
                                         <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/70 flex items-center gap-1.5">
@@ -418,8 +399,8 @@ const Cart: React.FC = () => {
                                                         key={addrId}
                                                         onClick={() => setSelectedAddressId(addrId)}
                                                         className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${isSelected
-                                                                ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c]'
-                                                                : 'bg-[#e8e3da]/60 text-[#1c1c1c] border-[#b6ac9f]/40 hover:border-[#1c1c1c]/50'
+                                                            ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c]'
+                                                            : 'bg-[#e8e3da]/60 text-[#1c1c1c] border-[#b6ac9f]/40 hover:border-[#1c1c1c]/50'
                                                             }`}
                                                     >
                                                         <input
@@ -463,7 +444,7 @@ const Cart: React.FC = () => {
                                     )}
                                 </div>
 
-                                {/* Total & Buy Now CTA */}
+
                                 <div className="border-t border-[#b6ac9f]/30 pt-4 space-y-4">
                                     <div className="flex items-center justify-between text-lg font-normal text-[#1c1c1c]">
                                         <span>Total Amount</span>
@@ -485,7 +466,6 @@ const Cart: React.FC = () => {
                 )}
             </div>
 
-            {/* ── ADD ADDRESS MODAL ── */}
             {isAddAddressOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
                     <div className="bg-[#f4f1ea] border border-[#b6ac9f]/40 max-w-md w-full p-6 shadow-2xl space-y-4">

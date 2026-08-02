@@ -42,7 +42,6 @@ const Auth: React.FC = () => {
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
 
-    // OTP Verification State
     const [otp, setOtp] = useState('')
     const [otpSent, setOtpSent] = useState(false)
     const [otpVerified, setOtpVerified] = useState(false)
@@ -50,12 +49,10 @@ const Auth: React.FC = () => {
     const [verifyingOtp, setVerifyingOtp] = useState(false)
     const [resettingPassword, setResettingPassword] = useState(false)
 
-    // Redirect if already authenticated
     if (user) {
         return <Navigate to="/profile" replace />
     }
 
-    // Handle Sending OTP via Resend
     const handleSendOtp = async () => {
         if (!email || !email.includes('@')) {
             toast.error('Please enter a valid email address first.')
@@ -84,7 +81,6 @@ const Auth: React.FC = () => {
         }
     }
 
-    // Handle Verifying OTP (for Signup flow)
     const handleVerifyOtp = async () => {
         if (!otp || otp.length < 4) {
             toast.error('Please enter the 6-digit OTP code sent to your email.')
@@ -113,7 +109,6 @@ const Auth: React.FC = () => {
         }
     }
 
-    // Handle Reset Password with OTP Submit
     const handleResetPasswordWithOtp = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!email || !otp || !newPassword) {
@@ -167,7 +162,6 @@ const Auth: React.FC = () => {
 
         try {
             if (isSignUp) {
-                // ── REGISTER ──
                 const response = await fetch(`${API_BASE}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -195,7 +189,6 @@ const Auth: React.FC = () => {
                     setErrorMsg(data.message || 'Registration failed. Please try again.')
                 }
             } else {
-                // ── LOGIN ──
                 const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -244,7 +237,6 @@ const Auth: React.FC = () => {
                 title="Sign In | Member Portal"
                 description="Sign in or register an account with Trendy Decor to manage your orders, saved addresses, and profile."
             />
-            {/* ── LEFT PANEL ── */}
             <div className="hidden lg:flex lg:w-1/2 bg-[#1c1c1c] text-[#f4f1ea] flex-col justify-between p-12 relative overflow-hidden">
                 <div className="relative z-10 flex items-center justify-between">
                     <div>
@@ -282,15 +274,12 @@ const Auth: React.FC = () => {
                     © 2026 Trendy Decor. All rights reserved.
                 </div>
 
-                {/* decorative background circles */}
                 <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full" />
                 <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-white/5 rounded-full" />
             </div>
 
-            {/* ── RIGHT PANEL ── */}
             <div className="flex-1 flex items-center justify-center p-8 lg:p-16">
                 <div className="w-full max-w-md space-y-6">
-                    {/* Back to Home Button */}
                     <div>
                         <Link
                             to="/"
@@ -303,8 +292,6 @@ const Auth: React.FC = () => {
                             <span>Back to Home</span>
                         </Link>
                     </div>
-
-                    {/* Header */}
                     <div>
                         <div className="lg:hidden text-xl font-bold text-[#1c1c1c] mb-2 uppercase">
                             Trendy Decor
@@ -313,19 +300,18 @@ const Auth: React.FC = () => {
                             {isForgotPassword
                                 ? 'Reset Password'
                                 : isSignUp
-                                  ? 'Create account'
-                                  : 'Welcome back'}
+                                    ? 'Create account'
+                                    : 'Welcome back'}
                         </h2>
                         <p className="text-[#1c1c1c]/60 text-sm mt-2">
                             {isForgotPassword
                                 ? 'Enter your registered email to receive an OTP code for password reset'
                                 : isSignUp
-                                  ? 'Sign up to start shopping with us'
-                                  : 'Sign in to your account to continue'}
+                                    ? 'Sign up to start shopping with us'
+                                    : 'Sign in to your account to continue'}
                         </p>
                     </div>
 
-                    {/* ── FORGOT PASSWORD / RESET PASSWORD MODE ── */}
                     {isForgotPassword ? (
                         <form onSubmit={handleResetPasswordWithOtp} className="space-y-4">
                             <div>
@@ -342,8 +328,8 @@ const Auth: React.FC = () => {
                                         {sendingOtp
                                             ? 'Sending Code...'
                                             : otpSent
-                                              ? 'Resend Code'
-                                              : 'Send OTP Code'}
+                                                ? 'Resend Code'
+                                                : 'Send OTP Code'}
                                     </button>
                                 </div>
                                 <input
@@ -356,7 +342,6 @@ const Auth: React.FC = () => {
                                 />
                             </div>
 
-                            {/* OTP Code Input */}
                             <div>
                                 <label className="block text-xs font-semibold text-[#1c1c1c]/70 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                                     <span className="flex items-center gap-1.5">
@@ -379,8 +364,6 @@ const Auth: React.FC = () => {
                                     className="w-full rounded-2xl border border-[#e2dbce] bg-white px-4 py-3 text-center text-lg tracking-widest font-mono text-[#1c1c1c] focus:outline-none focus:ring-2 focus:ring-[#1c1c1c]/20"
                                 />
                             </div>
-
-                            {/* New Password Input */}
                             <div>
                                 <label className="block text-xs font-semibold text-[#1c1c1c]/70 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                                     <Lock size={14} className="text-[#1c1c1c]" />
@@ -435,9 +418,8 @@ const Auth: React.FC = () => {
                             </p>
                         </form>
                     ) : (
-                        /* ── STANDARD SIGN IN / SIGN UP MODE ── */
+
                         <>
-                            {/* Google Auth */}
                             <button
                                 type="button"
                                 onClick={handleGoogleAuth}
@@ -446,8 +428,6 @@ const Auth: React.FC = () => {
                                 <GoogleIcon />
                                 Continue with Google
                             </button>
-
-                            {/* Divider */}
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center">
                                     <div className="w-full border-t border-[#e2dbce]" />
@@ -458,8 +438,6 @@ const Auth: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
-
-                            {/* Form */}
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {isSignUp && (
                                     <div>
@@ -497,8 +475,8 @@ const Auth: React.FC = () => {
                                                     {sendingOtp
                                                         ? 'Sending OTP...'
                                                         : otpSent
-                                                          ? 'Resend OTP'
-                                                          : 'Send OTP'}
+                                                            ? 'Resend OTP'
+                                                            : 'Send OTP'}
                                                 </button>
                                             ))}
                                     </div>
@@ -515,7 +493,6 @@ const Auth: React.FC = () => {
                                     />
                                 </div>
 
-                                {/* OTP Verification Input Box (Signup) */}
                                 {isSignUp && otpSent && !otpVerified && (
                                     <div className="p-4 bg-[#e8e3da]/50 border border-[#b6ac9f]/40 rounded-2xl space-y-2">
                                         <label className="block text-xs font-medium text-[#1c1c1c]/70 flex items-center justify-between">
@@ -599,12 +576,10 @@ const Auth: React.FC = () => {
                                     {loading
                                         ? 'Please wait...'
                                         : isSignUp
-                                          ? 'Create Account'
-                                          : 'Sign In'}
+                                            ? 'Create Account'
+                                            : 'Sign In'}
                                 </button>
                             </form>
-
-                            {/* Toggle Sign In / Sign Up */}
                             <p className="text-center text-sm text-[#1c1c1c]/50">
                                 {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
                                 <button

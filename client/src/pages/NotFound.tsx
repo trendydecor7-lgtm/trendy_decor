@@ -7,7 +7,6 @@ const NotFound = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
     const containerRef = useRef<HTMLDivElement>(null)
 
-    // Track mouse for gentle 3D parallax float
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!containerRef.current) return
@@ -29,11 +28,7 @@ const NotFound = () => {
                 title="Page Not Found | 404 Gallery Error"
                 description="The requested decor piece or gallery page could not be found. Explore our modern home decor collection or return to the main showroom."
             />
-
-            {/* Subtle Editorial Grid Background */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.035] bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-
-            {/* Floating Architectural Watermark 404 in Background */}
             <div
                 className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
                 style={{
@@ -45,8 +40,6 @@ const NotFound = () => {
                     404
                 </span>
             </div>
-
-            {/* Decorative Floating Ceramic Sculptures with Parallax */}
             <div
                 className="absolute -top-10 -right-10 w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden opacity-20 pointer-events-none blur-[1px] hidden sm:block"
                 style={{
@@ -65,28 +58,19 @@ const NotFound = () => {
             >
                 <img src="/hero-assets/hero2.png" alt="" className="w-full h-full object-cover grayscale mix-blend-multiply" />
             </div>
-
-            {/* Main Editorial Content Container */}
             <div className="relative z-10 max-w-6xl mx-auto w-full my-auto py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                    {/* Left Column: 404 Typography & Message */}
                     <div className="lg:col-span-7 flex flex-col items-start space-y-6">
-
-                        {/* Heading */}
                         <div className="space-y-2">
                             <h1 className="font-['Oswald'] text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight uppercase leading-[0.95] text-[#1c1c1a]">
                                 Page Not <br />
                                 <span className="text-[#8c8275] italic font-serif font-light lowercase">found.</span>
                             </h1>
                         </div>
-
-                        {/* Poetic Description */}
                         <p className="text-[#4a4741] text-base sm:text-lg max-w-xl font-['Playpen_Sans'] leading-relaxed">
                             The architectural piece or gallery room you are searching for has been moved, curated into a new
                             exhibition, or never existed in this space.
                         </p>
-
-                        {/* Primary Action Buttons */}
                         <div className="flex flex-wrap items-center gap-4 pt-4">
                             <Link
                                 to="/"

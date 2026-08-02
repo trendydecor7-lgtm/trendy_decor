@@ -10,7 +10,6 @@ const AddProduct: React.FC = () => {
     const { toast } = useToast()
     const navigate = useNavigate()
 
-    // Form state
     const [prodName, setProdName] = useState('')
     const [prodCategory, setProdCategory] = useState('Hampers')
     const [prodPrice, setProdPrice] = useState('')
@@ -19,13 +18,11 @@ const AddProduct: React.FC = () => {
     const [prodBgColor] = useState('#cec9be')
     const [prodDescription, setProdDescription] = useState('')
 
-    // Media & Thumbnail state
     const [prodThumbnail, setProdThumbnail] = useState('')
     const [prodImage] = useState('')
     const [prodVideo] = useState('')
     const [prodMediaType] = useState<'image' | 'video'>('image')
 
-    // Staged files for Cloudinary upload
     const [stagedThumbnailBase64, setStagedThumbnailBase64] = useState<string>('')
     const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
     const [stagedMediaBase64] = useState<string>('')
@@ -33,11 +30,9 @@ const AddProduct: React.FC = () => {
     const [extraImageUrl, setExtraImageUrl] = useState<string>('')
     const [extraImageUrls, setExtraImageUrls] = useState<string[]>([])
 
-    // Progress state
     const [savingProduct, setSavingProduct] = useState<boolean>(false)
     const [creationStep, setCreationStep] = useState<string>('')
 
-    // Handle thumbnail selection
     const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -52,7 +47,6 @@ const AddProduct: React.FC = () => {
         reader.readAsDataURL(file)
     }
 
-    // Handle multiple gallery images
     const handleMultipleImagesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || [])
         if (files.length === 0) return
@@ -99,7 +93,6 @@ const AddProduct: React.FC = () => {
             let finalVideoUrl = prodVideo.trim()
             const uploadedImageUrls: string[] = [...extraImageUrls.filter((u) => u.trim() !== '')]
 
-            // 1. Upload Thumbnail to Cloudinary if staged
             if (stagedThumbnailBase64) {
                 setCreationStep('Uploading thumbnail to Cloudinary...')
                 toast.info('Uploading thumbnail image to Cloudinary...')
@@ -121,7 +114,6 @@ const AddProduct: React.FC = () => {
                 finalThumbnailUrl = data.url
             }
 
-            // 2. Upload Product Media to Cloudinary if staged
             if (stagedMediaBase64) {
                 setCreationStep(`Uploading ${prodMediaType} file to Cloudinary...`)
                 toast.info(`Uploading ${prodMediaType} file to Cloudinary...`)
@@ -157,7 +149,6 @@ const AddProduct: React.FC = () => {
                 uploadedImageUrls.unshift(finalImageUrl)
             }
 
-            // 3. Upload Staged Gallery Images to Cloudinary
             if (stagedImagesBase64.length > 0) {
                 for (let i = 0; i < stagedImagesBase64.length; i++) {
                     setCreationStep(
@@ -181,7 +172,6 @@ const AddProduct: React.FC = () => {
                 }
             }
 
-            // 4. Save Product to Backend Database
             setCreationStep('Saving product to database...')
             toast.info('Saving product to database...')
 
@@ -224,7 +214,6 @@ const AddProduct: React.FC = () => {
         }
     }
 
-    // Access Control Check: Admin / Owner only
     if (isLoading) {
         return (
             <div
@@ -251,7 +240,6 @@ const AddProduct: React.FC = () => {
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
             <div className="max-w-4xl mx-auto pt-6 sm:pt-10 px-4 sm:px-6 lg:px-8 space-y-6">
-                {/* Back to profile link */}
                 <div>
                     <Link
                         to="/profile"
@@ -262,9 +250,7 @@ const AddProduct: React.FC = () => {
                     </Link>
                 </div>
 
-                {/* Main Card Container */}
                 <div className="bg-white border border-[#e2dbce] rounded-lg shadow-xs overflow-hidden">
-                    {/* Header Bar */}
                     <div className="p-6 sm:p-8 border-b border-[#e2dbce] bg-[#faf8f5] flex items-center justify-between">
                         <div className="space-y-1">
                             <div className="flex items-center gap-2.5">
@@ -282,9 +268,7 @@ const AddProduct: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Form Body */}
                     <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-                        {/* Product Name */}
                         <div className="space-y-1.5">
                             <label className="text-[13px] font-medium text-[#1c1c1c] block">
                                 Product Name <span className="text-rose-600">*</span>
@@ -300,7 +284,6 @@ const AddProduct: React.FC = () => {
                             />
                         </div>
 
-                        {/* Product Description */}
                         <div className="space-y-1.5">
                             <label className="text-[13px] font-medium text-[#1c1c1c] block">
                                 Product Description <span className="text-rose-600">*</span>
@@ -316,7 +299,6 @@ const AddProduct: React.FC = () => {
                             />
                         </div>
 
-                        {/* Category & Price (INR) Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="space-y-1.5">
                                 <label className="text-[13px] font-medium text-[#1c1c1c] block">
@@ -358,7 +340,6 @@ const AddProduct: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Stock & Availability Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
                             <div className="space-y-1.5">
                                 <label className="text-[13px] font-medium text-[#1c1c1c] block">
@@ -393,7 +374,6 @@ const AddProduct: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Thumbnail Image Upload Card */}
                         <div className="pt-4 border-t border-[#e2dbce]">
                             <div className="space-y-3 bg-[#faf8f5] p-4 rounded-md border border-[#e2dbce]">
                                 <div>
@@ -416,11 +396,10 @@ const AddProduct: React.FC = () => {
                                     />
                                     <label
                                         htmlFor="addProdThumbnailInput"
-                                        className={`inline-flex items-center justify-center gap-2 w-full px-3 py-2 text-[12px] font-medium rounded transition-colors cursor-pointer disabled:opacity-50 ${
-                                            stagedThumbnailBase64
+                                        className={`inline-flex items-center justify-center gap-2 w-full px-3 py-2 text-[12px] font-medium rounded transition-colors cursor-pointer disabled:opacity-50 ${stagedThumbnailBase64
                                                 ? 'bg-emerald-800 text-white hover:bg-emerald-900'
                                                 : 'bg-[#1c1c1c] text-[#f4f1ea] hover:bg-black'
-                                        }`}
+                                            }`}
                                     >
                                         <Upload size={14} />
                                         {stagedThumbnailBase64
@@ -460,7 +439,6 @@ const AddProduct: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Multiple Gallery Images */}
                         <div className="space-y-3 bg-[#faf8f5] p-4 rounded-md border border-[#e2dbce]">
                             <div>
                                 <label className="text-[13px] font-medium text-[#1c1c1c] block">
@@ -558,7 +536,6 @@ const AddProduct: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Submit Action Bar */}
                         <div className="pt-6 border-t border-[#e2dbce] flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div className="text-[13px] text-[#1c1c1c]/70">
                                 {creationStep && (

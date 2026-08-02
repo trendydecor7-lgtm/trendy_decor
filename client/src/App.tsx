@@ -38,7 +38,7 @@ const App = () => {
             lenisOptions: {
                 wrapper: window,
                 content: document.documentElement,
-                lerp: 0.07, // Ultra smooth inertia momentum
+                lerp: 0.07, 
                 duration: 1.2,
                 orientation: 'vertical',
                 gestureOrientation: 'vertical',
@@ -53,7 +53,6 @@ const App = () => {
         }
     }, [])
 
-    // Scroll to top on page navigation
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [location.pathname])

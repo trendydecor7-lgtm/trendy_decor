@@ -55,7 +55,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const STORAGE_KEY = 'trendy_decor_user'
 
-// Cookie Helpers
 export const setCookie = (name: string, value: string, days = 7) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString()
     document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`
@@ -74,7 +73,7 @@ export const isTokenExpired = (tokenString: string | null): boolean => {
     if (!tokenString) return true
     try {
         const parts = tokenString.split('.')
-        if (parts.length !== 3) return false // Non-JWT mock tokens do not auto-expire
+        if (parts.length !== 3) return false
         const base64Url = parts[1]
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
         const jsonPayload = decodeURIComponent(
@@ -158,7 +157,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const initAuth = async () => {
             try {
-                // 1. Check URL parameters for token & user (e.g. from Google OAuth or Login redirects)
                 const searchParams = new URLSearchParams(window.location.search)
                 const tokenFromUrl = searchParams.get('token')
                 const userFromUrl = searchParams.get('user')
@@ -193,7 +191,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setUser(newUser)
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
 
-                    // Clean URL parameters cleanly
                     window.history.replaceState({}, document.title, window.location.pathname)
                 } else if (activeToken) {
                     if (isTokenExpired(activeToken)) {
@@ -217,13 +214,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         }
                     }
                 } else {
-                    // No token cookie exists -> User is not logged in!
                     setToken(null)
                     setUser(null)
                     localStorage.removeItem(STORAGE_KEY)
                 }
 
-                // 2. Sync latest user data from backend GET /auth/me on site reload if token exists
                 if (activeToken && !isTokenExpired(activeToken)) {
                     await syncUser(activeToken)
                 }
@@ -237,13 +232,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         initAuth()
     }, [])
 
-    // Automatic token expiration & deletion check loop (runs periodically and on focus/storage change)
     useEffect(() => {
         const checkAuthStatus = () => {
             const cookieToken = getCookie('token')
             const activeToken = cookieToken || token
 
-            // If user is currently logged in but token cookie is missing OR token is expired, log out automatically
             if (user && (!cookieToken || isTokenExpired(activeToken))) {
                 console.warn(
                     'Token missing or expired during active session. Signing out automatically.'
@@ -277,8 +270,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(effectiveToken)
         setUser(newUser)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
-
-        // Trigger immediate background sync with backend GET /auth/me
         syncUser(effectiveToken)
     }
 
@@ -327,7 +318,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             }
 
-            // Fallback for local update if backend is unreachable
             setUser((prev) => {
                 if (!prev) return prev
                 const localList = [
@@ -341,7 +331,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return true
         } catch (err) {
             console.error('addAddress error:', err)
-            // Fallback local update
             setUser((prev) => {
                 if (!prev) return prev
                 const localList = [
@@ -393,7 +382,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             }
 
-            // Fallback local delete
             setUser((prev) => {
                 if (!prev) return prev
                 const updated: User = {
@@ -460,7 +448,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             }
 
-            // Fallback for local update if backend is unreachable
             setUser((prev) => {
                 if (!prev) return prev
                 const updated: User = { ...prev, name: newUsername }

@@ -25,7 +25,6 @@ const EditProduct: React.FC = () => {
     const [loadingProduct, setLoadingProduct] = useState<boolean>(true)
     const [savingProduct, setSavingProduct] = useState<boolean>(false)
 
-    // Product fields
     const [name, setName] = useState<string>('')
     const [category, setCategory] = useState<string>('Hampers')
     const [price, setPrice] = useState<string>('')
@@ -33,22 +32,18 @@ const EditProduct: React.FC = () => {
     const [inStock, setInStock] = useState<boolean>(true)
     const [description, setDescription] = useState<string>('')
 
-    // Dedicated Thumbnail State
     const [thumbnailUrl, setThumbnailUrl] = useState<string>('')
     const [stagedThumbnailBase64, setStagedThumbnailBase64] = useState<string>('')
     const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
 
-    // Visual Images array (existing URLs)
     const [existingImages, setExistingImages] = useState<string[]>([])
     const [videoUrl, setVideoUrl] = useState<string>('')
     const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
 
-    // Staged new local gallery image files (Base64 + previews)
     const [stagedNewImages, setStagedNewImages] = useState<
         Array<{ base64: string; preview: string; name: string }>
     >([])
 
-    // Fetch product details
     useEffect(() => {
         if (!id) return
         setLoadingProduct(true)
@@ -69,7 +64,6 @@ const EditProduct: React.FC = () => {
                     setMediaType(p.mediaType || 'image')
                     setThumbnailUrl(p.thumbnail || '')
 
-                    // Gather all existing gallery images
                     const imgList: string[] = []
                     if (p.image && !imgList.includes(p.image)) {
                         imgList.push(p.image)
@@ -95,7 +89,6 @@ const EditProduct: React.FC = () => {
         fetchProduct()
     }, [id])
 
-    // Select new thumbnail image
     const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -110,7 +103,7 @@ const EditProduct: React.FC = () => {
         reader.readAsDataURL(file)
     }
 
-    // Remove custom thumbnail
+
     const handleRemoveThumbnail = () => {
         setStagedThumbnailBase64('')
         setThumbnailPreview('')
@@ -118,13 +111,11 @@ const EditProduct: React.FC = () => {
         toast.info('Thumbnail reset to default showcase image.')
     }
 
-    // Remove existing image
     const handleRemoveExistingImage = (indexToRemove: number) => {
         setExistingImages((prev) => prev.filter((_, idx) => idx !== indexToRemove))
         toast.info('Image removed from product gallery.')
     }
 
-    // Set as primary image
     const handleSetPrimaryImage = (indexToPrimary: number) => {
         setExistingImages((prev) => {
             const selected = prev[indexToPrimary]
@@ -134,7 +125,6 @@ const EditProduct: React.FC = () => {
         toast.success('Set as primary showcase image!')
     }
 
-    // Select new local image files
     const handleSelectNewFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || [])
         if (files.length === 0) return
@@ -153,12 +143,10 @@ const EditProduct: React.FC = () => {
         toast.info(`${files.length} new media file(s) staged for gallery`)
     }
 
-    // Remove staged new image
     const handleRemoveStagedImage = (indexToRemove: number) => {
         setStagedNewImages((prev) => prev.filter((_, idx) => idx !== indexToRemove))
     }
 
-    // Save product changes
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!id) return
@@ -173,7 +161,6 @@ const EditProduct: React.FC = () => {
         try {
             let finalThumbnailUrl = thumbnailUrl
 
-            // 1. Upload staged new thumbnail if present
             if (stagedThumbnailBase64) {
                 toast.info('Uploading new thumbnail image...')
                 const uploadRes = await fetch(`${API_BASE_URL}/products/upload-media`, {
@@ -194,7 +181,6 @@ const EditProduct: React.FC = () => {
                 }
             }
 
-            // 2. Upload staged new gallery images
             const newlyUploadedUrls: string[] = []
             for (let i = 0; i < stagedNewImages.length; i++) {
                 const item = stagedNewImages[i]
@@ -217,7 +203,6 @@ const EditProduct: React.FC = () => {
                 }
             }
 
-            // Combine remaining existing images + newly uploaded gallery images
             const finalImagesList = [...existingImages, ...newlyUploadedUrls]
             const primaryImage = finalImagesList.length > 0 ? finalImagesList[0] : ''
 
@@ -288,7 +273,6 @@ const EditProduct: React.FC = () => {
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
             <div className="max-w-[1600px] mx-auto px-8 md:px-12 space-y-8">
-                {/* ── HEADER ── */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#b6ac9f]/40 pb-6">
                     <div>
                         <Link
@@ -329,9 +313,7 @@ const EditProduct: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                        {/* ── LEFT COLUMN: VISUAL MEDIA & THUMBNAIL MANAGEMENT (7 COLS) ── */}
                         <div className="lg:col-span-7 space-y-6 bg-[#f4f1ea] border border-[#b6ac9f]/40 p-6 md:p-8 rounded-none">
-                            {/* DEDICATED THUMBNAIL IMAGE CARD */}
                             <div className="space-y-4 pb-6 border-b border-[#b6ac9f]/40">
                                 <div>
                                     <h2 className="text-lg font-normal text-[#1c1c1c] uppercase tracking-wider flex items-center gap-2">
@@ -345,7 +327,6 @@ const EditProduct: React.FC = () => {
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                                    {/* Thumbnail Preview Card */}
                                     <div className="w-32 h-40 bg-[#e8e3da] border-2 border-[#1c1c1c] rounded-none overflow-hidden relative shadow-sm shrink-0">
                                         {activeDisplayThumbnail ? (
                                             <img
@@ -365,8 +346,6 @@ const EditProduct: React.FC = () => {
                                             Thumbnail
                                         </span>
                                     </div>
-
-                                    {/* Thumbnail Controls */}
                                     <div className="space-y-3 flex-1">
                                         <label className="px-5 py-3 bg-[#1c1c1c] text-[#f4f1ea] hover:bg-black text-[12px] font-semibold uppercase tracking-widest rounded-none border border-[#1c1c1c] transition-all inline-flex items-center gap-2 cursor-pointer">
                                             <Upload size={14} /> Update Thumbnail Photo
@@ -396,7 +375,6 @@ const EditProduct: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Existing Images Gallery Cards */}
                             <div className="space-y-3">
                                 <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#1c1c1c]/80 font-mono">
                                     Active Gallery Showcase Photos ({existingImages.length})
@@ -412,11 +390,10 @@ const EditProduct: React.FC = () => {
                                         {existingImages.map((imgUrl, idx) => (
                                             <div
                                                 key={idx}
-                                                className={`relative w-full h-36 bg-[#e8e3da] border-2 rounded-none overflow-hidden group shadow-sm transition-all ${
-                                                    idx === 0
-                                                        ? 'border-[#1c1c1c]'
-                                                        : 'border-[#b6ac9f]/40 hover:border-[#1c1c1c]/60'
-                                                }`}
+                                                className={`relative w-full h-36 bg-[#e8e3da] border-2 rounded-none overflow-hidden group shadow-sm transition-all ${idx === 0
+                                                    ? 'border-[#1c1c1c]'
+                                                    : 'border-[#b6ac9f]/40 hover:border-[#1c1c1c]/60'
+                                                    }`}
                                             >
                                                 <img
                                                     src={imgUrl}

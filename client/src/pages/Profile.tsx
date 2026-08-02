@@ -26,10 +26,8 @@ export const Profile: React.FC = () => {
         syncUser()
     }, [])
 
-    // Address Modal State
     const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false)
 
-    // Edit Username State
     const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false)
     const [usernameInput, setUsernameInput] = useState<string>('')
     const [isUpdatingUsername, setIsUpdatingUsername] = useState<boolean>(false)
@@ -56,7 +54,7 @@ export const Profile: React.FC = () => {
                     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
                 }
             } catch (e) {
-                // fallback
+
             }
         }
         return user.memberSince || 'March 2025'
@@ -102,7 +100,6 @@ export const Profile: React.FC = () => {
                 description="Manage your Trendy Decor account, saved shipping addresses, and view order history."
             />
             <div className="max-w-[1200px] mx-auto space-y-6">
-                {/* ── 1. USER PROFILE HEADER CARD ── */}
                 <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
                         <div className="relative shrink-0">
@@ -184,8 +181,6 @@ export const Profile: React.FC = () => {
                             </p>
                         </div>
                     </div>
-
-                    {/* Sign Out Action Button */}
                     <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <button
                             onClick={() => logout()}
@@ -196,8 +191,6 @@ export const Profile: React.FC = () => {
                         </button>
                     </div>
                 </div>
-
-                {/* ── 2. STORE OWNER DASHBOARD CONTROL CARD (LIGHT THEME) ── */}
                 {user.isOwner && (
                     <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-2">
@@ -231,10 +224,7 @@ export const Profile: React.FC = () => {
                         </div>
                     </div>
                 )}
-
-                {/* ── 3. ACCOUNT OVERVIEW & SAVED ADDRESSES ── */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Account Details Card */}
                     <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 space-y-4">
                         <div className="flex items-center gap-3 border-b border-[#b6ac9f]/30 pb-3">
                             <UserIcon className="text-[#1c1c1c]/70" size={18} />
@@ -276,8 +266,6 @@ export const Profile: React.FC = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Saved Addresses Card */}
                     <div className="md:col-span-2 bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 space-y-4">
                         <div className="flex justify-between items-center border-b border-[#b6ac9f]/30 pb-3">
                             <div className="flex items-center gap-2 text-[#1c1c1c]">
@@ -347,8 +335,6 @@ export const Profile: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Address Modal Dialog */}
             <AddressModal
                 isOpen={isAddressModalOpen}
                 onClose={() => setIsAddressModalOpen(false)}

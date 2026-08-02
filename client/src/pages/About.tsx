@@ -65,10 +65,8 @@ const About: React.FC = () => {
                 }}
             />
             <div className="max-w-[1600px] mx-auto px-8 md:px-12">
-                {/* ── ABOUT + SPECIALIZATIONS ──────────────────────────── */}
                 <div className="py-12 md:py-16 border-b border-[#b6ac9f]/30">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
-                        {/* Left: About text */}
                         <div>
                             <h1 className="text-2xl md:text-3xl font-normal text-[#1c1c1c] tracking-tight leading-snug mb-4">
                                 Trendy Decor Gidderbaha
@@ -91,7 +89,6 @@ const About: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Right: Specializations */}
                         <div>
                             <p className="text-[10px] font-light uppercase tracking-[0.22em] text-[#1c1c1c]/40 mb-4">
                                 What We Do
@@ -110,7 +107,6 @@ const About: React.FC = () => {
                     </div>
                 </div>
 
-                {/* ── LEADERSHIP ─────────────────────────────────────── */}
                 <div className="py-10 border-b border-[#b6ac9f]/30">
                     <p className="text-[10px] font-light uppercase tracking-[0.22em] text-[#1c1c1c]/40 mb-5">
                         The People
@@ -157,7 +153,6 @@ const About: React.FC = () => {
                     </div>
                 </div>
 
-                {/* ── INFO + CTA ─────────────────────────────────────── */}
                 <div className="py-10">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-10">
                         <div className="flex flex-col gap-1">

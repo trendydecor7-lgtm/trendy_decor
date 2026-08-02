@@ -56,7 +56,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         <ToastContext.Provider value={{ showToast, toast }}>
             {children}
 
-            {/* ── TOAST CONTAINER (BOTTOM RIGHT POSITIONED) ── */}
             <div
                 className="fixed bottom-6 right-6 z-[9999] flex flex-col-reverse gap-3 max-w-sm sm:max-w-md w-full px-4 pointer-events-none"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
@@ -64,15 +63,14 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 {toasts.map((t) => (
                     <div
                         key={t.id}
-                        className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-2xl shadow-2xl border bg-[#f4f1ea] text-[#1c1c1c] backdrop-blur-md transition-all duration-300 transform translate-y-0 animate-in fade-in slide-in-from-bottom-4 ${
-                            t.type === 'success'
+                        className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-2xl shadow-2xl border bg-[#f4f1ea] text-[#1c1c1c] backdrop-blur-md transition-all duration-300 transform translate-y-0 animate-in fade-in slide-in-from-bottom-4 ${t.type === 'success'
                                 ? 'border-[#b6ac9f]/70 border-l-4 border-l-emerald-700'
                                 : t.type === 'error'
-                                  ? 'border-[#b6ac9f]/70 border-l-4 border-l-rose-700'
-                                  : t.type === 'warning'
-                                    ? 'border-[#b6ac9f]/70 border-l-4 border-l-amber-700'
-                                    : 'border-[#b6ac9f]/70 border-l-4 border-l-[#1c1c1c]'
-                        }`}
+                                    ? 'border-[#b6ac9f]/70 border-l-4 border-l-rose-700'
+                                    : t.type === 'warning'
+                                        ? 'border-[#b6ac9f]/70 border-l-4 border-l-amber-700'
+                                        : 'border-[#b6ac9f]/70 border-l-4 border-l-[#1c1c1c]'
+                            }`}
                     >
                         <div className="flex items-center gap-3">
                             {t.type === 'success' && (

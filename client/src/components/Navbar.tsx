@@ -24,7 +24,6 @@ const Navbar = () => {
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
             >
                 <div className="max-w-[1600px] mx-auto px-8 md:px-12 h-16 flex items-center">
-                    {/* ── LEFT: Logo flush to left edge ── */}
                     <div className="flex-1 flex items-center">
                         <Link
                             to="/"
@@ -35,31 +34,27 @@ const Navbar = () => {
                         </Link>
                     </div>
 
-                    {/* ── CENTER: Nav links truly centered ── */}
                     <nav className="hidden md:flex items-center gap-8">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.to}
                                 to={link.to}
-                                className={`text-[17px] font-light tracking-[0.08em] uppercase transition-colors relative group ${
-                                    isActive(link.to)
-                                        ? 'text-[#1c1c1c]'
-                                        : 'text-neutral-500 hover:text-[#1c1c1c]'
-                                }`}
+                                className={`text-[17px] font-light tracking-[0.08em] uppercase transition-colors relative group ${isActive(link.to)
+                                    ? 'text-[#1c1c1c]'
+                                    : 'text-neutral-500 hover:text-[#1c1c1c]'
+                                    }`}
                             >
                                 {link.label}
                                 <span
-                                    className={`absolute -bottom-0.5 left-0 w-full h-[1.5px] bg-[#1c1c1c] transition-transform origin-left ${
-                                        isActive(link.to)
-                                            ? 'scale-x-100'
-                                            : 'scale-x-0 group-hover:scale-x-100'
-                                    }`}
+                                    className={`absolute -bottom-0.5 left-0 w-full h-[1.5px] bg-[#1c1c1c] transition-transform origin-left ${isActive(link.to)
+                                        ? 'scale-x-100'
+                                        : 'scale-x-0 group-hover:scale-x-100'
+                                        }`}
                                 />
                             </Link>
                         ))}
                     </nav>
 
-                    {/* ── RIGHT: Icons flush to right edge ── */}
                     <div className="flex-1 flex items-center justify-end gap-5">
                         <Link
                             to="/profile"
@@ -82,7 +77,6 @@ const Navbar = () => {
                             )}
                         </Link>
 
-                        {/* Hamburger — mobile only */}
                         <button
                             className="md:hidden p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors"
                             onClick={() => setIsMobileOpen(true)}
@@ -94,7 +88,6 @@ const Navbar = () => {
                 </div>
             </header>
 
-            {/* ── Mobile Drawer ── */}
             {isMobileOpen && (
                 <div className="fixed inset-0 z-50 md:hidden flex">
                     <div
@@ -126,11 +119,10 @@ const Navbar = () => {
                                     key={link.to}
                                     to={link.to}
                                     onClick={() => setIsMobileOpen(false)}
-                                    className={`py-3 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors ${
-                                        isActive(link.to)
-                                            ? 'text-[#1c1c1c] underline underline-offset-4'
-                                            : 'text-neutral-500 hover:text-[#1c1c1c]'
-                                    }`}
+                                    className={`py-3 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors ${isActive(link.to)
+                                        ? 'text-[#1c1c1c] underline underline-offset-4'
+                                        : 'text-neutral-500 hover:text-[#1c1c1c]'
+                                        }`}
                                 >
                                     {link.label}
                                 </Link>
@@ -138,11 +130,10 @@ const Navbar = () => {
                             <Link
                                 to="/profile"
                                 onClick={() => setIsMobileOpen(false)}
-                                className={`py-3 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors flex items-center gap-2.5 ${
-                                    isActive('/profile')
-                                        ? 'text-[#1c1c1c] underline underline-offset-4'
-                                        : 'text-neutral-500 hover:text-[#1c1c1c]'
-                                }`}
+                                className={`py-3 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors flex items-center gap-2.5 ${isActive('/profile')
+                                    ? 'text-[#1c1c1c] underline underline-offset-4'
+                                    : 'text-neutral-500 hover:text-[#1c1c1c]'
+                                    }`}
                             >
                                 <User size={19} strokeWidth={1.5} />
                                 Profile

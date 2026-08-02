@@ -51,18 +51,14 @@ const ProductDetail: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string>('')
 
-    // Gallery State
     const [activeMediaUrl, setActiveMediaUrl] = useState<string>('')
     const [activeMediaType, setActiveMediaType] = useState<'image' | 'video'>('image')
     const [lightboxOpen, setLightboxOpen] = useState<boolean>(false)
 
-    // Accordion State
     const [activeAccordion, setActiveAccordion] = useState<string>('details')
 
-    // Related Products
     const [relatedProducts, setRelatedProducts] = useState<ProductDetailData[]>([])
 
-    // Fetch Product Details by ID
     useEffect(() => {
         if (!id) return
         window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -78,7 +74,6 @@ const ProductDetail: React.FC = () => {
                         const prod = data.product
                         setProduct(prod)
 
-                        // Set initial main media
                         const primaryMedia =
                             prod.image || prod.video || (prod.images && prod.images[0]) || ''
                         const isVid =
@@ -102,7 +97,6 @@ const ProductDetail: React.FC = () => {
         fetchProductDetail()
     }, [id])
 
-    // Fetch Related Products
     useEffect(() => {
         const fetchRelated = async () => {
             try {
@@ -121,7 +115,6 @@ const ProductDetail: React.FC = () => {
         fetchRelated()
     }, [id])
 
-    // Quantity in cart check
     const productId = (product?._id || product?.id || '').toString()
     const cartItem = cartItems.find((item) => {
         const itemProdId = (item.product._id || item.product.id || '').toString()
@@ -129,7 +122,6 @@ const ProductDetail: React.FC = () => {
     })
     const quantityInCart = cartItem ? cartItem.quantity : 0
 
-    // Combine all gallery items (image, video, images array)
     const galleryItems: Array<{ url: string; type: 'image' | 'video'; label?: string }> = []
     if (product) {
         if (product.image) {
@@ -251,10 +243,7 @@ const ProductDetail: React.FC = () => {
                         : undefined
                 }
             />
-
-            {/* ── MOBILE-ONLY UNIFIED SINGLE PAGE LAYOUT (< md) ── */}
             <div className="md:hidden w-full max-w-full overflow-x-hidden bg-[#f4f1ea] min-h-screen pt-[56px] pb-24">
-                {/* ── MOBILE FIXED TOP ACTION BAR (Always visible at top of screen) ── */}
                 <div
                     style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}
                     className="bg-[#f4f1ea]/95 backdrop-blur-md border-b border-[#b6ac9f]/30 px-3.5 py-2 shadow-sm flex items-center justify-between gap-2.5 h-[56px]"
@@ -279,8 +268,6 @@ const ProductDetail: React.FC = () => {
                         <Share2 size={17} />
                     </button>
                 </div>
-
-                {/* Mobile Full-Width Media Header */}
                 <div
                     className="relative w-full h-[380px] xs:h-[440px] bg-[#cec9be] overflow-hidden"
                     style={{ backgroundColor: product.bgColor || '#cec9be' }}
@@ -308,8 +295,6 @@ const ProductDetail: React.FC = () => {
                             <span>No Media Preview Available</span>
                         </div>
                     )}
-
-                    {/* Top Badges */}
                     <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5">
                         {product.isNewProduct && (
                             <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-2.5 py-1 rounded-md shadow-sm">
@@ -320,8 +305,6 @@ const ProductDetail: React.FC = () => {
                             {product.category}
                         </span>
                     </div>
-
-                    {/* Thumbnail Dot Indicators */}
                     {galleryItems.length > 1 && (
                         <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 z-10">
                             {galleryItems.map((item, idx) => (
@@ -340,8 +323,6 @@ const ProductDetail: React.FC = () => {
                         </div>
                     )}
                 </div>
-
-                {/* Mobile Horizontal Gallery Strip */}
                 {galleryItems.length > 1 && (
                     <div className="flex items-center gap-2 px-4 py-2.5 overflow-x-auto bg-[#e8e3da]/50 border-b border-[#b6ac9f]/20 scrollbar-none w-full max-w-full">
                         {galleryItems.map((item, idx) => {
@@ -368,13 +349,8 @@ const ProductDetail: React.FC = () => {
                         })}
                     </div>
                 )}
-
-                {/* ── MOBILE MAIN CONTENT SHEET ── */}
                 <div className="px-4 sm:px-5 pt-5 pb-6 space-y-0 text-[#1c1c1c] w-full max-w-full overflow-hidden">
-
-                    {/* ── HERO INFO BLOCK ── */}
                     <div className="pb-5 space-y-3 w-full max-w-full">
-                        {/* Category + Stock row */}
                         <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">
                                 {product.category}
@@ -389,13 +365,9 @@ const ProductDetail: React.FC = () => {
                                 {product.inStock !== false && product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                             </span>
                         </div>
-
-                        {/* Product Name */}
                         <h1 className="text-[22px] font-normal leading-snug tracking-tight text-[#1c1c1c] break-words [word-break:break-word]">
                             {product.name}
                         </h1>
-
-                        {/* Price + Tax row */}
                         <div className="flex items-baseline gap-2">
                             <span className="text-[26px] font-bold font-mono text-[#1c1c1c] tracking-tight">
                                 {product.price.startsWith('₹') ? product.price : `₹${product.price}`}
@@ -404,8 +376,6 @@ const ProductDetail: React.FC = () => {
                                 incl. all taxes
                             </span>
                         </div>
-
-                        {/* Low Stock Warning */}
                         {product.inStock !== false && product.stock > 0 && product.stock < 5 && (
                             <div className="flex items-center gap-2 px-3 py-2 bg-[#e8e3da] border border-[#b6ac9f]/60 rounded-xl">
                                 <Flame size={13} className="text-[#1c1c1c] shrink-0" />
@@ -416,11 +386,7 @@ const ProductDetail: React.FC = () => {
                         )}
 
                     </div>
-
-                    {/* ── DIVIDER ── */}
                     <div className="h-px bg-[#b6ac9f]/20 mb-5" />
-
-                    {/* ── DELIVERY & TRUST CHIPS ── */}
                     <div className="grid grid-cols-2 gap-2 mb-5">
                         <div className="flex items-start gap-2 p-3 bg-[#e8e3da]/60 border border-[#b6ac9f]/25 rounded-2xl">
                             <div className="w-7 h-7 rounded-lg bg-[#f4f1ea] border border-[#b6ac9f]/30 flex items-center justify-center shrink-0 mt-0.5">
@@ -441,8 +407,6 @@ const ProductDetail: React.FC = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* ── DESCRIPTION ── */}
                     <div className="mb-5 space-y-2 w-full max-w-full overflow-hidden">
                         <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">About This Product</h3>
                         <p className="text-[13px] font-light text-[#1c1c1c]/80 leading-[1.7] whitespace-pre-line break-words [word-break:break-word] w-full max-w-full">
@@ -450,11 +414,7 @@ const ProductDetail: React.FC = () => {
                                 'Handcrafted with supreme care and perfection. Designed to bring elegance, luxury, and warmth to every moment.'}
                         </p>
                     </div>
-
-                    {/* ── DIVIDER ── */}
                     <div className="h-px bg-[#b6ac9f]/20 mb-5" />
-
-                    {/* ── ACCORDION: PRODUCT DETAILS ── */}
                     <div className="mb-2">
                         <button
                             type="button"
@@ -477,8 +437,6 @@ const ProductDetail: React.FC = () => {
                         )}
                         <div className="h-px bg-[#b6ac9f]/20" />
                     </div>
-
-                    {/* ── ACCORDION: SHIPPING ── */}
                     <div className="mb-5">
                         <button
                             type="button"
@@ -501,8 +459,6 @@ const ProductDetail: React.FC = () => {
                         )}
                         <div className="h-px bg-[#b6ac9f]/20" />
                     </div>
-
-                    {/* ── YOU MAY ALSO LIKE ── */}
                     {relatedProducts.length > 0 && (
                         <div className="pt-2 space-y-4">
                             <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">
@@ -548,8 +504,6 @@ const ProductDetail: React.FC = () => {
                         </div>
                     )}
                 </div>
-
-                {/* ── MOBILE FIXED BOTTOM ACTION BAR (Always visible at bottom of screen) ── */}
                 <div
                     style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
                     className="bg-[#f4f1ea]/95 backdrop-blur-md border-t border-[#b6ac9f]/30 px-4 py-2.5 shadow-lg flex items-center gap-2.5 md:hidden"
@@ -592,10 +546,7 @@ const ProductDetail: React.FC = () => {
                     </button>
                 </div>
             </div>
-
-            {/* ── DESKTOP-ONLY SHOWCASE CONTAINER (>= md) ── */}
             <div className="hidden md:block">
-                {/* ── BREADCRUMB & TOP NAV BAR ── */}
                 <div className="w-full border-b border-[#b6ac9f]/30 bg-[#f4f1ea]/60 backdrop-blur-sm">
                     <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-4 flex items-center justify-between text-[12px] uppercase tracking-wider text-[#1c1c1c]/60 overflow-x-auto">
                         <div className="flex items-center gap-2 whitespace-nowrap">
@@ -625,9 +576,7 @@ const ProductDetail: React.FC = () => {
 
                 <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-10 md:py-16">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-                        {/* ── LEFT COLUMN: MEDIA GALLERY (7 COLS) ── */}
                         <div className="lg:col-span-7 space-y-4 min-w-0">
-                            {/* Main Media Showcase Box */}
                             <div
                                 className="relative w-full h-[450px] sm:h-[550px] md:h-[620px] bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-2xl overflow-hidden shadow-sm group"
                                 style={{ backgroundColor: product.bgColor || '#f4f1ea' }}
@@ -646,7 +595,7 @@ const ProductDetail: React.FC = () => {
                                     <img
                                         src={activeMediaUrl}
                                         alt={product.name}
-                                        className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105 cursor-zoom-in"
+                                        className="w-full h-full object-cover transition-transform duration-700 ease-in-out  cursor-zoom-in"
                                         onClick={() => setLightboxOpen(true)}
                                     />
                                 ) : (
@@ -655,8 +604,6 @@ const ProductDetail: React.FC = () => {
                                         <span>No Media Preview Available</span>
                                     </div>
                                 )}
-
-                                {/* Badges on top left */}
                                 <div className="absolute top-4 left-4 z-10 flex items-center gap-2 pointer-events-none">
                                     {product.isNewProduct && (
                                         <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#1c1c1c] bg-[#f4f1ea]/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#b6ac9f]/30 shadow-sm">
@@ -667,8 +614,6 @@ const ProductDetail: React.FC = () => {
                                         {product.category}
                                     </span>
                                 </div>
-
-                                {/* Lightbox Trigger Button */}
                                 {activeMediaType === 'image' && activeMediaUrl && (
                                     <button
                                         onClick={() => setLightboxOpen(true)}
@@ -679,8 +624,6 @@ const ProductDetail: React.FC = () => {
                                     </button>
                                 )}
                             </div>
-
-                            {/* Thumbnail Carousel Strip */}
                             {galleryItems.length > 1 && (
                                 <div className="flex items-center gap-3 overflow-x-auto py-2 scrollbar-none">
                                     {galleryItems.map((item, idx) => {
@@ -720,10 +663,7 @@ const ProductDetail: React.FC = () => {
                                 </div>
                             )}
                         </div>
-
-                        {/* ── RIGHT COLUMN: DETAILS & ACTIONS (5 COLS) ── */}
                         <div className="lg:col-span-5 space-y-6 bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] min-w-0 overflow-hidden">
-                            {/* Header: Category & Availability */}
                             <div className="space-y-3 pb-5 border-b border-[#b6ac9f]/20">
                                 <div className="flex items-center justify-between">
                                     <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/50">
@@ -741,8 +681,6 @@ const ProductDetail: React.FC = () => {
                                             : 'Out of Stock'}
                                     </span>
                                 </div>
-
-                                {/* Product Name & Price in Same Row */}
                                 <div className="flex items-baseline justify-between gap-4 pt-1">
                                     <h1 className="text-2xl md:text-3xl font-normal text-[#1c1c1c] tracking-tight leading-tight truncate">
                                         {product.name}
@@ -755,8 +693,6 @@ const ProductDetail: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Free Delivery Indicator Banner */}
                                 {(() => {
                                     const rawPrice =
                                         Number(product.price.toString().replace(/[^0-9.]/g, '')) || 0
@@ -779,8 +715,6 @@ const ProductDetail: React.FC = () => {
                                     )
                                 })()}
                             </div>
-
-                            {/* Low Stock Warning Banner */}
                             {product.inStock !== false && product.stock > 0 && product.stock < 5 && (
                                 <div className="flex items-center gap-2.5 p-3.5 bg-[#e8e3da] border border-[#b6ac9f]/60 rounded-xl text-[#1c1c1c] text-[13px] font-medium">
                                     <Flame size={18} className="text-[#1c1c1c] shrink-0" />
@@ -791,8 +725,6 @@ const ProductDetail: React.FC = () => {
                                     </span>
                                 </div>
                             )}
-
-                            {/* Description */}
                             <div className="space-y-2 min-w-0 max-w-full">
                                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/60">
                                     Description
@@ -802,8 +734,6 @@ const ProductDetail: React.FC = () => {
                                         'Handcrafted with supreme care and perfection. Designed to bring elegance, luxury, and warmth to every moment.'}
                                 </p>
                             </div>
-
-                            {/* Cart Action Controls */}
                             <div className="space-y-4 pt-4 border-t border-[#b6ac9f]/20">
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     {quantityInCart > 0 ? (
@@ -849,8 +779,6 @@ const ProductDetail: React.FC = () => {
                                         Buy Now
                                     </button>
                                 </div>
-
-                                {/* Share Button */}
                                 <div className="flex items-center justify-end pt-1">
                                     <button
                                         onClick={handleShare}
@@ -860,8 +788,6 @@ const ProductDetail: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Value Proposition Badges */}
                             <div className="grid grid-cols-3 gap-2.5 pt-4 border-t border-[#b6ac9f]/20 text-center">
                                 <div className="p-3 bg-[#e8e3da]/60 border border-[#b6ac9f]/30 rounded-xl space-y-1">
                                     <Truck size={18} className="mx-auto text-[#1c1c1c]/80" />
@@ -882,10 +808,7 @@ const ProductDetail: React.FC = () => {
                                     </p>
                                 </div>
                             </div>
-
-                            {/* Accordion Info */}
                             <div className="space-y-2 pt-2 border-t border-[#b6ac9f]/20">
-                                {/* Product Details & Care Accordion */}
                                 <div className="border border-[#b6ac9f]/30 rounded-xl overflow-hidden bg-[#e8e3da]/40 transition-colors">
                                     <button
                                         type="button"
@@ -921,8 +844,6 @@ const ProductDetail: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Shipping & Pan-India Delivery Accordion */}
                                 <div className="border border-[#b6ac9f]/30 rounded-xl overflow-hidden bg-[#e8e3da]/40 transition-colors">
                                     <button
                                         type="button"
@@ -967,8 +888,6 @@ const ProductDetail: React.FC = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* ── RELATED PRODUCTS SECTION ── */}
                     {relatedProducts.length > 0 && (
                         <div className="mt-20 pt-12 border-t border-[#b6ac9f]/30 space-y-8">
                             <div className="flex items-center justify-between">
@@ -1034,8 +953,6 @@ const ProductDetail: React.FC = () => {
                     )}
                 </div>
             </div>
-
-            {/* ── LIGHTBOX MODAL ── */}
             {lightboxOpen && activeMediaUrl && (
                 <div
                     className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-modal-appear"

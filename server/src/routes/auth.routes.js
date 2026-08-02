@@ -26,14 +26,12 @@ const router = express.Router()
 router.post('/register', authLimiter, registerUser)
 router.post('/login', authLimiter, loginUser)
 
-// OTP & Resend routes
 router.post('/send-otp', otpSendLimiter, sendOtpController)
 router.post('/verify-otp', otpVerifyLimiter, verifyOtpController)
 router.post('/reset-password', otpVerifyLimiter, resetPasswordWithOtpController)
 router.post('/newsletter', formLimiter, subscribeNewsletterController)
 router.post('/contact', formLimiter, submitContactUsController)
 
-// Protected routes
 router.get('/me', verifyToken, getMe)
 router.put('/profile', verifyToken, updateProfileController)
 router.post('/address', verifyToken, addAddressController)

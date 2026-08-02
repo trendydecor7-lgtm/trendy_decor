@@ -97,7 +97,6 @@ const Products: React.FC = () => {
     const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
     const observerRef = useRef<IntersectionObserver | null>(null)
 
-    // Keep category state in sync with URL search parameter
     useEffect(() => {
         const categoryFromUrl = searchParams.get('category')
         if (categoryFromUrl && CATEGORIES.includes(categoryFromUrl)) {
@@ -117,11 +116,9 @@ const Products: React.FC = () => {
         }
     }
 
-    // Create Product Modal State for Owner
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
     const [creating, setCreating] = useState<boolean>(false)
 
-    // Form fields for new product
     const [name, setName] = useState('')
     const [category, setCategory] = useState<
         'Hampers' | 'Bouquets' | 'Rakhis' | 'Customize Chocolates'
@@ -137,14 +134,12 @@ const Products: React.FC = () => {
     const [description, setDescription] = useState('')
     const [isNewProduct, setIsNewProduct] = useState(true)
 
-    // Staged files for deferred upload on product creation
     const [stagedThumbnailBase64, setStagedThumbnailBase64] = useState<string>('')
     const [thumbnailPreview, setThumbnailPreview] = useState<string>('')
     const [stagedMediaBase64, setStagedMediaBase64] = useState<string>('')
     const [mediaPreview, setMediaPreview] = useState<string>('')
     const [creationStep, setCreationStep] = useState<string>('')
 
-    // Fetch dynamic products from backend API
     const fetchProducts = async () => {
         setLoading(true)
         try {
@@ -185,7 +180,6 @@ const Products: React.FC = () => {
         fetchProducts()
     }, [])
 
-    // IntersectionObserver for scroll-triggered card reveal
     const attachObserver = useCallback(() => {
         if (observerRef.current) observerRef.current.disconnect()
         observerRef.current = new IntersectionObserver(
@@ -206,7 +200,7 @@ const Products: React.FC = () => {
 
     useEffect(() => {
         if (!loading) {
-            // Short timeout to let DOM paint first
+
             const t = setTimeout(attachObserver, 60)
             return () => clearTimeout(t)
         }
@@ -280,7 +274,6 @@ const Products: React.FC = () => {
             let finalImageUrl = image.trim()
             let finalVideoUrl = video.trim()
 
-            // 1. Upload Thumbnail to Cloudinary if staged
             if (stagedThumbnailBase64) {
                 setCreationStep('Uploading thumbnail to Cloudinary...')
                 toast.info('Uploading thumbnail image to Cloudinary...')
@@ -302,7 +295,6 @@ const Products: React.FC = () => {
                 finalThumbnailUrl = data.url
             }
 
-            // 2. Upload Product Media to Cloudinary if staged
             if (stagedMediaBase64) {
                 setCreationStep(`Uploading ${mediaType} file to Cloudinary...`)
                 toast.info(`Uploading ${mediaType} file to Cloudinary...`)
@@ -331,7 +323,6 @@ const Products: React.FC = () => {
                 }
             }
 
-            // 3. Create Product in Backend
             setCreationStep('Saving product to database...')
             toast.info('Saving product to database...')
 
@@ -443,11 +434,11 @@ const Products: React.FC = () => {
         if (type === 'MONO_HERO') return 'grid grid-cols-1'
         if (type === 'DUO_HERO') return 'grid grid-cols-1 sm:grid-cols-2'
         if (type === 'TRIO_BALANCED') return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
-        // ASYMMETRIC types: collapse to 2-col on sm, grid-cols-3 on md
+
         return 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
     }
     const getItemColSpanClass = (type: LayoutType, itemIndex: number) => {
-        // On md+ apply asymmetric spans; on mobile always full-width
+
         if (type === 'ASYMMETRIC_LEFT')
             return itemIndex === 0 ? 'col-span-1 md:col-span-2' : 'col-span-1'
         if (type === 'ASYMMETRIC_RIGHT')
@@ -455,7 +446,7 @@ const Products: React.FC = () => {
         return 'col-span-1'
     }
     const getItemImageHeightClass = (type: LayoutType) => {
-        // Shorter on mobile, grow on tablet/desktop
+
         if (type === 'MONO_HERO' || type === 'DUO_HERO')
             return 'h-[240px] xs:h-[300px] sm:h-[380px] md:h-[460px] lg:h-[540px]'
         return 'h-[200px] xs:h-[260px] sm:h-[320px] md:h-[380px] lg:h-[440px]'
@@ -472,7 +463,6 @@ const Products: React.FC = () => {
                 keywords="gift hampers, customized chocolates, bouquets, designer rakhis, event decor, trendy decor gidderbaha"
             />
             <div className="flex flex-col bg-[#e8e3da]">
-                {/* ── HEADER BANNER ── */}
                 <section className="w-full bg-[#f4f1ea] py-16 md:py-20 px-6 md:px-12 text-center border-b border-[#b6ac9f]/30">
                     <div className="max-w-3xl mx-auto space-y-4">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#e8e3da]/80 border border-[#b6ac9f]/40 text-[11px] font-medium uppercase tracking-[0.2em] text-[#1c1c1c]/80 ">
@@ -488,14 +478,10 @@ const Products: React.FC = () => {
                         </p>
                     </div>
                 </section>
-
-                {/* ── MAIN CONTENT CONTAINER (ALIGNED WITH NAVBAR) ── */}
                 <div className="w-full max-w-[1600px] mx-auto px-2.5 sm:px-6 md:px-12 py-5 md:py-10">
-                    {/* ── MAIN PRODUCT CATALOG GRID ── */}
                     <div className="w-full flex flex-col min-w-0" style={{ gap: '4px' }}>
                         {loading ? (
                             <div className="w-full flex flex-col gap-[4px] py-2">
-                                {/* Skeleton Row 1: 3-column product cards */}
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-[4px] w-full">
                                     {[1, 2, 3].map((i) => (
                                         <div
@@ -529,7 +515,6 @@ const Products: React.FC = () => {
                             </div>
                         ) : (
                             <>
-                                {/* ── MOBILE-ONLY E-COMMERCE CARD GRID (< md) ── */}
                                 <div className="md:hidden grid grid-cols-2 gap-2.5 sm:gap-3.5 pb-6">
                                     {filteredProducts.map((product) => {
                                         const productId = (
@@ -553,7 +538,6 @@ const Products: React.FC = () => {
                                                 onClick={() => navigate(`/product/${productId}`)}
                                                 className="group relative flex flex-col bg-[#f4f1ea] rounded-xl overflow-hidden border border-[#b6ac9f]/30 p-1.5 cursor-pointer shadow-sm active:scale-[0.98] transition-transform justify-between"
                                             >
-                                                {/* Image Box */}
                                                 <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#cec9be]">
                                                     <ProductMediaWithSkeleton
                                                         mediaType={product.mediaType}
@@ -563,8 +547,6 @@ const Products: React.FC = () => {
                                                         bgColor={product.bgColor || '#cec9be'}
                                                         className="w-full h-full object-cover"
                                                     />
-
-                                                    {/* Top Left Badge: NEW */}
                                                     {product.isNewProduct && (
                                                         <span className="absolute top-2 left-2 z-10 text-[9px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-2 py-0.5 rounded-md shadow-sm">
                                                             NEW
@@ -572,25 +554,16 @@ const Products: React.FC = () => {
                                                     )}
 
                                                 </div>
-
-                                                {/* Product Info */}
                                                 <div className="p-1.5 pt-2.5 flex flex-col justify-between flex-1 gap-1">
-                                                    {/* Category / Brand */}
                                                     <p className="text-[10px] font-semibold uppercase tracking-wider text-[#1c1c1c]/50 truncate">
                                                         {product.category}
                                                     </p>
-
-                                                    {/* Product Name */}
                                                     <h4 className="text-[12px] font-normal text-[#1c1c1c]/90 line-clamp-2 leading-tight min-h-[2.1rem]">
                                                         {product.name}
                                                     </h4>
-
-                                                    {/* Price */}
                                                     <p className="text-[14px] font-bold text-[#1c1c1c] font-mono tracking-tight mt-0.5">
                                                         {product.price}
                                                     </p>
-
-                                                    {/* Mobile Add to Cart / Quantity Stepper Button */}
                                                     <div className="pt-1.5 mt-auto">
                                                         {quantityInCart > 0 ? (
                                                             <div className="flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-2.5 py-1.5 rounded-xl w-full">
@@ -638,12 +611,10 @@ const Products: React.FC = () => {
                                         )
                                     })}
                                 </div>
-
-                                {/* ── DESKTOP-ONLY EDITORIAL PRODUCT GRID (>= md) ── */}
                                 <div className="hidden md:flex md:flex-col gap-[4px]">
                                     {productRows.map((row, rowIndex) => {
                                         const { items, type } = row
-                                        // Sticky stacking only on md+ to avoid mobile overlap
+
                                         const topStickyOffset = 64 + rowIndex * 6
                                         const gridContainerClass = getRowGridContainerClass(type)
                                         const imageHeightClass = getItemImageHeightClass(type)
@@ -696,7 +667,6 @@ const Products: React.FC = () => {
                                                                 }
                                                                 className={`group relative flex flex-col bg-[#f4f1ea] overflow-hidden cursor-pointer ${colSpanClass}`}
                                                             >
-                                                                {/* Product Image Box */}
                                                                 <div
                                                                     className={`relative w-full ${imageHeightClass} overflow-hidden transition-colors`}
                                                                     style={{
@@ -712,13 +682,9 @@ const Products: React.FC = () => {
                                                                         bgColor={
                                                                             product.bgColor || '#cec9be'
                                                                         }
-                                                                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                                        className="w-full h-full object-cover transition-transform duration-700 ease-out "
                                                                     />
-
-                                                                    {/* Subtle Hover Gradient Overlay */}
                                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                                                                    {/* In-Cart Badge / New Tag */}
                                                                     <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
                                                                         {quantityInCart > 0 ? (
                                                                             <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#f4f1ea] bg-[#1c1c1c]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
@@ -735,8 +701,6 @@ const Products: React.FC = () => {
                                                                             </span>
                                                                         )}
                                                                     </div>
-
-                                                                    {/* Quick Add to Cart or Stepper Controls on Hover — always visible on touch */}
                                                                     <div className="absolute bottom-4 left-4 right-4 z-20 transform translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 touch-cart-visible">
                                                                         {quantityInCart > 0 ? (
                                                                             <div className="flex items-center justify-between w-full bg-[#1c1c1c] text-[#f4f1ea] rounded-xl px-3 py-2 shadow-xl border border-white/10">
@@ -788,14 +752,10 @@ const Products: React.FC = () => {
                                                                         )}
                                                                     </div>
                                                                 </div>
-
-                                                                {/* Product Info below image box */}
                                                                 <div className="p-4 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between flex-1 gap-2">
                                                                     <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#1c1c1c]/50">
                                                                         {product.category}
                                                                     </p>
-
-                                                                    {/* Product Name & Price in Same Row */}
                                                                     <div className="flex items-baseline justify-between gap-3">
                                                                         <h3 className="text-[15px] font-normal text-[#1c1c1c] group-hover:text-[#1c1c1c]/80 transition-colors truncate">
                                                                             {product.name}
@@ -818,10 +778,7 @@ const Products: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* ── STICKY FLOATING BOTTOM FILTER BAR ── */}
             <div className="fixed bottom-6 left-4 md:left-12 z-40 flex flex-col items-start">
-                {/* Expandable Category Menu */}
                 {isFilterOpen && (
                     <div className="mb-3 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.25)] space-y-3 animate-fadeIn">
                         <div className="flex items-center justify-between pb-2 border-b border-[#b6ac9f]/20">
@@ -874,8 +831,6 @@ const Products: React.FC = () => {
                                 )
                             })}
                         </nav>
-
-                        {/* Store Owner Add Product Action inside Filter */}
                         {user?.isOwner && (
                             <div className="pt-2 border-t border-[#b6ac9f]/20">
                                 <button
@@ -891,8 +846,6 @@ const Products: React.FC = () => {
                         )}
                     </div>
                 )}
-
-                {/* Floating Bottom Pill Button */}
                 <button
                     onClick={() => setIsFilterOpen(!isFilterOpen)}
                     className="px-6 py-3 bg-[#1c1c1c]/95 text-[#f4f1ea] backdrop-blur-md border border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.3)] rounded-full flex items-center gap-3 hover:bg-black transition-all cursor-pointer group active:scale-95"
@@ -911,8 +864,6 @@ const Products: React.FC = () => {
                     {isFilterOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
                 </button>
             </div>
-
-            {/* ── CREATE PRODUCT MODAL FOR OWNER ── */}
             {isCreateModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
                     <div className="bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
@@ -930,7 +881,6 @@ const Products: React.FC = () => {
                         </div>
 
                         <form onSubmit={handleCreateProduct} className="space-y-4 text-[13px]">
-                            {/* Product Name */}
                             <div>
                                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Product Name *
@@ -944,8 +894,6 @@ const Products: React.FC = () => {
                                     className="w-full px-3.5 py-2.5 bg-[#e8e3da]/60 border border-[#b6ac9f]/40 rounded-xl text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] transition-colors"
                                 />
                             </div>
-
-                            {/* Category & Price */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
@@ -978,8 +926,6 @@ const Products: React.FC = () => {
                                     />
                                 </div>
                             </div>
-
-                            {/* Stock & New Flag */}
                             <div className="grid grid-cols-2 gap-4 items-center">
                                 <div>
                                     <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
@@ -1008,8 +954,6 @@ const Products: React.FC = () => {
                                     </label>
                                 </div>
                             </div>
-
-                            {/* Description */}
                             <div>
                                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Description
@@ -1022,8 +966,6 @@ const Products: React.FC = () => {
                                     className="w-full px-3.5 py-2.5 bg-[#e8e3da]/60 border border-[#b6ac9f]/40 rounded-xl text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] transition-colors resize-none"
                                 />
                             </div>
-
-                            {/* Thumbnail Upload */}
                             <div>
                                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Thumbnail Image
@@ -1047,8 +989,6 @@ const Products: React.FC = () => {
                                     )}
                                 </div>
                             </div>
-
-                            {/* Main Media Upload (Image or Video) */}
                             <div>
                                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Product Media (Image or Video)
@@ -1083,16 +1023,12 @@ const Products: React.FC = () => {
                                         ))}
                                 </div>
                             </div>
-
-                            {/* Status Indicator during creation */}
                             {creationStep && (
                                 <div className="p-3 bg-[#e8e3da] border border-[#b6ac9f]/30 rounded-xl flex items-center gap-2 text-[#1c1c1c] text-[12px]">
                                     <Loader2 size={15} className="animate-spin text-[#1c1c1c]" />
                                     <span>{creationStep}</span>
                                 </div>
                             )}
-
-                            {/* Actions */}
                             <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#b6ac9f]/30">
                                 <button
                                     type="button"

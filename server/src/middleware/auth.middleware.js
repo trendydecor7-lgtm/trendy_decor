@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/user.model.js'
 
-// Middleware to verify JWT token and attach user to request
 export const verifyToken = async (req, res, next) => {
     try {
         let token = null
@@ -40,7 +39,6 @@ export const verifyToken = async (req, res, next) => {
     }
 }
 
-// Middleware to ensure user is store owner (isOwner === true)
 export const isOwnerMiddleware = (req, res, next) => {
     if (!req.user || !req.user.isOwner) {
         return res.status(403).json({

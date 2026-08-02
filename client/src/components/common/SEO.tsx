@@ -19,9 +19,7 @@ const DEFAULT_KEYWORDS =
 const DEFAULT_IMAGE = 'https://trendydecor24.shop/hero-assets/hero1.png'
 const DEFAULT_URL = 'https://trendydecor24.shop'
 
-/**
- * Helper to update or create a <meta> tag in <head>
- */
+
 const updateMetaTag = (attributeName: 'name' | 'property', attributeValue: string, content: string) => {
     let element = document.head.querySelector(`meta[${attributeName}="${attributeValue}"]`) as HTMLMetaElement
     if (!element) {
@@ -32,9 +30,7 @@ const updateMetaTag = (attributeName: 'name' | 'property', attributeValue: strin
     element.setAttribute('content', content)
 }
 
-/**
- * Helper to update or create <link rel="canonical">
- */
+
 const updateCanonicalLink = (href: string) => {
     let element = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement
     if (!element) {
@@ -57,20 +53,18 @@ const SEO = ({
     const location = useLocation()
 
     useEffect(() => {
-        // 1. Title
+
         const finalTitle = title ? `${title} | Trendy Decor` : DEFAULT_TITLE
         document.title = finalTitle
 
-        // 2. Base Meta Tags
+
         updateMetaTag('name', 'description', description)
         updateMetaTag('name', 'keywords', keywords)
         updateMetaTag('name', 'author', 'Trendy Decor Studio')
         updateMetaTag('name', 'robots', 'index, follow')
 
-        // 3. Current URL for OG and canonical
         const currentUrl = url || `${DEFAULT_URL}${location.pathname}`
 
-        // 4. Open Graph Tags
         updateMetaTag('property', 'og:title', finalTitle)
         updateMetaTag('property', 'og:description', description)
         updateMetaTag('property', 'og:image', image)
@@ -79,16 +73,13 @@ const SEO = ({
         updateMetaTag('property', 'og:site_name', 'Trendy Decor')
         updateMetaTag('property', 'og:locale', 'en_US')
 
-        // 5. Twitter Card Tags
         updateMetaTag('name', 'twitter:card', 'summary_large_image')
         updateMetaTag('name', 'twitter:title', finalTitle)
         updateMetaTag('name', 'twitter:description', description)
         updateMetaTag('name', 'twitter:image', image)
 
-        // 6. Canonical Link
         updateCanonicalLink(currentUrl)
 
-        // 7. Structured JSON-LD Schema
         let scriptElement: HTMLScriptElement | null = null
         if (schema) {
             scriptElement = document.getElementById('page-jsonld-schema') as HTMLScriptElement

@@ -10,14 +10,12 @@ import {
     sendContactUsEmail,
 } from '../utils/resend.js'
 
-// Helper to hash password using Node crypto
 const hashPassword = (password) => {
     const salt = crypto.randomBytes(16).toString('hex')
     const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
     return `${salt}:${hash}`
 }
 
-// Helper to verify password
 const verifyPassword = (password, storedPassword) => {
     if (!storedPassword || !storedPassword.includes(':')) return false
     const [salt, originalHash] = storedPassword.split(':')
@@ -25,7 +23,6 @@ const verifyPassword = (password, storedPassword) => {
     return hash === originalHash
 }
 
-// Manual Register Controller
 export const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body
@@ -39,7 +36,6 @@ export const registerUser = async (req, res) => {
 
         const normalizedEmail = email.toLowerCase().trim()
 
-        // Check if user exists
         const existingUser = await User.findOne({ email: normalizedEmail })
         if (existingUser) {
             return res.status(400).json({
@@ -48,7 +44,6 @@ export const registerUser = async (req, res) => {
             })
         }
 
-        // Create new user
         const hashedPassword = hashPassword(password)
         const user = await User.create({
             username: username.trim(),
@@ -59,7 +54,6 @@ export const registerUser = async (req, res) => {
 
         const token = generateToken(user._id)
 
-        // Send Welcome Email asynchronously via Resend
         sendWelcomeEmail(user.email, user.username).catch((err) => {
             console.error('Failed sending welcome email:', err)
         })
@@ -87,7 +81,6 @@ export const registerUser = async (req, res) => {
     }
 }
 
-// Manual Login Controller
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body
@@ -143,7 +136,6 @@ export const loginUser = async (req, res) => {
     }
 }
 
-// Get Current Logged In User (Used for sync on site reload)
 export const getMe = async (req, res) => {
     try {
         const user = req.user
@@ -169,7 +161,6 @@ export const getMe = async (req, res) => {
     }
 }
 
-// Add New Shipping Address
 export const addAddressController = async (req, res) => {
     try {
         const { label, street, city, state, zip, country, phone, isDefault } = req.body
@@ -222,7 +213,6 @@ export const addAddressController = async (req, res) => {
     }
 }
 
-// Delete Shipping Address
 export const deleteAddressController = async (req, res) => {
     try {
         const { addressId } = req.params
@@ -250,7 +240,6 @@ export const deleteAddressController = async (req, res) => {
     }
 }
 
-// Get Store Owner Inventory (Protected by isOwnerMiddleware)
 export const getOwnerInventory = async (req, res) => {
     try {
         return res.status(200).json({
@@ -308,7 +297,6 @@ export const getOwnerInventory = async (req, res) => {
     }
 }
 
-// Send OTP via Resend
 export const sendOtpController = async (req, res) => {
     try {
         const { email } = req.body
@@ -318,16 +306,12 @@ export const sendOtpController = async (req, res) => {
 
         const normalizedEmail = email.toLowerCase().trim()
 
-        // Generate 6 digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString()
 
-        // Remove old OTPs for this email
         await OTP.deleteMany({ email: normalizedEmail })
 
-        // Save new OTP
         await OTP.create({ email: normalizedEmail, otp })
 
-        // Send OTP email via Resend
         await sendOtpEmail(normalizedEmail, otp)
 
         return res.status(200).json({
@@ -343,7 +327,6 @@ export const sendOtpController = async (req, res) => {
     }
 }
 
-// Verify OTP
 export const verifyOtpController = async (req, res) => {
     try {
         const { email, otp } = req.body
@@ -361,7 +344,6 @@ export const verifyOtpController = async (req, res) => {
             })
         }
 
-        // Delete used OTP
         await OTP.deleteOne({ _id: record._id })
 
         return res.status(200).json({
@@ -377,7 +359,6 @@ export const verifyOtpController = async (req, res) => {
     }
 }
 
-// Reset Password with OTP Verification
 export const resetPasswordWithOtpController = async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body
@@ -396,7 +377,6 @@ export const resetPasswordWithOtpController = async (req, res) => {
 
         const normalizedEmail = email.toLowerCase().trim()
 
-        // 1. Verify OTP
         const otpRecord = await OTP.findOne({ email: normalizedEmail, otp: otp.trim() })
         if (!otpRecord) {
             return res.status(400).json({
@@ -405,7 +385,6 @@ export const resetPasswordWithOtpController = async (req, res) => {
             })
         }
 
-        // 2. Find User
         const user = await User.findOne({ email: normalizedEmail })
         if (!user) {
             return res.status(404).json({
@@ -414,11 +393,9 @@ export const resetPasswordWithOtpController = async (req, res) => {
             })
         }
 
-        // 3. Update Password
         user.password = hashPassword(newPassword)
         await user.save()
 
-        // 4. Delete used OTP
         await OTP.deleteMany({ email: normalizedEmail })
 
         return res.status(200).json({
@@ -434,7 +411,6 @@ export const resetPasswordWithOtpController = async (req, res) => {
     }
 }
 
-// Subscribe to Newsletter
 export const subscribeNewsletterController = async (req, res) => {
     try {
         const { email } = req.body
@@ -454,7 +430,6 @@ export const subscribeNewsletterController = async (req, res) => {
             subscriber = await Newsletter.create({ email: normalizedEmail })
         }
 
-        // Send confirmation email asynchronously via Resend
         sendNewsletterConfirmationEmail(normalizedEmail).catch(console.error)
 
         return res.status(200).json({
@@ -470,7 +445,6 @@ export const subscribeNewsletterController = async (req, res) => {
     }
 }
 
-// Submit Contact Form
 export const submitContactUsController = async (req, res) => {
     try {
         const { name, email, phone, message } = req.body
@@ -483,7 +457,6 @@ export const submitContactUsController = async (req, res) => {
 
         const normalizedEmail = email.toLowerCase().trim()
 
-        // Send emails via Resend
         sendContactUsEmail({
             name: name.trim(),
             email: normalizedEmail,
@@ -504,7 +477,6 @@ export const submitContactUsController = async (req, res) => {
     }
 }
 
-// Update User Profile (Username for local users)
 export const updateProfileController = async (req, res) => {
     try {
         const { username } = req.body

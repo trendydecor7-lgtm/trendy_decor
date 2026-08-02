@@ -8,7 +8,6 @@ import { globalLimiter } from './middleware/rate-limiter.middleware.js'
 
 const app = express()
 
-// Trust reverse proxies (Vercel, Render, Nginx, Cloudflare) for accurate client IP detection
 app.set('trust proxy', 1)
 
 app.use(
@@ -22,10 +21,8 @@ app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(passport.initialize())
 
-// Apply Global Rate Limiting across all API endpoints
 app.use(globalLimiter)
 
-// Routes
 app.use('/auth', oauthRoutes)
 app.use('/auth', authRoutes)
 app.use('/products', productRoutes)
