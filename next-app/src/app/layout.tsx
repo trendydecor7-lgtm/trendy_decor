@@ -11,7 +11,7 @@ export const metadata: Metadata = {
         template: '%s | Trendy Decor Gidderbaha',
     },
     description:
-        'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.',
+        'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, handcrafted chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.',
     keywords: [
         'trendy decor',
         'gidderbaha',
@@ -33,23 +33,38 @@ export const metadata: Metadata = {
         canonical: 'https://trendydecor24.shop/',
     },
     icons: {
-        icon: '/logo.png',
-        shortcut: '/logo.png',
-        apple: '/logo.png',
+        icon: [
+            { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+            { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+            { url: '/favicon.ico' },
+        ],
+        shortcut: '/icon.png',
+        apple: [
+            { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+            { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+        ],
     },
     openGraph: {
         type: 'website',
         url: 'https://trendydecor24.shop/',
         title: 'Trendy Decor Gidderbaha | Event Decor, Gift Hampers & Customized Chocolates',
         description:
-            'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.',
+            'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, handcrafted chocolates, bouquets, designer rakhis, and milestone event styling.',
         siteName: 'Trendy Decor Gidderbaha',
         locale: 'en_IN',
         images: [
             {
+                url: 'https://trendydecor24.shop/hero-assets/hero1.png',
+                width: 1200,
+                height: 630,
+                type: 'image/png',
+                alt: 'Trendy Decor Gidderbaha Luxury Hampers & Event Decor',
+            },
+            {
                 url: 'https://trendydecor24.shop/logo.png',
                 width: 1200,
                 height: 630,
+                type: 'image/png',
                 alt: 'Trendy Decor Gidderbaha Logo',
             },
         ],
@@ -58,8 +73,8 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Trendy Decor Gidderbaha | Event Decor, Gift Hampers & Customized Chocolates',
         description:
-            'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.',
-        images: ['https://trendydecor24.shop/logo.png'],
+            'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, and designer rakhis.',
+        images: ['https://trendydecor24.shop/hero-assets/hero1.png'],
     },
 }
 
@@ -71,9 +86,15 @@ export default function RootLayout({
     return (
         <html lang="en" className="h-full antialiased scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
             <head>
-                <link rel="icon" type="image/png" href="/logo.png" />
-                <link rel="shortcut icon" type="image/png" href="/logo.png" />
-                <link rel="apple-touch-icon" href="/logo.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
+                <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
+                <link rel="shortcut icon" href="/favicon.ico" />
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+                <meta property="og:image" content="https://trendydecor24.shop/hero-assets/hero1.png" />
+                <meta property="og:image:secure_url" content="https://trendydecor24.shop/hero-assets/hero1.png" />
+                <meta property="og:image:type" content="image/png" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link
@@ -83,47 +104,58 @@ export default function RootLayout({
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            '@context': 'https://schema.org',
-                            '@type': 'LocalBusiness',
-                            name: 'Trendy Decor Gidderbaha',
-                            url: 'https://trendydecor24.shop',
-                            logo: 'https://trendydecor24.shop/logo.png',
-                            image: 'https://trendydecor24.shop/hero-assets/hero1.png',
-                            description:
-                                'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis operated by Harish Ahuja & Hitin Ahuja.',
-                            telephone: '+919417718844',
-                            address: {
-                                '@type': 'PostalAddress',
-                                streetAddress: 'Burf Wali Gali',
-                                addressLocality: 'Gidderbaha',
-                                addressRegion: 'Punjab',
-                                postalCode: '152101',
-                                addressCountry: 'IN',
+                        __html: JSON.stringify([
+                            {
+                                '@context': 'https://schema.org',
+                                '@type': 'Organization',
+                                name: 'Trendy Decor Gidderbaha',
+                                url: 'https://trendydecor24.shop',
+                                logo: 'https://trendydecor24.shop/logo.png',
+                                image: 'https://trendydecor24.shop/hero-assets/hero1.png',
+                                sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
                             },
-                            openingHoursSpecification: [
-                                {
-                                    '@type': 'OpeningHoursSpecification',
-                                    dayOfWeek: [
-                                        'Monday',
-                                        'Tuesday',
-                                        'Wednesday',
-                                        'Thursday',
-                                        'Friday',
-                                        'Saturday',
-                                        'Sunday',
-                                    ],
-                                    opens: '08:00',
-                                    closes: '20:00',
+                            {
+                                '@context': 'https://schema.org',
+                                '@type': 'LocalBusiness',
+                                name: 'Trendy Decor Gidderbaha',
+                                url: 'https://trendydecor24.shop',
+                                logo: 'https://trendydecor24.shop/logo.png',
+                                image: 'https://trendydecor24.shop/hero-assets/hero1.png',
+                                description:
+                                    'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis operated by Harish Ahuja & Hitin Ahuja.',
+                                telephone: '+919417718844',
+                                address: {
+                                    '@type': 'PostalAddress',
+                                    streetAddress: 'Burf Wali Gali',
+                                    addressLocality: 'Gidderbaha',
+                                    addressRegion: 'Punjab',
+                                    postalCode: '152101',
+                                    addressCountry: 'IN',
                                 },
-                            ],
-                            areaServed: ['Gidderbaha', 'Bathinda', 'Malout', 'Punjab'],
-                            founder: [
-                                { '@type': 'Person', name: 'Harish Ahuja' },
-                                { '@type': 'Person', name: 'Hitin Ahuja' },
-                            ],
-                            sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
-                        }),
+                                openingHoursSpecification: [
+                                    {
+                                        '@type': 'OpeningHoursSpecification',
+                                        dayOfWeek: [
+                                            'Monday',
+                                            'Tuesday',
+                                            'Wednesday',
+                                            'Thursday',
+                                            'Friday',
+                                            'Saturday',
+                                            'Sunday',
+                                        ],
+                                        opens: '08:00',
+                                        closes: '20:00',
+                                    },
+                                ],
+                                areaServed: ['Gidderbaha', 'Bathinda', 'Malout', 'Punjab'],
+                                founder: [
+                                    { '@type': 'Person', name: 'Harish Ahuja' },
+                                    { '@type': 'Person', name: 'Hitin Ahuja' },
+                                ],
+                                sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
+                            },
+                        ]),
                     }}
                 />
             </head>

@@ -1,9 +1,32 @@
-'use client'
-
 import React from 'react'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { Phone, MapPin, Clock, AtSign, ArrowRight } from 'lucide-react'
-import SEO from '@/components/common/SEO'
+
+export const metadata: Metadata = {
+    title: 'About Us | Trendy Decor Gidderbaha — Harish Ahuja & Hitin Ahuja',
+    description:
+        'Learn about Trendy Decor Gidderbaha, operated by Harish Ahuja & Hitin Ahuja in Burf Wali Gali, Gidderbaha, Punjab. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, and milestone event decorations across Gidderbaha, Bathinda & Malout.',
+    keywords: [
+        'trendy decor gidderbaha',
+        'harish ahuja',
+        'hitin ahuja',
+        'gift hampers gidderbaha',
+        'customized chocolates',
+        'bouquets',
+        'designer rakhis',
+        'event decor punjab',
+        'burf wali gali',
+    ],
+    openGraph: {
+        title: 'About Us | Trendy Decor Gidderbaha — Harish Ahuja & Hitin Ahuja',
+        description:
+            'Learn about Trendy Decor Gidderbaha, operated by Harish Ahuja & Hitin Ahuja in Burf Wali Gali, Gidderbaha, Punjab.',
+        url: 'https://trendydecor24.shop/about',
+        type: 'website',
+        images: ['https://trendydecor24.shop/hero-assets/hero1.png'],
+    },
+}
 
 export default function About() {
     const specializations = [
@@ -17,54 +40,54 @@ export default function About() {
         'Gurudwara Paath & Shukrana Function Decor',
     ]
 
+    const schemaData = {
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        name: 'Trendy Decor Gidderbaha',
+        description:
+            'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis by Harish Ahuja & Hitin Ahuja.',
+        image: 'https://trendydecor24.shop/hero-assets/hero1.png',
+        telephone: '+919417718844',
+        address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Burf Wali Gali',
+            addressLocality: 'Gidderbaha',
+            addressRegion: 'Punjab',
+            postalCode: '152101',
+            addressCountry: 'IN',
+        },
+        openingHoursSpecification: [
+            {
+                '@type': 'OpeningHoursSpecification',
+                dayOfWeek: [
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday',
+                ],
+                opens: '08:00',
+                closes: '20:00',
+            },
+        ],
+        areaServed: ['Gidderbaha', 'Bathinda', 'Malout', 'Punjab'],
+        founder: [
+            { '@type': 'Person', name: 'Harish Ahuja' },
+            { '@type': 'Person', name: 'Hitin Ahuja' },
+        ],
+        sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
+    }
+
     return (
         <main
             className="w-full select-none bg-[#f4f1ea]"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
-            <SEO
-                title="About Us | Trendy Decor Gidderbaha — Harish Ahuja & Hitin Ahuja"
-                description="Learn about Trendy Decor Gidderbaha, operated by Harish Ahuja & Hitin Ahuja in Burf Wali Gali, Gidderbaha, Punjab. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, and milestone event decorations across Gidderbaha, Bathinda & Malout."
-                keywords="trendy decor gidderbaha, harish ahuja, hitin ahuja, gift hampers gidderbaha, customized chocolates, bouquets, designer rakhis, event decor punjab, burf wali gali"
-                schema={{
-                    '@context': 'https://schema.org',
-                    '@type': 'LocalBusiness',
-                    name: 'Trendy Decor Gidderbaha',
-                    description:
-                        'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis by Harish Ahuja & Hitin Ahuja.',
-                    image: 'https://trendydecor24.shop/hero-assets/hero1.png',
-                    telephone: '+919417718844',
-                    address: {
-                        '@type': 'PostalAddress',
-                        streetAddress: 'Burf Wali Gali',
-                        addressLocality: 'Gidderbaha',
-                        addressRegion: 'Punjab',
-                        postalCode: '152101',
-                        addressCountry: 'IN',
-                    },
-                    openingHoursSpecification: [
-                        {
-                            '@type': 'OpeningHoursSpecification',
-                            dayOfWeek: [
-                                'Monday',
-                                'Tuesday',
-                                'Wednesday',
-                                'Thursday',
-                                'Friday',
-                                'Saturday',
-                                'Sunday',
-                            ],
-                            opens: '08:00',
-                            closes: '20:00',
-                        },
-                    ],
-                    areaServed: ['Gidderbaha', 'Bathinda', 'Malout', 'Punjab'],
-                    founder: [
-                        { '@type': 'Person', name: 'Harish Ahuja' },
-                        { '@type': 'Person', name: 'Hitin Ahuja' },
-                    ],
-                    sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
-                }}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
             />
             <div className="max-w-[1600px] mx-auto px-8 md:px-12">
                 <div className="py-12 md:py-16 border-b border-[#b6ac9f]/30">
