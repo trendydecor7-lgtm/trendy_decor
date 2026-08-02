@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /profile
+Disallow: /cart
+
+Sitemap: https://trendydecor24.shop/sitemap.xml

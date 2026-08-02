@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
+@import 'tailwindcss';
+
+body {
+    background-color: #e8e3da;
+    color: #1c1c1c;
+    font-family: 'Playpen Sans', sans-serif;
+}
+
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
+/* ── Skeleton shimmer ── */
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+    background: linear-gradient(
+        90deg,
+        #e5dfd5 0%,
+        #d9d3c7 35%,
+        #cdcfc4 50%,
+        #d9d3c7 65%,
+        #e5dfd5 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s infinite ease-in-out;
+}
+
+/* ── Smooth appear (modal / toast) ── */
+@keyframes smoothFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.animate-smooth-appear {
+    animation: smoothFadeIn 0.35s ease-out forwards;
+}
+
+/* ── Modal pop-in ── */
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1);    }
+}
+.animate-modal-appear {
+    animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Generic fade-in (filter panel etc.) ── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+.animate-fadeIn {
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Product card scroll reveal ── */
+@keyframes cardReveal {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+.card-reveal {
+    opacity: 0;
+}
+.card-reveal.is-visible {
+    animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Mobile drawer slide-in ── */
+@keyframes drawerSlideIn {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0);     }
+}
+.drawer-slide-in {
+    animation: drawerSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Touch-friendly: always show add-to-cart on touch devices ── */
+@media (hover: none) {
+    .touch-cart-visible {
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+    }
+}
