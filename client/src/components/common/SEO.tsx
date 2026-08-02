@@ -16,8 +16,8 @@ const DEFAULT_DESCRIPTION =
     'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.'
 const DEFAULT_KEYWORDS =
     'trendy decor, gidderbaha, harish ahuja, hitin ahuja, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, baby welcome setups, bathinda, malout, punjab'
-const DEFAULT_IMAGE = 'https://trendydecor.com/hero-assets/hero1.png'
-const DEFAULT_URL = 'https://trendydecor.com'
+const DEFAULT_IMAGE = 'https://trendydecor24.shop/hero-assets/hero1.png'
+const DEFAULT_URL = 'https://trendydecor24.shop'
 
 /**
  * Helper to update or create a <meta> tag in <head>

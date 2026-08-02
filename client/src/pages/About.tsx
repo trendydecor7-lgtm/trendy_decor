@@ -30,7 +30,7 @@ const About: React.FC = () => {
                     name: 'Trendy Decor Gidderbaha',
                     description:
                         'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis by Harish Ahuja & Hitin Ahuja.',
-                    image: 'https://trendydecor.com/hero-assets/hero1.png',
+                    image: 'https://trendydecor24.shop/hero-assets/hero1.png',
                     telephone: '+919417718844',
                     address: {
                         '@type': 'PostalAddress',

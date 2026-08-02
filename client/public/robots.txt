@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /profile
 Disallow: /cart
 
-Sitemap: https://trendydecor.com/sitemap.xml
+Sitemap: https://trendydecor24.shop/sitemap.xml
