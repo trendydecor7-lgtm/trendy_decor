@@ -24,6 +24,8 @@ import { API_BASE_URL } from '../config/api'
 
 const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates']
 
+const loadedMediaCache = new Set<string>()
+
 const ProductMediaWithSkeleton: React.FC<{
     mediaType?: 'image' | 'video'
     image?: string
@@ -32,11 +34,31 @@ const ProductMediaWithSkeleton: React.FC<{
     className?: string
     bgColor?: string
 }> = ({ mediaType, image, video, alt, className = '', bgColor = '#cec9be' }) => {
-    const [isLoaded, setIsLoaded] = useState<boolean>(false)
-    const [hasError, setHasError] = useState<boolean>(false)
-
     const isVideo = mediaType === 'video' || Boolean(video)
     const mediaSrc = isVideo ? video || image : image
+
+    const [isLoaded, setIsLoaded] = useState<boolean>(() => {
+        if (!mediaSrc) return false
+        return loadedMediaCache.has(mediaSrc)
+    })
+    const [hasError, setHasError] = useState<boolean>(false)
+    const imgRef = useRef<HTMLImageElement | null>(null)
+
+    useEffect(() => {
+        if (mediaSrc && loadedMediaCache.has(mediaSrc)) {
+            setIsLoaded(true)
+            return
+        }
+        if (imgRef.current && imgRef.current.complete) {
+            if (mediaSrc) loadedMediaCache.add(mediaSrc)
+            setIsLoaded(true)
+        }
+    }, [mediaSrc])
+
+    const handleLoad = () => {
+        if (mediaSrc) loadedMediaCache.add(mediaSrc)
+        setIsLoaded(true)
+    }
 
     return (
         <div
@@ -53,19 +75,23 @@ const ProductMediaWithSkeleton: React.FC<{
                         loop
                         muted
                         playsInline
-                        onLoadedData={() => setIsLoaded(true)}
+                        onLoadedData={handleLoad}
                         onError={() => setHasError(true)}
-                        className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
-                            } transition-opacity duration-500`}
+                        className={`${className} ${
+                            isLoaded ? 'opacity-100' : 'opacity-0'
+                        } transition-opacity duration-300`}
                     />
                 ) : (
                     <img
+                        ref={imgRef}
                         src={mediaSrc}
                         alt={alt}
-                        onLoad={() => setIsLoaded(true)}
+                        decoding="async"
+                        onLoad={handleLoad}
                         onError={() => setHasError(true)}
-                        className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
-                            } transition-opacity duration-500`}
+                        className={`${className} ${
+                            isLoaded ? 'opacity-100' : 'opacity-0'
+                        } transition-opacity duration-300`}
                     />
                 )
             ) : (
@@ -483,12 +509,12 @@ const Products: React.FC = () => {
                         {loading ? (
                             <div className="w-full flex flex-col gap-[4px] py-2">
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-[4px] w-full">
-                                    {[1, 2, 3].map((i) => (
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
                                         <div
                                             key={i}
                                             className="flex flex-col bg-[#f4f1ea] overflow-hidden rounded-xl md:rounded-none"
                                         >
-                                            <div className="relative w-full h-[220px] md:h-[450px] overflow-hidden skeleton-shimmer">
+                                            <div className="relative w-full aspect-[4/5] overflow-hidden skeleton-shimmer">
                                                 <div className="absolute top-4 left-4 h-5 w-20 rounded-full bg-[#1c1c1c]/10 animate-pulse" />
                                             </div>
                                             <div className="p-3 md:p-5 bg-[#f4f1ea] border-t border-[#b6ac9f]/25 flex flex-col justify-between gap-3">

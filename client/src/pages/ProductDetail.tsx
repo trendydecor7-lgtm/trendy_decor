@@ -1,5 +1,48 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+
+const loadedMediaCache = new Set<string>()
+
+const ImageWithSkeleton: React.FC<{
+    src: string
+    alt: string
+    className?: string
+    onClick?: () => void
+}> = ({ src, alt, className = '', onClick }) => {
+    const [isLoaded, setIsLoaded] = useState<boolean>(() => loadedMediaCache.has(src))
+    const imgRef = useRef<HTMLImageElement | null>(null)
+
+    useEffect(() => {
+        if (loadedMediaCache.has(src)) {
+            setIsLoaded(true)
+            return
+        }
+        if (imgRef.current && imgRef.current.complete) {
+            loadedMediaCache.add(src)
+            setIsLoaded(true)
+        }
+    }, [src])
+
+    const handleLoad = () => {
+        loadedMediaCache.add(src)
+        setIsLoaded(true)
+    }
+
+    return (
+        <div className="relative w-full h-full overflow-hidden" onClick={onClick}>
+            {!isLoaded && <div className="absolute inset-0 skeleton-shimmer z-10" />}
+            <img
+                ref={imgRef}
+                src={src}
+                alt={alt}
+                decoding="async"
+                onLoad={handleLoad}
+                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                    } transition-opacity duration-300`}
+            />
+        </div>
+    )
+}
 import SEO from '../components/common/SEO'
 import {
     ShoppingBag,
@@ -223,7 +266,7 @@ const ProductDetail: React.FC = () => {
                     product?.description ||
                     'Explore custom gift hampers, artisanal chocolates, floral bouquets, designer rakhis, and celebration decor.'
                 }
-                image={product?.images?.[0] || product?.image || undefined}
+                image={product?.thumbnail || product?.image || product?.images?.[0] || undefined}
                 type="product"
                 schema={
                     product
@@ -231,7 +274,7 @@ const ProductDetail: React.FC = () => {
                             '@context': 'https://schema.org/',
                             '@type': 'Product',
                             name: product.name,
-                            image: product?.images?.[0] || product?.image,
+                            image: product?.thumbnail || product?.image || product?.images?.[0],
                             description: product.description,
                             offers: {
                                 '@type': 'Offer',
@@ -243,10 +286,9 @@ const ProductDetail: React.FC = () => {
                         : undefined
                 }
             />
-            <div className="md:hidden w-full max-w-full overflow-x-hidden bg-[#f4f1ea] min-h-screen pt-[56px] pb-24">
+            <div className="md:hidden w-full max-w-full overflow-x-hidden bg-[#f4f1ea] min-h-screen pb-24">
                 <div
-                    style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}
-                    className="bg-[#f4f1ea]/95 backdrop-blur-md border-b border-[#b6ac9f]/30 px-3.5 py-2 shadow-sm flex items-center justify-between gap-2.5 h-[56px]"
+                    className="w-full bg-[#f4f1ea]/95 backdrop-blur-md border-b border-[#b6ac9f]/30 px-3.5 py-2.5 shadow-xs flex items-center justify-between gap-2.5"
                 >
                     <button
                         onClick={() => navigate(-1)}
@@ -283,10 +325,10 @@ const ProductDetail: React.FC = () => {
                             className="w-full h-full object-cover"
                         />
                     ) : activeMediaUrl ? (
-                        <img
+                        <ImageWithSkeleton
                             src={activeMediaUrl}
                             alt={product.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover cursor-pointer"
                             onClick={() => setLightboxOpen(true)}
                         />
                     ) : (
@@ -334,7 +376,7 @@ const ProductDetail: React.FC = () => {
                                         setActiveMediaUrl(item.url)
                                         setActiveMediaType(item.type)
                                     }}
-                                    className={`relative w-12 h-12 shrink-0 rounded-lg border-2 overflow-hidden transition-all ${isActive ? 'border-[#1c1c1c] scale-105 shadow-md' : 'border-transparent opacity-55'
+                                    className={`relative w-12 h-14 shrink-0 rounded-lg border-2 overflow-hidden bg-[#cec9be]/40 transition-all ${isActive ? 'border-[#1c1c1c] scale-105 shadow-md' : 'border-transparent opacity-55'
                                         }`}
                                 >
                                     {item.type === 'video' ? (
@@ -342,7 +384,7 @@ const ProductDetail: React.FC = () => {
                                             <Film size={12} className="text-white" />
                                         </div>
                                     ) : (
-                                        <img src={item.url} alt="" className="w-full h-full object-cover" />
+                                        <img src={item.url} alt="" className="w-full h-full object-contain" />
                                     )}
                                 </button>
                             )
@@ -475,7 +517,7 @@ const ProductDetail: React.FC = () => {
                                         >
                                             <div className="relative w-full aspect-[4/5] bg-[#cec9be] overflow-hidden">
                                                 {rel.image ? (
-                                                    <img
+                                                    <ImageWithSkeleton
                                                         src={rel.image}
                                                         alt={rel.name}
                                                         className="w-full h-full object-cover"
@@ -549,7 +591,15 @@ const ProductDetail: React.FC = () => {
             <div className="hidden md:block">
                 <div className="w-full border-b border-[#b6ac9f]/30 bg-[#f4f1ea]/60 backdrop-blur-sm">
                     <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-4 flex items-center justify-between text-[12px] uppercase tracking-wider text-[#1c1c1c]/60 overflow-x-auto">
-                        <div className="flex items-center gap-2 whitespace-nowrap">
+                        <div className="flex items-center gap-2.5 whitespace-nowrap">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="w-8 h-8 flex items-center justify-center bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] rounded-lg hover:bg-[#b6ac9f]/30 transition-colors cursor-pointer shrink-0 mr-1 shadow-2xs"
+                                title="Go Back"
+                                aria-label="Back"
+                            >
+                                <ArrowLeft size={16} />
+                            </button>
                             <Link to="/" className="hover:text-[#1c1c1c] transition-colors">
                                 Home
                             </Link>
@@ -592,10 +642,10 @@ const ProductDetail: React.FC = () => {
                                         className="w-full h-full object-cover"
                                     />
                                 ) : activeMediaUrl ? (
-                                    <img
+                                    <ImageWithSkeleton
                                         src={activeMediaUrl}
                                         alt={product.name}
-                                        className="w-full h-full object-cover transition-transform duration-700 ease-in-out  cursor-zoom-in"
+                                        className="w-full h-full object-cover transition-transform duration-700 ease-in-out cursor-zoom-in"
                                         onClick={() => setLightboxOpen(true)}
                                     />
                                 ) : (
@@ -635,7 +685,7 @@ const ProductDetail: React.FC = () => {
                                                     setActiveMediaUrl(item.url)
                                                     setActiveMediaType(item.type)
                                                 }}
-                                                className={`relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl border-2 overflow-hidden transition-all cursor-pointer ${isActive
+                                                className={`relative w-20 h-24 sm:w-24 sm:h-28 flex-shrink-0 rounded-xl border-2 overflow-hidden bg-[#cec9be]/40 transition-all cursor-pointer ${isActive
                                                     ? 'border-[#1c1c1c] scale-105 shadow-md'
                                                     : 'border-[#b6ac9f]/30 opacity-70 hover:opacity-100 hover:border-[#1c1c1c]/50'
                                                     }`}
@@ -644,7 +694,7 @@ const ProductDetail: React.FC = () => {
                                                     <div className="relative w-full h-full bg-black/20 flex items-center justify-center">
                                                         <video
                                                             src={item.url}
-                                                            className="w-full h-full object-cover"
+                                                            className="w-full h-full object-contain"
                                                         />
                                                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white">
                                                             <Film size={20} />
@@ -654,7 +704,7 @@ const ProductDetail: React.FC = () => {
                                                     <img
                                                         src={item.url}
                                                         alt={`Thumbnail ${idx + 1}`}
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-contain"
                                                     />
                                                 )}
                                             </button>
@@ -921,7 +971,7 @@ const ProductDetail: React.FC = () => {
                                                 style={{ backgroundColor: rel.bgColor || '#cec9be' }}
                                             >
                                                 {rel.image ? (
-                                                    <img
+                                                    <ImageWithSkeleton
                                                         src={rel.image}
                                                         alt={rel.name}
                                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

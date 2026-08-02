@@ -16,11 +16,11 @@ const DEFAULT_DESCRIPTION =
     'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.'
 const DEFAULT_KEYWORDS =
     'trendy decor, gidderbaha, harish ahuja, hitin ahuja, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, baby welcome setups, bathinda, malout, punjab'
-const DEFAULT_IMAGE = 'https://trendydecor24.shop/hero-assets/hero1.png'
+const DEFAULT_IMAGE = 'https://trendydecor24.shop/logo.png'
 const DEFAULT_URL = 'https://trendydecor24.shop'
 
 
-const updateMetaTag = (attributeName: 'name' | 'property', attributeValue: string, content: string) => {
+const updateMetaTag = (attributeName: 'name' | 'property' | 'itemprop', attributeValue: string, content: string) => {
     let element = document.head.querySelector(`meta[${attributeName}="${attributeValue}"]`) as HTMLMetaElement
     if (!element) {
         element = document.createElement('meta')
@@ -68,10 +68,20 @@ const SEO = ({
         updateMetaTag('property', 'og:title', finalTitle)
         updateMetaTag('property', 'og:description', description)
         updateMetaTag('property', 'og:image', image)
+        updateMetaTag('property', 'og:image:secure_url', image)
+        updateMetaTag(
+            'property',
+            'og:image:type',
+            image.endsWith('.png') ? 'image/png' : image.endsWith('.webp') ? 'image/webp' : 'image/jpeg'
+        )
+        updateMetaTag('property', 'og:image:width', '1200')
+        updateMetaTag('property', 'og:image:height', '630')
+        updateMetaTag('property', 'og:image:alt', finalTitle)
         updateMetaTag('property', 'og:url', currentUrl)
         updateMetaTag('property', 'og:type', type)
         updateMetaTag('property', 'og:site_name', 'Trendy Decor')
         updateMetaTag('property', 'og:locale', 'en_US')
+        updateMetaTag('itemprop', 'image', image)
 
         updateMetaTag('name', 'twitter:card', 'summary_large_image')
         updateMetaTag('name', 'twitter:title', finalTitle)

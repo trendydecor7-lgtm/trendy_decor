@@ -2,6 +2,51 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SEO from '../components/common/SEO'
 
+const loadedMediaCache = new Set<string>()
+
+const ImageWithSkeleton: React.FC<{
+    src: string
+    alt: string
+    className?: string
+    fetchPriority?: 'high' | 'low' | 'auto'
+}> = ({ src, alt, className = '', fetchPriority }) => {
+    const [isLoaded, setIsLoaded] = useState<boolean>(() => loadedMediaCache.has(src))
+    const imgRef = useRef<HTMLImageElement | null>(null)
+
+    useEffect(() => {
+        if (loadedMediaCache.has(src)) {
+            setIsLoaded(true)
+            return
+        }
+        if (imgRef.current && imgRef.current.complete) {
+            loadedMediaCache.add(src)
+            setIsLoaded(true)
+        }
+    }, [src])
+
+    const handleLoad = () => {
+        loadedMediaCache.add(src)
+        setIsLoaded(true)
+    }
+
+    return (
+        <div className="relative w-full h-full overflow-hidden">
+            {!isLoaded && <div className="absolute inset-0 skeleton-shimmer z-10" />}
+            <img
+                ref={imgRef}
+                src={src}
+                alt={alt}
+                decoding="async"
+                fetchPriority={fetchPriority}
+                onLoad={handleLoad}
+                className={`${className} ${
+                    isLoaded ? 'opacity-100' : 'opacity-0'
+                } transition-opacity duration-300`}
+            />
+        </div>
+    )
+}
+
 const Home = () => {
     const navigate = useNavigate()
     const heroSectionRef = useRef<HTMLDivElement>(null)
@@ -74,7 +119,7 @@ const Home = () => {
                             onClick={() => navigate('/products')}
                             className="relative overflow-hidden cursor-pointer w-full h-full group"
                         >
-                            <img
+                            <ImageWithSkeleton
                                 src="/hero-assets/hero1.png"
                                 alt="Luxury Hampers & Decor"
                                 fetchPriority="high"
@@ -87,7 +132,7 @@ const Home = () => {
                             onClick={() => navigate('/products')}
                             className="relative overflow-hidden cursor-pointer w-full h-full group"
                         >
-                            <img
+                            <ImageWithSkeleton
                                 src="/hero-assets/hero2.png"
                                 alt="Festive Celebrations"
                                 fetchPriority="high"
@@ -137,10 +182,9 @@ const Home = () => {
                                 onClick={() => navigate('/products?category=Hampers')}
                                 className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#d4cec5]"
                             >
-                                <img
+                                <ImageWithSkeleton
                                     src="/category/hamper.png"
                                     alt="Hampers"
-                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 "
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
@@ -157,10 +201,9 @@ const Home = () => {
                                 onClick={() => navigate('/products?category=Rakhis')}
                                 className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#c9c3b8]"
                             >
-                                <img
+                                <ImageWithSkeleton
                                     src="/category/rakhi.png"
                                     alt="Rakhis"
-                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 "
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
@@ -177,10 +220,9 @@ const Home = () => {
                                 onClick={() => navigate('/products?category=Customize Chocolates')}
                                 className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#bdb7ac]"
                             >
-                                <img
+                                <ImageWithSkeleton
                                     src="/category/choco.png"
                                     alt="Customizable Chocolates"
-                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 "
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
@@ -197,10 +239,9 @@ const Home = () => {
                                 onClick={() => navigate('/products?category=Bouquets')}
                                 className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#b0aaa0]"
                             >
-                                <img
+                                <ImageWithSkeleton
                                     src="/category/bouque.png"
                                     alt="Bouquets"
-                                    loading="lazy"
                                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 "
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
@@ -238,10 +279,9 @@ const Home = () => {
                             onClick={() => navigate('/products')}
                             className="md:hidden relative w-full h-[240px] xs:h-[280px] sm:h-[360px] overflow-hidden cursor-pointer group bg-[#d4cec5] border-t border-[#b6ac9f]/30"
                         >
-                            <img
+                            <ImageWithSkeleton
                                 src="/hero-assets/hero3.jpeg"
                                 alt="Signature Collection"
-                                loading="lazy"
                                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-all duration-500" />
@@ -315,10 +355,9 @@ const Home = () => {
                             onClick={() => navigate('/products')}
                             className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#d4cec5]"
                         >
-                            <img
+                            <ImageWithSkeleton
                                 src="/hero-assets/hero3.jpeg"
                                 alt="Signature Collection"
-                                loading="lazy"
                                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
                             />
                             <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors duration-500" />
@@ -332,10 +371,9 @@ const Home = () => {
                             onClick={() => navigate('/products')}
                             className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#c9c3b8]"
                         >
-                            <img
+                            <ImageWithSkeleton
                                 src="/hero-assets/hero4.jpeg"
                                 alt="Artisanal Decor"
-                                loading="lazy"
                                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
                             />
                             <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors duration-500" />
