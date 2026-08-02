@@ -239,8 +239,10 @@ export default function Cart() {
                                         className="p-4 md:p-6 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xs"
                                     >
                                         <div className="flex items-center gap-4 w-full sm:w-auto">
-                                            <div
-                                                className="w-20 h-24 md:w-24 md:h-28 shrink-0 overflow-hidden relative border border-[#b6ac9f]/30"
+                                            <Link
+                                                href={`/product/${prodId}`}
+                                                prefetch={true}
+                                                className="w-20 h-24 md:w-24 md:h-28 shrink-0 overflow-hidden relative border border-[#b6ac9f]/30 block hover:opacity-90 transition-opacity"
                                                 style={{
                                                     backgroundColor:
                                                         item.product.bgColor || '#cec9be',
@@ -257,14 +259,18 @@ export default function Cart() {
                                                         Trendy
                                                     </div>
                                                 )}
-                                            </div>
+                                            </Link>
                                             <div className="space-y-1">
                                                 <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#1c1c1c]/50">
                                                     {item.product.category}
                                                 </p>
-                                                <h3 className="text-[16px] font-normal text-[#1c1c1c]">
+                                                <Link
+                                                    href={`/product/${prodId}`}
+                                                    prefetch={true}
+                                                    className="text-[16px] font-normal text-[#1c1c1c] hover:underline block"
+                                                >
                                                     {item.product.name}
-                                                </h3>
+                                                </Link>
                                                 <p className="text-[14px] font-medium text-[#1c1c1c]/70">
                                                     {item.product.price} each
                                                 </p>

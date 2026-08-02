@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import SafeVideo from '@/components/common/SafeVideo'
@@ -12,17 +12,16 @@ import {
     Truck,
     Plus,
     Minus,
-    Maximize2,
     X,
-    Film,
     Image as ImageIcon,
     ArrowLeft,
-    Sparkles,
-    Flame,
+    Gift,
+    ShieldCheck,
 } from 'lucide-react'
 import { useCart, type ProductItem } from '@/context/CartContext'
 import { useToast } from '@/context/ToastContext'
 
+/* ─────────────────────── Image-with-Skeleton ─────────────────────── */
 const loadedMediaCache = new Set<string>()
 
 const ImageWithSkeleton: React.FC<{
@@ -31,29 +30,30 @@ const ImageWithSkeleton: React.FC<{
     className?: string
     onClick?: () => void
 }> = ({ src, alt, className = '', onClick }) => {
-    const [isLoaded, setIsLoaded] = useState<boolean>(() => loadedMediaCache.has(src))
+    const [isLoaded, setIsLoaded] = useState(() => loadedMediaCache.has(src))
+    const imgRef = useRef<HTMLImageElement | null>(null)
 
-    const handleLoad = () => {
-        loadedMediaCache.add(src)
-        setIsLoaded(true)
-    }
+    useEffect(() => {
+        if (loadedMediaCache.has(src)) { setIsLoaded(true); return }
+        if (imgRef.current?.complete) { loadedMediaCache.add(src); setIsLoaded(true) }
+    }, [src])
 
     return (
         <div className="relative w-full h-full overflow-hidden" onClick={onClick}>
-            {!isLoaded && <div className="absolute inset-0 skeleton-shimmer z-10" />}
+            {!isLoaded && <div className="absolute inset-0 z-10 skeleton-shimmer" />}
             <img
+                ref={imgRef}
                 src={src}
                 alt={alt}
                 decoding="async"
-                onLoad={handleLoad}
-                className={`${className} ${
-                    isLoaded ? 'opacity-100' : 'opacity-0'
-                } transition-opacity duration-300`}
+                onLoad={() => { loadedMediaCache.add(src); setIsLoaded(true) }}
+                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
             />
         </div>
     )
 }
 
+/* ─────────────────────── Types ─────────────────────── */
 export interface ProductDetailData {
     _id: string
     id?: string
@@ -73,6 +73,7 @@ export interface ProductDetailData {
     createdAt?: string
 }
 
+/* ─────────────────────── Component ─────────────────────── */
 export default function ProductDetailClient({
     product,
     relatedProducts = [],
@@ -84,217 +85,233 @@ export default function ProductDetailClient({
     const { cartItems, addToCart, updateQuantity } = useCart()
     const { toast } = useToast()
 
-    const primaryMedia =
-        product.image || product.video || (product.images && product.images[0]) || ''
-    const isVid = (product.mediaType === 'video' || Boolean(product.video)) && !product.image
+    const primaryMedia = product.image || (product.images?.[0]) || product.video || ''
+    const isVid = (product.mediaType === 'video' || Boolean(product.video)) && !product.image && !(product.images?.length)
 
-    const [activeMediaUrl, setActiveMediaUrl] = useState<string>(primaryMedia)
-    const [activeMediaType, setActiveMediaType] = useState<'image' | 'video'>(
-        isVid ? 'video' : 'image'
-    )
-    const [lightboxOpen, setLightboxOpen] = useState<boolean>(false)
-    const [activeAccordion, setActiveAccordion] = useState<string>('details')
+    const [activeMediaUrl, setActiveMediaUrl] = useState(primaryMedia)
+    const [activeMediaType, setActiveMediaType] = useState<'image' | 'video'>(isVid ? 'video' : 'image')
+    const [lightboxOpen, setLightboxOpen] = useState(false)
+    const [openAccordion, setOpenAccordion] = useState<string>('details')
 
     const productId = (product._id || product.id || '').toString()
-    const cartItem = cartItems.find((item) => {
-        const itemProdId = (item.product._id || item.product.id || '').toString()
-        return itemProdId === productId
-    })
+    const cartItem = cartItems.find(
+        (item) => (item.product._id || item.product.id || '').toString() === productId
+    )
     const quantityInCart = cartItem ? cartItem.quantity : 0
+    const inStock = product.inStock !== false && product.stock > 0
 
-    const galleryItems: Array<{ url: string; type: 'image' | 'video'; label?: string }> = []
-    if (product.image) {
-        galleryItems.push({ url: product.image, type: 'image', label: 'Main Showcase' })
-    }
-    if (product.images && product.images.length > 0) {
-        product.images.forEach((imgUrl, idx) => {
-            if (imgUrl !== product.image) {
-                galleryItems.push({ url: imgUrl, type: 'image', label: `Angle #${idx + 1}` })
-            }
-        })
-    }
-    if (product.video) {
-        galleryItems.push({ url: product.video, type: 'video', label: 'Video Showcase' })
-    }
-    if (galleryItems.length === 0 && product.thumbnail) {
-        galleryItems.push({ url: product.thumbnail, type: 'image', label: 'Thumbnail' })
-    }
+    const priceNum = parseFloat(product.price.replace(/[^0-9.]/g, '')) || 0
+    const freeShippingLeft = Math.max(0, 1500 - priceNum)
 
+    /* Gallery */
+    const galleryItems: { url: string; type: 'image' | 'video' }[] = []
+    if (product.image) galleryItems.push({ url: product.image, type: 'image' })
+    product.images?.forEach((u) => { if (u !== product.image) galleryItems.push({ url: u, type: 'image' }) })
+    if (product.video) galleryItems.push({ url: product.video, type: 'video' })
+    if (galleryItems.length === 0 && product.thumbnail) galleryItems.push({ url: product.thumbnail, type: 'image' })
+
+    /* Cart */
     const handleAddToCart = () => {
-        const cartItemData: ProductItem = {
+        addToCart({
             id: product._id || product.id || '',
             _id: product._id || product.id || '',
             name: product.name,
             category: product.category as ProductItem['category'],
             price: product.price,
             bgColor: product.bgColor || '#cec9be',
-            image: product.image || (product.images && product.images[0]) || '',
+            image: product.image || (product.images?.[0]) || '',
             video: product.video || '',
             mediaType: product.mediaType || 'image',
             stock: product.stock ?? 50,
             description: product.description || '',
-        }
-        addToCart(cartItemData, 1)
-        toast.success(`Added "${product.name}" to your shopping bag`)
+        }, 1)
+        toast.success(`Added "${product.name}" to your bag`)
     }
 
-    const handleBuyNow = () => {
-        handleAddToCart()
-        router.push('/cart')
-    }
+    const handleBuyNow = () => { handleAddToCart(); router.push('/cart') }
 
     const handleShare = () => {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(window.location.href)
-            toast.success('Product link copied to clipboard!')
-        } else {
-            toast.info('Copy URL: ' + window.location.href)
+            toast.success('Link copied!')
         }
     }
 
+    const accordions = [
+        {
+            id: 'details',
+            title: 'Product Details & Care',
+            body: ['Premium handcrafted products crafted with care.', 'Designed to make your festivals and special occasions memorable.', 'Made with love by skilled local artisans.'],
+        },
+        {
+            id: 'shipping',
+            title: 'Shipping & Pan-India Delivery',
+            body: ['Orders dispatched within 1–2 business days.', 'Free delivery on orders above ₹1,500.', 'Delivery across India via courier partners.'],
+        },
+    ]
+
     return (
-        <main
-            className="w-full bg-[#e8e3da] text-[#1c1c1c] min-h-screen select-none animate-smooth-appear"
+        <div
+            className="w-full bg-[#e8e3da] text-[#1c1c1c] min-h-screen"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
-            {/* Mobile Layout */}
-            <div className="md:hidden w-full max-w-full overflow-x-hidden bg-[#f4f1ea] min-h-screen pb-24">
-                <div className="w-full bg-[#f4f1ea]/95 backdrop-blur-md border-b border-[#b6ac9f]/30 px-3.5 py-2.5 shadow-xs flex items-center justify-between gap-2.5">
+
+            {/* ══════════ MOBILE ══════════ */}
+            <div className="md:hidden w-full min-h-screen bg-[#e8e3da] pb-28 overflow-x-hidden">
+
+                {/* Sticky topbar */}
+                <div className="sticky top-0 z-30 w-full bg-[#e8e3da]/95 backdrop-blur-md border-b border-[#b6ac9f]/20 px-4 py-3 flex items-center justify-between">
                     <button
                         onClick={() => router.back()}
-                        className="w-10 h-10 flex items-center justify-center bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] rounded-xl active:bg-[#b6ac9f]/30 transition-colors cursor-pointer shrink-0"
+                        className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#b6ac9f]/40 bg-[#f4f1ea] cursor-pointer"
                         aria-label="Back"
                     >
-                        <ArrowLeft size={18} />
+                        <ArrowLeft size={16} />
                     </button>
-
-                    <span className="text-[13px] font-semibold uppercase tracking-wider text-[#1c1c1c] truncate px-1">
-                        {product.name}
+                    <span className="text-[12px] font-semibold uppercase tracking-widest text-[#1c1c1c] truncate px-2 flex-1 text-center">
+                        {product.category}
                     </span>
-
                     <button
                         onClick={handleShare}
-                        className="w-10 h-10 flex items-center justify-center bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] rounded-xl active:bg-[#b6ac9f]/30 transition-colors cursor-pointer shrink-0"
-                        aria-label="Share Product"
+                        className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#b6ac9f]/40 bg-[#f4f1ea] cursor-pointer"
+                        aria-label="Share"
                     >
-                        <Share2 size={17} />
+                        <Share2 size={15} />
                     </button>
                 </div>
 
+                {/* Hero image */}
                 <div
-                    className="relative w-full aspect-[9/16] max-h-[70vh] mx-auto bg-[#f8f6f0] rounded-2xl overflow-hidden flex items-center justify-center p-2 border border-[#b6ac9f]/30"
-                    style={{ backgroundColor: product.bgColor || '#f8f6f0' }}
+                    className="relative w-full overflow-hidden"
+                    style={{ backgroundColor: product.bgColor || '#f4f1ea', aspectRatio: '4/5', maxHeight: '62vh' }}
                 >
                     {activeMediaType === 'video' ? (
-                        <SafeVideo
-                            src={activeMediaUrl}
-                            controls
-                            autoPlay
-                            loop
-                            muted
-                            className="w-full h-full object-contain object-center"
-                        />
+                        <SafeVideo src={activeMediaUrl} controls autoPlay loop muted className="w-full h-full object-contain" />
                     ) : activeMediaUrl ? (
                         <ImageWithSkeleton
                             src={activeMediaUrl}
                             alt={product.name}
-                            className="w-full h-full object-contain object-center cursor-pointer"
+                            className="w-full h-full object-contain cursor-pointer"
                             onClick={() => setLightboxOpen(true)}
                         />
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-[#1c1c1c]/40 font-light text-xs gap-2">
-                            <ImageIcon size={24} />
-                            <span>No Media Preview Available</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center text-[#1c1c1c]/30 gap-2">
+                            <ImageIcon size={28} />
+                            <span className="text-xs">No image</span>
                         </div>
                     )}
-                    <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5">
-                        {product.isNewProduct && (
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-2.5 py-1 rounded-md shadow-sm">
-                                NEW
-                            </span>
-                        )}
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#1c1c1c] bg-[#f4f1ea]/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-[#b6ac9f]/30 shadow-sm">
-                            {product.category}
+                    {product.isNewProduct && (
+                        <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-2.5 py-1 z-10">
+                            NEW
                         </span>
-                    </div>
+                    )}
                 </div>
 
-                <div className="px-4 sm:px-5 pt-5 pb-6 space-y-0 text-[#1c1c1c] w-full max-w-full overflow-hidden">
-                    <div className="pb-5 space-y-3 w-full max-w-full">
-                        <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">
-                                {product.category}
-                            </span>
-                            <span
-                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${
-                                    product.inStock !== false && product.stock > 0
-                                        ? 'bg-[#e8e3da] text-[#1c1c1c] border-[#b6ac9f]/60'
-                                        : 'bg-rose-50 text-rose-800 border-rose-200'
-                                }`}
+                {/* Thumbnail strip */}
+                {galleryItems.length > 1 && (
+                    <div className="flex gap-2 px-4 pt-3 overflow-x-auto no-scrollbar">
+                        {galleryItems.map((item, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => { setActiveMediaUrl(item.url); setActiveMediaType(item.type) }}
+                                className={`shrink-0 w-12 h-14 overflow-hidden border-2 transition-all cursor-pointer ${activeMediaUrl === item.url ? 'border-[#1c1c1c]' : 'border-[#b6ac9f]/30 opacity-55'}`}
+                                style={{ backgroundColor: product.bgColor || '#f4f1ea' }}
                             >
-                                <Check size={10} strokeWidth={3} />
-                                {product.inStock !== false && product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                            </span>
+                                {item.type === 'video'
+                                    ? <div className="w-full h-full flex items-center justify-center text-[7px] font-bold uppercase bg-[#e8e3da] text-[#1c1c1c]/50">Vid</div>
+                                    : <img src={item.url} alt="" className="w-full h-full object-cover" />}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Info */}
+                <div className="px-4 pt-5 pb-4 space-y-5">
+
+                    {/* Name + price */}
+                    <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-0.5">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/40">
+                                {product.category}
+                            </p>
+                            <h1 className="text-[22px] font-normal leading-snug tracking-tight text-[#1c1c1c]">
+                                {product.name}
+                            </h1>
                         </div>
-                        <h1 className="text-[22px] font-normal leading-snug tracking-tight text-[#1c1c1c] break-words">
-                            {product.name}
-                        </h1>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-[26px] font-bold font-mono text-[#1c1c1c] tracking-tight">
+                        <div className="text-right shrink-0 pt-4">
+                            <div className="text-[24px] font-bold font-mono tracking-tight">
                                 {product.price.startsWith('₹') ? product.price : `₹${product.price}`}
-                            </span>
-                            <span className="text-[10px] font-light text-[#1c1c1c]/45 uppercase tracking-wider">
-                                incl. all taxes
-                            </span>
+                            </div>
+                            <div className="text-[9px] font-light text-[#1c1c1c]/40 uppercase tracking-wider">incl. taxes</div>
                         </div>
                     </div>
 
-                    <div className="mb-5 space-y-2 w-full max-w-full overflow-hidden">
-                        <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">About This Product</h3>
-                        <p className="text-[13px] font-light text-[#1c1c1c]/80 leading-[1.7] whitespace-pre-line break-words w-full max-w-full">
-                            {product.description ||
-                                'Handcrafted with supreme care and perfection. Designed to bring elegance, luxury, and warmth to every moment.'}
-                        </p>
+                    {/* Stock + shipping */}
+                    <div className="space-y-2">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider border ${inStock ? 'bg-[#f4f1ea] text-[#1c1c1c] border-[#b6ac9f]/60' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>
+                            <Check size={9} strokeWidth={3} />
+                            {inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                        {freeShippingLeft > 0 && priceNum > 0 && (
+                            <div className="flex items-center gap-2 text-[11px] text-[#1c1c1c]/60 border-t border-[#b6ac9f]/20 pt-2">
+                                <Truck size={12} />
+                                Free delivery on orders above ₹1,500 (Add ₹{freeShippingLeft.toLocaleString('en-IN')} more)
+                            </div>
+                        )}
                     </div>
 
+                    {/* Description */}
+                    {product.description && (
+                        <div className="space-y-1.5 border-t border-[#b6ac9f]/20 pt-4">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Description</p>
+                            <p className="text-[13px] font-light text-[#1c1c1c]/75 leading-[1.85] whitespace-pre-line">
+                                {product.description}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Accordions */}
+                    <div className="space-y-0 border-t border-[#b6ac9f]/20">
+                        {accordions.map(({ id, title, body }) => (
+                            <div key={id} className="border-b border-[#b6ac9f]/20">
+                                <button
+                                    onClick={() => setOpenAccordion(openAccordion === id ? '' : id)}
+                                    className="w-full flex items-center justify-between py-3.5 cursor-pointer"
+                                >
+                                    <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#1c1c1c]">{title}</span>
+                                    <span className="text-[#1c1c1c]/40">{openAccordion === id ? <X size={13} /> : <Plus size={13} />}</span>
+                                </button>
+                                {openAccordion === id && (
+                                    <div className="pb-4 space-y-1.5">
+                                        {body.map((line, i) => (
+                                            <p key={i} className="text-[12px] font-light text-[#1c1c1c]/65 flex items-start gap-1.5">
+                                                <span className="text-[#1c1c1c]/30 mt-0.5">•</span>{line}
+                                            </p>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Related */}
                     {relatedProducts.length > 0 && (
-                        <div className="pt-2 space-y-4">
-                            <h3 className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">
-                                You May Also Like
-                            </h3>
+                        <div className="space-y-3 pt-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/40">You May Also Like</p>
                             <div className="grid grid-cols-2 gap-2.5">
-                                {relatedProducts.map((rel) => {
+                                {relatedProducts.slice(0, 4).map((rel) => {
                                     const relId = rel._id || rel.id || ''
                                     return (
-                                        <Link
-                                            key={relId}
-                                            href={`/product/${relId}`}
-                                            prefetch={true}
-                                            className="rounded-2xl overflow-hidden cursor-pointer border border-[#b6ac9f]/25 bg-[#f4f1ea] active:scale-[0.97] transition-transform shadow-sm block"
-                                        >
-                                            <div className="relative w-full aspect-[4/5] bg-[#cec9be] overflow-hidden">
-                                                {rel.image ? (
-                                                    <ImageWithSkeleton
-                                                        src={rel.image}
-                                                        alt={rel.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-[#1c1c1c]/30 text-xs">
-                                                        No Preview
-                                                    </div>
-                                                )}
+                                        <Link key={relId} href={`/product/${relId}`} prefetch={true} className="block active:scale-[0.97] transition-transform">
+                                            <div className="w-full aspect-[4/5] overflow-hidden" style={{ backgroundColor: rel.bgColor || '#cec9be' }}>
+                                                {rel.image
+                                                    ? <img src={rel.image} alt={rel.name} className="w-full h-full object-cover" />
+                                                    : <div className="w-full h-full flex items-center justify-center text-[#1c1c1c]/30 text-xs">No image</div>}
                                             </div>
-                                            <div className="p-2.5 space-y-0.5">
-                                                <p className="text-[9px] font-bold uppercase tracking-wider text-[#1c1c1c]/40">
-                                                    {rel.category}
-                                                </p>
-                                                <h4 className="text-[11px] font-normal text-[#1c1c1c] line-clamp-2 leading-snug">
-                                                    {rel.name}
-                                                </h4>
-                                                <p className="text-[13px] font-bold text-[#1c1c1c] font-mono pt-0.5">
-                                                    {rel.price}
-                                                </p>
+                                            <div className="pt-2 space-y-0.5">
+                                                <p className="text-[9px] font-bold uppercase tracking-wider text-[#1c1c1c]/40">{rel.category}</p>
+                                                <p className="text-[12px] font-normal text-[#1c1c1c] line-clamp-2 leading-snug">{rel.name}</p>
+                                                <p className="text-[13px] font-bold font-mono">{rel.price.startsWith('₹') ? rel.price : `₹${rel.price}`}</p>
                                             </div>
                                         </Link>
                                     )
@@ -304,215 +321,236 @@ export default function ProductDetailClient({
                     )}
                 </div>
 
-                <div
-                    style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
-                    className="bg-[#f4f1ea]/95 backdrop-blur-md border-t border-[#b6ac9f]/30 px-4 py-2.5 shadow-lg flex items-center gap-2.5 md:hidden"
-                >
+                {/* Mobile sticky CTA */}
+                <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#e8e3da]/95 backdrop-blur-md border-t border-[#b6ac9f]/20 px-4 py-3 flex items-center gap-2.5">
                     {quantityInCart > 0 ? (
-                        <div className="flex-1 flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-3.5 py-2.5 rounded-xl">
-                            <button
-                                type="button"
-                                onClick={() => updateQuantity(productId, quantityInCart - 1)}
-                                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/10 active:bg-white/25 cursor-pointer transition-colors"
-                            >
-                                <Minus size={13} />
-                            </button>
-                            <span className="text-[12px] font-semibold font-mono tracking-wider">
-                                {quantityInCart} in Bag
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => updateQuantity(productId, quantityInCart + 1)}
-                                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/10 active:bg-white/25 cursor-pointer transition-colors"
-                            >
-                                <Plus size={13} />
-                            </button>
+                        <div className="flex-1 flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-4 py-3">
+                            <button type="button" onClick={() => updateQuantity(productId, quantityInCart - 1)} className="w-7 h-7 flex items-center justify-center bg-white/10 active:bg-white/25 cursor-pointer"><Minus size={13} /></button>
+                            <span className="text-[12px] font-semibold font-mono">{quantityInCart} in Bag</span>
+                            <button type="button" onClick={() => updateQuantity(productId, quantityInCart + 1)} className="w-7 h-7 flex items-center justify-center bg-white/10 active:bg-white/25 cursor-pointer"><Plus size={13} /></button>
                         </div>
                     ) : (
-                        <button
-                            onClick={handleAddToCart}
-                            disabled={product.inStock === false || product.stock <= 0}
-                            className="flex-1 py-3 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-semibold uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 active:opacity-80 transition-opacity disabled:opacity-40 cursor-pointer shadow-sm"
-                        >
-                            <ShoppingBag size={15} /> Add To Bag
+                        <button onClick={handleAddToCart} disabled={!inStock} className="flex-1 py-3.5 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer">
+                            <ShoppingBag size={14} /> Add To Bag
                         </button>
                     )}
-                    <button
-                        onClick={handleBuyNow}
-                        disabled={product.inStock === false || product.stock <= 0}
-                        className="flex-1 py-3 bg-[#e8e3da] border border-[#1c1c1c] text-[#1c1c1c] text-[12px] font-semibold uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 active:bg-[#1c1c1c] active:text-[#f4f1ea] transition-all disabled:opacity-40 cursor-pointer"
-                    >
+                    <button onClick={handleBuyNow} disabled={!inStock} className="flex-1 py-3.5 border border-[#1c1c1c] text-[#1c1c1c] text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:bg-[#1c1c1c] active:text-[#f4f1ea] transition-colors disabled:opacity-40 cursor-pointer">
                         Buy Now
                     </button>
                 </div>
             </div>
 
-            {/* Desktop Layout */}
+            {/* ══════════ DESKTOP ══════════ */}
             <div className="hidden md:block">
-                <div className="w-full border-b border-[#b6ac9f]/30 bg-[#f4f1ea]/60 backdrop-blur-sm">
-                    <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-4 flex items-center justify-between text-[12px] uppercase tracking-wider text-[#1c1c1c]/60 overflow-x-auto">
-                        <div className="flex items-center gap-2.5 whitespace-nowrap">
-                            <button
-                                onClick={() => router.back()}
-                                className="w-8 h-8 flex items-center justify-center bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] rounded-lg hover:bg-[#b6ac9f]/30 transition-colors cursor-pointer shrink-0 mr-1 shadow-2xs"
-                                title="Go Back"
-                                aria-label="Back"
-                            >
-                                <ArrowLeft size={16} />
-                            </button>
-                            <Link href="/" prefetch={true} className="hover:text-[#1c1c1c] transition-colors">
-                                Home
-                            </Link>
-                            <ChevronRight size={12} />
-                            <Link href="/products" prefetch={true} className="hover:text-[#1c1c1c] transition-colors">
-                                Products
-                            </Link>
-                            <ChevronRight size={12} />
-                            <span className="text-[#1c1c1c]/50">{product.category}</span>
-                            <ChevronRight size={12} />
-                            <span className="text-[#1c1c1c] font-medium truncate max-w-[200px]">
-                                {product.name}
-                            </span>
-                        </div>
 
-                        <Link
-                            href="/products"
-                            prefetch={true}
-                            className="inline-flex items-center gap-2 text-[#1c1c1c] font-medium hover:opacity-75 transition-opacity ml-4 whitespace-nowrap"
-                        >
-                            <ArrowLeft size={14} /> Back to Catalog
+                {/* Breadcrumb */}
+                <div className="w-full border-b border-[#b6ac9f]/20 bg-[#e8e3da]">
+                    <div className="max-w-[1400px] mx-auto px-10 lg:px-16 py-3.5 flex items-center justify-between text-[11px] uppercase tracking-wider text-[#1c1c1c]/50">
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => router.back()} className="w-7 h-7 flex items-center justify-center border border-[#b6ac9f]/40 text-[#1c1c1c] hover:bg-[#b6ac9f]/20 cursor-pointer mr-1" aria-label="Back">
+                                <ArrowLeft size={13} />
+                            </button>
+                            <Link href="/" prefetch={true} className="hover:text-[#1c1c1c] transition-colors">Home</Link>
+                            <ChevronRight size={10} />
+                            <Link href="/products" prefetch={true} className="hover:text-[#1c1c1c] transition-colors">Products</Link>
+                            <ChevronRight size={10} />
+                            <span className="text-[#1c1c1c]/35">{product.category}</span>
+                            <ChevronRight size={10} />
+                            <span className="text-[#1c1c1c]/70 font-medium truncate max-w-[200px]">{product.name}</span>
+                        </div>
+                        <Link href="/products" prefetch={true} className="inline-flex items-center gap-1.5 hover:text-[#1c1c1c] transition-colors">
+                            <ArrowLeft size={12} /> Back to Catalog
                         </Link>
                     </div>
                 </div>
 
-                <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-10 md:py-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-                        <div className="lg:col-span-7 space-y-4 min-w-0">
+                {/* Product area */}
+                <div className="max-w-[1400px] mx-auto px-10 lg:px-16 py-12 lg:py-16">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+                        {/* Left: Media */}
+                        <div className="space-y-3 lg:sticky lg:top-6">
                             <div
-                                className="relative w-full aspect-[9/16] max-h-[78vh] mx-auto bg-[#f8f6f0] border border-[#b6ac9f]/30 rounded-2xl overflow-hidden shadow-sm group flex items-center justify-center p-3"
-                                style={{ backgroundColor: product.bgColor || '#f8f6f0' }}
+                                className="relative w-full overflow-hidden"
+                                style={{ backgroundColor: product.bgColor || '#f4f1ea', aspectRatio: '4/5', maxHeight: '78vh' }}
                             >
                                 {activeMediaType === 'video' ? (
-                                    <SafeVideo
-                                        src={activeMediaUrl}
-                                        controls
-                                        autoPlay
-                                        loop
-                                        muted
-                                        className="w-full h-full object-contain object-center"
-                                    />
+                                    <SafeVideo src={activeMediaUrl} controls autoPlay loop muted className="w-full h-full object-contain" />
                                 ) : activeMediaUrl ? (
-                                    <ImageWithSkeleton
-                                        src={activeMediaUrl}
-                                        alt={product.name}
-                                        className="w-full h-full object-contain object-center transition-transform duration-700 ease-in-out cursor-zoom-in"
-                                        onClick={() => setLightboxOpen(true)}
-                                    />
+                                    <ImageWithSkeleton src={activeMediaUrl} alt={product.name} className="w-full h-full object-contain cursor-zoom-in" onClick={() => setLightboxOpen(true)} />
                                 ) : (
-                                    <div className="w-full h-full flex flex-col items-center justify-center text-[#1c1c1c]/40 font-light text-[13px] gap-2">
-                                        <ImageIcon size={28} />
-                                        <span>No Media Preview Available</span>
+                                    <div className="w-full h-full flex flex-col items-center justify-center text-[#1c1c1c]/25 gap-2">
+                                        <ImageIcon size={36} strokeWidth={1.5} />
+                                        <span className="text-sm">No media</span>
                                     </div>
                                 )}
+                                {product.isNewProduct && (
+                                    <span className="absolute top-4 left-4 text-[10px] font-bold uppercase tracking-wider text-white bg-[#1c1c1c] px-3 py-1 z-10">NEW</span>
+                                )}
                             </div>
+
+                            {/* Thumbnails */}
+                            {galleryItems.length > 1 && (
+                                <div className="flex gap-2 flex-wrap pt-1">
+                                    {galleryItems.map((item, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => { setActiveMediaUrl(item.url); setActiveMediaType(item.type) }}
+                                            className={`w-16 h-20 overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${activeMediaUrl === item.url ? 'border-[#1c1c1c]' : 'border-[#b6ac9f]/30 opacity-50 hover:opacity-100'}`}
+                                            style={{ backgroundColor: product.bgColor || '#f4f1ea' }}
+                                        >
+                                            {item.type === 'video'
+                                                ? <div className="w-full h-full flex items-center justify-center text-[8px] font-bold uppercase bg-[#e8e3da] text-[#1c1c1c]/50">Video</div>
+                                                : <img src={item.url} alt="" className="w-full h-full object-cover" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
-                        <div className="lg:col-span-5 space-y-6 bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-2xl p-6 md:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] min-w-0 overflow-hidden">
-                            <div className="space-y-3 pb-5 border-b border-[#b6ac9f]/20">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/50">
-                                        Artisanal Luxury
+                        {/* Right: Info — flat, no card border */}
+                        <div className="space-y-8">
+
+                            {/* Category + stock */}
+                            <div className="flex items-center justify-between">
+                                <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#1c1c1c]/45">
+                                    {product.category}
+                                </span>
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider border ${inStock ? 'border-[#b6ac9f]/60 text-[#1c1c1c]' : 'border-rose-300 text-rose-800 bg-rose-50'}`}>
+                                    <Check size={10} strokeWidth={3} />
+                                    {inStock ? 'In Stock' : 'Out of Stock'}
+                                </span>
+                            </div>
+
+                            {/* Name + price */}
+                            <div className="space-y-2">
+                                <h1 className="text-3xl lg:text-4xl font-normal text-[#1c1c1c] tracking-tight leading-tight">
+                                    {product.name}
+                                </h1>
+                                <div className="flex items-baseline gap-2.5">
+                                    <span className="text-3xl lg:text-4xl font-bold font-mono tracking-tight text-[#1c1c1c]">
+                                        {product.price.startsWith('₹') ? product.price : `₹${product.price}`}
                                     </span>
-                                    <span
-                                        className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-medium uppercase tracking-wider border ${
-                                            product.inStock !== false && product.stock > 0
-                                                ? 'bg-[#e8e3da] text-[#1c1c1c] border-[#b6ac9f]/60'
-                                                : 'bg-rose-100 text-rose-900 border border-rose-300'
-                                        }`}
-                                    >
-                                        <Check size={12} />
-                                        {product.inStock !== false && product.stock > 0
-                                            ? `In Stock`
-                                            : 'Out of Stock'}
-                                    </span>
-                                </div>
-                                <div className="flex items-baseline justify-between gap-4 pt-1">
-                                    <h1 className="text-2xl md:text-3xl font-normal text-[#1c1c1c] tracking-tight leading-tight truncate">
-                                        {product.name}
-                                    </h1>
-                                    <div className="text-[#1c1c1c] text-right shrink-0">
-                                        <div className="text-2xl md:text-3xl font-bold font-mono tracking-tight">
-                                            {product.price.startsWith('₹')
-                                                ? product.price
-                                                : `₹${product.price}`}
-                                        </div>
-                                    </div>
+                                    <span className="text-[11px] font-light text-[#1c1c1c]/40 uppercase tracking-wider">incl. all taxes</span>
                                 </div>
                             </div>
 
-                            <div className="space-y-3 pt-2">
+                            {/* Shipping notice */}
+                            {freeShippingLeft > 0 && priceNum > 0 && (
+                                <div className="flex items-center gap-2 text-[12px] text-[#1c1c1c]/55 border-t border-b border-[#b6ac9f]/20 py-3">
+                                    <Truck size={13} />
+                                    Free delivery on orders above ₹1,500 — add ₹{freeShippingLeft.toLocaleString('en-IN')} more
+                                </div>
+                            )}
+
+                            {/* Description */}
+                            {product.description && (
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Description</p>
+                                    <p className="text-[14px] font-light text-[#1c1c1c]/70 leading-[1.9] whitespace-pre-line">
+                                        {product.description}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* CTA buttons */}
+                            <div className="space-y-2.5">
                                 {quantityInCart > 0 ? (
-                                    <div className="flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-5 py-3.5 rounded-xl shadow-md">
-                                        <button
-                                            type="button"
-                                            onClick={() => updateQuantity(productId, quantityInCart - 1)}
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 cursor-pointer transition-colors"
-                                        >
-                                            <Minus size={15} />
-                                        </button>
-                                        <span className="text-[14px] font-semibold font-mono tracking-wider">
-                                            {quantityInCart} in Shopping Bag
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={() => updateQuantity(productId, quantityInCart + 1)}
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 cursor-pointer transition-colors"
-                                        >
-                                            <Plus size={15} />
-                                        </button>
+                                    <div className="flex items-center justify-between bg-[#1c1c1c] text-[#f4f1ea] px-6 py-4">
+                                        <button type="button" onClick={() => updateQuantity(productId, quantityInCart - 1)} className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 cursor-pointer"><Minus size={15} /></button>
+                                        <span className="text-[13px] font-semibold font-mono tracking-wider">{quantityInCart} in Shopping Bag</span>
+                                        <button type="button" onClick={() => updateQuantity(productId, quantityInCart + 1)} className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 cursor-pointer"><Plus size={15} /></button>
                                     </div>
                                 ) : (
-                                    <button
-                                        onClick={handleAddToCart}
-                                        disabled={product.inStock === false || product.stock <= 0}
-                                        className="w-full py-4 bg-[#1c1c1c] text-[#f4f1ea] text-[13px] font-semibold uppercase tracking-widest rounded-xl flex items-center justify-center gap-2.5 hover:bg-black active:scale-[0.99] transition-all disabled:opacity-40 cursor-pointer shadow-md"
-                                    >
-                                        <ShoppingBag size={18} /> Add To Shopping Bag
+                                    <button onClick={handleAddToCart} disabled={!inStock} className="w-full py-4 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-2.5 hover:bg-black transition-colors disabled:opacity-40 cursor-pointer">
+                                        <ShoppingBag size={17} /> Add To Shopping Bag
                                     </button>
                                 )}
-                                <button
-                                    onClick={handleBuyNow}
-                                    disabled={product.inStock === false || product.stock <= 0}
-                                    className="w-full py-4 bg-[#e8e3da] border border-[#1c1c1c] text-[#1c1c1c] text-[13px] font-semibold uppercase tracking-widest rounded-xl flex items-center justify-center gap-2.5 hover:bg-[#1c1c1c] hover:text-[#f4f1ea] active:scale-[0.99] transition-all disabled:opacity-40 cursor-pointer"
-                                >
-                                    Instant Checkout
+                                <button onClick={handleBuyNow} disabled={!inStock} className="w-full py-4 border border-[#1c1c1c] text-[#1c1c1c] text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-2.5 hover:bg-[#1c1c1c] hover:text-[#f4f1ea] transition-colors disabled:opacity-40 cursor-pointer">
+                                    Buy Now
                                 </button>
+                                <button onClick={handleShare} className="w-full flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-[#1c1c1c]/40 hover:text-[#1c1c1c] transition-colors cursor-pointer py-1">
+                                    <Share2 size={12} /> Share Product
+                                </button>
+                            </div>
+
+                            {/* Trust badges */}
+                            <div className="grid grid-cols-3 gap-3 border-t border-[#b6ac9f]/20 pt-6">
+                                {[
+                                    { icon: <Truck size={17} />, label: 'Express Delivery' },
+                                    { icon: <ShieldCheck size={17} />, label: '100% Authentic' },
+                                    { icon: <Gift size={17} />, label: 'Gift Wrap Ready' },
+                                ].map(({ icon, label }) => (
+                                    <div key={label} className="flex flex-col items-center gap-2 py-4 border border-[#b6ac9f]/25 text-center">
+                                        <span className="text-[#1c1c1c]/50">{icon}</span>
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#1c1c1c]/50">{label}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Accordions */}
+                            <div className="border-t border-[#b6ac9f]/20">
+                                {accordions.map(({ id, title, body }) => (
+                                    <div key={id} className="border-b border-[#b6ac9f]/20">
+                                        <button
+                                            onClick={() => setOpenAccordion(openAccordion === id ? '' : id)}
+                                            className="w-full flex items-center justify-between py-4 cursor-pointer text-left"
+                                        >
+                                            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#1c1c1c]">{title}</span>
+                                            <span className="text-[#1c1c1c]/40 shrink-0">{openAccordion === id ? <X size={14} /> : <Plus size={14} />}</span>
+                                        </button>
+                                        {openAccordion === id && (
+                                            <div className="pb-5 space-y-2">
+                                                {body.map((line, i) => (
+                                                    <p key={i} className="text-[13px] font-light text-[#1c1c1c]/60 flex items-start gap-2">
+                                                        <span className="text-[#1c1c1c]/25 mt-0.5">•</span>{line}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
+
+                    {/* Related products */}
+                    {relatedProducts.length > 0 && (
+                        <div className="mt-20 space-y-8 border-t border-[#b6ac9f]/20 pt-14">
+                            <h2 className="text-2xl font-normal text-[#1c1c1c] tracking-tight">You May Also Like</h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+                                {relatedProducts.slice(0, 4).map((rel) => {
+                                    const relId = rel._id || rel.id || ''
+                                    return (
+                                        <Link key={relId} href={`/product/${relId}`} prefetch={true} className="block group cursor-pointer">
+                                            <div className="w-full overflow-hidden" style={{ backgroundColor: rel.bgColor || '#cec9be', aspectRatio: '4/5' }}>
+                                                {rel.image
+                                                    ? <img src={rel.image} alt={rel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                    : <div className="w-full h-full flex items-center justify-center text-[#1c1c1c]/25 text-xs">No Image</div>}
+                                            </div>
+                                            <div className="pt-3 space-y-0.5">
+                                                <p className="text-[9px] font-bold uppercase tracking-wider text-[#1c1c1c]/40">{rel.category}</p>
+                                                <p className="text-[13px] font-normal text-[#1c1c1c] line-clamp-2 leading-snug">{rel.name}</p>
+                                                <p className="text-[14px] font-bold font-mono">{rel.price.startsWith('₹') ? rel.price : `₹${rel.price}`}</p>
+                                            </div>
+                                        </Link>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Lightbox Modal */}
+            {/* Lightbox */}
             {lightboxOpen && activeMediaType === 'image' && activeMediaUrl && (
-                <div
-                    className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 select-none animate-fadeIn"
-                    onClick={() => setLightboxOpen(false)}
-                >
-                    <button
-                        onClick={() => setLightboxOpen(false)}
-                        className="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
-                    >
-                        <X size={24} />
+                <div className="fixed inset-0 z-[100] bg-black/96 flex items-center justify-center p-4" onClick={() => setLightboxOpen(false)}>
+                    <button onClick={() => setLightboxOpen(false)} className="absolute top-5 right-5 text-white/60 hover:text-white p-2 cursor-pointer">
+                        <X size={22} />
                     </button>
-                    <img
-                        src={activeMediaUrl}
-                        alt={product.name}
-                        className="max-w-full max-h-[90vh] object-contain rounded-lg"
-                        onClick={(e) => e.stopPropagation()}
-                    />
+                    <img src={activeMediaUrl} alt={product.name} className="max-w-full max-h-[92vh] object-contain" onClick={(e) => e.stopPropagation()} />
                 </div>
             )}
-        </main>
+        </div>
     )
 }

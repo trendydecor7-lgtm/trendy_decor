@@ -42,7 +42,12 @@ export default function Inventory() {
     const fetchProducts = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API_BASE_URL}/products`)
+            const res = await fetch(`${API_BASE_URL}/products?_t=${Date.now()}`, {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                },
+            })
             const data = await res.json()
             if (data.success && Array.isArray(data.products)) {
                 setProducts(data.products)
@@ -352,15 +357,14 @@ export default function Inventory() {
                                                 </td>
                                                 <td className="py-4.5 px-6 text-right">
                                                     <div className="flex items-center justify-end gap-2">
-                                                        <button
-                                                            onClick={() =>
-                                                                router.push(`/edit-product/${prodId}`)
-                                                            }
-                                                            className="p-2.5 bg-[#e8e3da]/80 hover:bg-[#1c1c1c] hover:text-[#f4f1ea] border border-[#b6ac9f]/40 rounded-none transition-all cursor-pointer text-[#1c1c1c]"
+                                                        <Link
+                                                            href={`/edit-product/${prodId}`}
+                                                            prefetch={true}
+                                                            className="p-2.5 bg-[#e8e3da]/80 hover:bg-[#1c1c1c] hover:text-[#f4f1ea] border border-[#b6ac9f]/40 rounded-none transition-all cursor-pointer text-[#1c1c1c] inline-block"
                                                             title="Edit Product Page"
                                                         >
                                                             <Edit3 size={15} />
-                                                        </button>
+                                                        </Link>
                                                         <button
                                                             onClick={() => handleDeleteProduct(p)}
                                                             className="p-2.5 bg-[#e8e3da]/80 hover:bg-[#1c1c1c] hover:text-[#f4f1ea] border border-[#b6ac9f]/40 rounded-none transition-all cursor-pointer text-[#1c1c1c]"

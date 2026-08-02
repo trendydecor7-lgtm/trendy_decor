@@ -222,6 +222,7 @@ export default function Profile() {
                         <div className="flex flex-wrap items-center gap-3 shrink-0">
                             <Link
                                 href="/admin/inventory"
+                                prefetch={true}
                                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#1c1c1c] text-[#f4f1ea] rounded-md text-[12px] font-light tracking-widest uppercase hover:bg-black/85 transition-colors"
                             >
                                 <Boxes size={15} />
@@ -229,6 +230,7 @@ export default function Profile() {
                             </Link>
                             <Link
                                 href="/admin/add-product"
+                                prefetch={true}
                                 className="inline-flex items-center gap-2 px-6 py-3 border border-[#1c1c1c] text-[#1c1c1c] rounded-md text-[12px] font-light tracking-widest uppercase hover:bg-[#1c1c1c] hover:text-[#f4f1ea] transition-colors"
                             >
                                 <Plus size={15} />

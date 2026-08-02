@@ -9,7 +9,7 @@ interface CacheEntry<T> {
 }
 
 const memoryCache = new Map<string, CacheEntry<any>>()
-const MEMORY_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours in-memory TTL
+const MEMORY_TTL_MS = 10 * 1000 // 10 seconds in-memory TTL
 
 function getMemoryCache<T>(key: string): T | null {
     const entry = memoryCache.get(key)
@@ -40,6 +40,8 @@ export function clearProductsCache(productId?: string) {
         }
         revalidatePath('/api/products')
         revalidatePath('/products')
+        revalidatePath('/inventory')
+        revalidatePath('/admin/inventory')
         revalidatePath('/')
         if (productId) {
             revalidatePath(`/product/${productId}`)
@@ -61,7 +63,7 @@ const fetchAllProductsFromDB = async () => {
 export const getCachedProducts = unstable_cache(
     async () => fetchAllProductsFromDB(),
     ['all-products-cache'],
-    { revalidate: 86400, tags: ['products'] }
+    { revalidate: 1, tags: ['products'] }
 )
 
 // 2. Fetch single product by ID from MongoDB Atlas
@@ -77,7 +79,7 @@ export const getCachedProductById = (id: string) =>
     unstable_cache(
         async () => fetchProductByIdFromDB(id),
         [`product-${id}-cache`],
-        { revalidate: 86400, tags: ['products', `product-${id}`] }
+        { revalidate: 1, tags: ['products', `product-${id}`] }
     )()
 
 /**

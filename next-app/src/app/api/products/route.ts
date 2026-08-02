@@ -6,7 +6,8 @@ import { verifyTokenAndGetUser } from '@/lib/auth'
 import { sendNewProductNotificationEmail } from '@/lib/resend'
 import { getProductsFast, clearProductsCache } from '@/lib/productsCache'
 
-export const revalidate = 86400
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET() {
     try {
@@ -16,7 +17,9 @@ export async function GET() {
             {
                 status: 200,
                 headers: {
-                    'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
                 },
             }
         )

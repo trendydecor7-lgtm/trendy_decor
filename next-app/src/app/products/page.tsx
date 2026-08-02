@@ -176,7 +176,12 @@ function ProductsContent() {
     const fetchProducts = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${API_BASE_URL}/products`)
+            const res = await fetch(`${API_BASE_URL}/products?_t=${Date.now()}`, {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                },
+            })
             if (res.ok) {
                 const data = await res.json()
                 if (data.success && Array.isArray(data.products)) {

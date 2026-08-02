@@ -292,13 +292,13 @@ export default function EditProduct() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button
-                            type="button"
-                            onClick={() => router.push('/inventory')}
-                            className="px-6 py-3 border border-[#b6ac9f]/60 rounded-none text-[12px] font-semibold uppercase tracking-widest text-[#1c1c1c] hover:bg-[#f4f1ea] transition-colors cursor-pointer"
+                        <Link
+                            href="/inventory"
+                            prefetch={true}
+                            className="px-6 py-3 border border-[#b6ac9f]/60 rounded-none text-[12px] font-semibold uppercase tracking-widest text-[#1c1c1c] hover:bg-[#f4f1ea] transition-colors cursor-pointer inline-block"
                         >
                             Cancel
-                        </button>
+                        </Link>
                         <button
                             type="button"
                             onClick={handleSubmit}
@@ -603,13 +603,13 @@ export default function EditProduct() {
                             </div>
 
                             <div className="pt-4 border-t border-[#b6ac9f]/40 flex items-center justify-end gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => router.push('/inventory')}
-                                    className="px-6 py-3 border border-[#b6ac9f]/60 rounded-none text-[12px] font-semibold uppercase tracking-widest text-[#1c1c1c] hover:bg-[#e8e3da] transition-colors cursor-pointer"
+                                <Link
+                                    href="/inventory"
+                                    prefetch={true}
+                                    className="px-6 py-3 border border-[#b6ac9f]/60 rounded-none text-[12px] font-semibold uppercase tracking-widest text-[#1c1c1c] hover:bg-[#e8e3da] transition-colors cursor-pointer inline-block"
                                 >
                                     Cancel
-                                </button>
+                                </Link>
                                 <button
                                     type="submit"
                                     disabled={savingProduct}
