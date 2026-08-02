@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import SEO from '@/components/common/SEO'
 import SafeVideo from '@/components/common/SafeVideo'
 import {
@@ -453,10 +454,11 @@ function ProductsContent() {
                                 const mrpVal = rawPrice ? Math.round(rawPrice * 1.35) : 0
 
                                 return (
-                                    <div
+                                    <Link
                                         key={productId}
-                                        onClick={() => router.push(`/product/${productId}`)}
-                                        className="group relative flex flex-col bg-white rounded-none overflow-hidden border border-[#e2dcd2] cursor-pointer shadow-xs hover:shadow-md transition-all duration-200 justify-between"
+                                        href={`/product/${productId}`}
+                                        prefetch={true}
+                                        className="group relative flex flex-col bg-white rounded-none overflow-hidden border border-[#e2dcd2] cursor-pointer shadow-xs hover:shadow-md transition-all duration-200 justify-between block"
                                     >
                                         {/* Image Box - Square aspect ratio with sharp corners */}
                                         <div className="relative w-full aspect-square shrink-0 bg-[#f8f6f0] overflow-hidden flex items-center justify-center p-2.5 sm:p-4 rounded-none">
@@ -509,7 +511,9 @@ function ProductsContent() {
                                                 {quantityInCart > 0 ? (
                                                     <div className="flex items-center justify-between bg-[#1c1c1c] text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-none w-full">
                                                         <button
+                                                            type="button"
                                                             onClick={(e) => {
+                                                                e.preventDefault()
                                                                 e.stopPropagation()
                                                                 updateQuantity(productId, quantityInCart - 1)
                                                             }}
@@ -521,7 +525,9 @@ function ProductsContent() {
                                                             {quantityInCart} in Cart
                                                         </span>
                                                         <button
+                                                            type="button"
                                                             onClick={(e) => {
+                                                                e.preventDefault()
                                                                 e.stopPropagation()
                                                                 updateQuantity(productId, quantityInCart + 1)
                                                             }}
@@ -532,7 +538,11 @@ function ProductsContent() {
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        onClick={(e) => handleAddToCart(product, e)}
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.preventDefault()
+                                                            handleAddToCart(product, e)
+                                                        }}
                                                         className="w-full py-1.5 sm:py-2.5 bg-[#1c1c1c] text-white text-[10px] sm:text-[12px] font-medium uppercase tracking-wider rounded-none flex items-center justify-center gap-1 sm:gap-2 hover:bg-black transition-colors cursor-pointer"
                                                     >
                                                         <ShoppingBag size={12} className="sm:w-3.5 sm:h-3.5" /> Add to Cart
@@ -540,7 +550,7 @@ function ProductsContent() {
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 )
                             })}
                         </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import SEO from '@/components/common/SEO'
 import SafeVideo from '@/components/common/SafeVideo'
 import IntroAnimation from '@/components/common/IntroAnimation'
@@ -59,11 +60,6 @@ export default function Home() {
     const secondSectionRef = useRef<HTMLDivElement>(null)
     const [parallaxY1, setParallaxY1] = useState(0)
     const [parallaxY2, setParallaxY2] = useState(0)
-    const [showIntro, setShowIntro] = useState<boolean>(true)
-
-    const handleIntroComplete = () => {
-        setShowIntro(false)
-    }
 
     useEffect(() => {
         if (video1Ref.current) {
@@ -112,7 +108,6 @@ export default function Home() {
 
     return (
         <main className="w-full select-none" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
-            {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
             <SEO
                 title="Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha"
                 description="Explore Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja. Premium event decoration, customized gift hampers, artisanal chocolates, bouquets, and designer rakhis."
@@ -131,9 +126,10 @@ export default function Home() {
                             transition: 'transform 0.1s ease-out',
                         }}
                     >
-                        <div
-                            onClick={() => router.push('/products')}
-                            className="relative overflow-hidden cursor-pointer w-full h-full group"
+                        <Link
+                            href="/products"
+                            prefetch={true}
+                            className="relative overflow-hidden cursor-pointer w-full h-full group block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero1.png"
@@ -142,11 +138,12 @@ export default function Home() {
                                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-all duration-500" />
-                        </div>
+                        </Link>
 
-                        <div
-                            onClick={() => router.push('/products')}
-                            className="relative overflow-hidden cursor-pointer w-full h-full group"
+                        <Link
+                            href="/products"
+                            prefetch={true}
+                            className="relative overflow-hidden cursor-pointer w-full h-full group block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero2.png"
@@ -155,7 +152,7 @@ export default function Home() {
                                 className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-all duration-500" />
-                        </div>
+                        </Link>
                     </div>
                 </section>
                 <div className="relative z-10 flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
@@ -194,9 +191,10 @@ export default function Home() {
                             className="w-full grid grid-cols-2 lg:grid-cols-4"
                             style={{ gap: '3px', background: '#e8e3da' }}
                         >
-                            <div
-                                onClick={() => router.push('/products?category=Hampers')}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#d4cec5]"
+                            <Link
+                                href="/products?category=Hampers"
+                                prefetch={true}
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/hamper.png"
@@ -212,10 +210,11 @@ export default function Home() {
                                         Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                                     </p>
                                 </div>
-                            </div>
-                            <div
-                                onClick={() => router.push('/products?category=Rakhis')}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#c9c3b8]"
+                            </Link>
+                            <Link
+                                href="/products?category=Rakhis"
+                                prefetch={true}
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/rakhi.png"
@@ -231,10 +230,11 @@ export default function Home() {
                                         Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                                     </p>
                                 </div>
-                            </div>
-                            <div
-                                onClick={() => router.push('/products?category=Customize Chocolates')}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#bdb7ac]"
+                            </Link>
+                            <Link
+                                href="/products?category=Customize Chocolates"
+                                prefetch={true}
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/choco.png"
@@ -250,10 +250,11 @@ export default function Home() {
                                         Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                                     </p>
                                 </div>
-                            </div>
-                            <div
-                                onClick={() => router.push('/products?category=Bouquets')}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#b0aaa0]"
+                            </Link>
+                            <Link
+                                href="/products?category=Bouquets"
+                                prefetch={true}
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#b0aaa0] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/bouque.png"
@@ -269,7 +270,7 @@ export default function Home() {
                                         Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                                     </p>
                                 </div>
-                            </div>
+                            </Link>
                         </div>
                         <div className="md:hidden w-full bg-[#f4f1ea] flex flex-col items-center justify-center text-center px-6 py-10 border-t border-[#b6ac9f]/30">
                             <div className="max-w-sm space-y-2.5">
@@ -291,9 +292,10 @@ export default function Home() {
                                 </p>
                             </div>
                         </div>
-                        <div
-                            onClick={() => router.push('/products')}
-                            className="md:hidden relative w-full h-[240px] xs:h-[280px] sm:h-[360px] overflow-hidden cursor-pointer group bg-[#d4cec5] border-t border-[#b6ac9f]/30"
+                        <Link
+                            href="/products"
+                            prefetch={true}
+                            className="md:hidden relative w-full h-[240px] xs:h-[280px] sm:h-[360px] overflow-hidden cursor-pointer group bg-[#d4cec5] border-t border-[#b6ac9f]/30 block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero3.jpeg"
@@ -312,7 +314,7 @@ export default function Home() {
                                     Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
                                 </p>
                             </div>
-                        </div>
+                        </Link>
                     </section>
                 </div>
                 <section
@@ -367,9 +369,10 @@ export default function Home() {
                                 </p>
                             </div>
                         </div>
-                        <div
-                            onClick={() => router.push('/products')}
-                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#d4cec5]"
+                        <Link
+                            href="/products"
+                            prefetch={true}
+                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero3.jpeg"
@@ -382,10 +385,11 @@ export default function Home() {
                                     Signature Hampers
                                 </span>
                             </div>
-                        </div>
-                        <div
-                            onClick={() => router.push('/products')}
-                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#c9c3b8]"
+                        </Link>
+                        <Link
+                            href="/products"
+                            prefetch={true}
+                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero4.jpeg"
@@ -398,7 +402,7 @@ export default function Home() {
                                     Custom Styling
                                 </span>
                             </div>
-                        </div>
+                        </Link>
                     </section>
                 </div>
             </div>
