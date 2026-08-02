@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
             subscriber = await Newsletter.create({ email: normalizedEmail })
         }
 
-        sendNewsletterConfirmationEmail(normalizedEmail).catch(console.error)
+        await sendNewsletterConfirmationEmail(normalizedEmail)
 
         return NextResponse.json(
             {

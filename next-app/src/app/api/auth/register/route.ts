@@ -36,9 +36,7 @@ export async function POST(req: NextRequest) {
 
         const token = generateToken(user._id)
 
-        sendWelcomeEmail(user.email, user.username).catch((err) => {
-            console.error('Failed sending welcome email:', err)
-        })
+        await sendWelcomeEmail(user.email, user.username)
 
         return NextResponse.json(
             {

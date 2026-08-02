@@ -108,9 +108,9 @@ const Footer: React.FC = () => {
                                 </Link>
                             </li>
                             <li>
-                                <a href="#" className="hover:opacity-60 transition-opacity">
+                                <Link href="/privacy" className="hover:opacity-60 transition-opacity">
                                     Privacy policy
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>

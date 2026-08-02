@@ -14,12 +14,22 @@ export async function POST(req: NextRequest) {
 
         const normalizedEmail = email.toLowerCase().trim()
 
-        sendContactUsEmail({
+        const emailResult = await sendContactUsEmail({
             name: name.trim(),
             email: normalizedEmail,
             phone: phone ? phone.trim() : '',
             message: message.trim(),
-        }).catch(console.error)
+        })
+
+        if (emailResult && !emailResult.success) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: emailResult.error || 'Failed to deliver message to owner',
+                },
+                { status: 500 }
+            )
+        }
 
         return NextResponse.json(
             {

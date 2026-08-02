@@ -30,12 +30,16 @@ export const sendOtpEmail = async (to: string, otp: string) => {
         </div>
         `
 
-        const data = await resend.emails.send({
+        const { data, error } = await resend.emails.send({
             from: FROM_EMAIL,
             to,
             subject: `${otp} is your verification code for Trendy Decor`,
             html,
         })
+        if (error) {
+            console.error('Error sending OTP email via Resend:', error)
+            throw new Error(error.message || 'Failed to send OTP email')
+        }
         return data
     } catch (err) {
         console.error('Error sending OTP email via Resend:', err)
@@ -188,11 +192,13 @@ export const sendContactUsEmail = async ({
 }) => {
     try {
         const formattedDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+        const OWNER_EMAIL =
+            process.env.ADMIN_EMAIL || process.env.OWNER_EMAIL || 'trendydecor7@gmail.com'
 
         const adminHtml = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 30px 20px; color: #1c1c1c; background-color: #f4f1ea;">
             <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2dbce; padding: 30px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
-                <div style="background-color: #1c1c1c; padding: 18px 24px; text-align: center; color: #f4f1ea; border-radius: 8px 8px 0 0; margin: -30px -30px 24px -30px;">
+                <div style="background-color: #1c1c1c; padding: 18px 24px; text-align: center; color: #f4f1ea; border-radius: 8px 8px 0 0; margin-bottom: 24px;">
                     <h2 style="margin: 0; font-size: 18px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase;">New Contact Form Inquiry</h2>
                 </div>
 
@@ -225,21 +231,20 @@ export const sendContactUsEmail = async ({
                         ${message.replace(/\n/g, '<br />')}
                     </div>
                 </div>
+
+                <div style="margin-top: 24px; text-align: center;">
+                    <a href="mailto:${email}?subject=Re:%20Your%20Trendy%20Decor%20Inquiry" style="background-color: #1c1c1c; color: #f4f1ea; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-block;">
+                        Reply Directly to Customer
+                    </a>
+                </div>
             </div>
         </div>
         `
 
-        await resend.emails.send({
-            from: FROM_EMAIL,
-            to: ['trendydecor7@gmail.com'],
-            subject: `📩 New Contact Inquiry from ${name} (${email})`,
-            html: adminHtml,
-        })
-
         const customerHtml = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 30px 20px; color: #1c1c1c; background-color: #f4f1ea;">
             <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border: 1px solid #e2dbce; padding: 32px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
-                <div style="background-color: #1c1c1c; padding: 22px; text-align: center; color: #f4f1ea; margin: -32px -32px 28px -32px; border-radius: 12px 12px 0 0;">
+                <div style="background-color: #1c1c1c; padding: 22px; text-align: center; color: #f4f1ea; margin-bottom: 28px; border-radius: 12px 12px 0 0;">
                     <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #c4b59d;">LUXURY GIFTING & EVENT DECOR</span>
                     <h1 style="margin: 6px 0 0 0; font-size: 22px; font-weight: 300; letter-spacing: 2px;">Trendy Decor</h1>
                 </div>
@@ -266,13 +271,39 @@ export const sendContactUsEmail = async ({
         </div>
         `
 
-        await resend.emails.send({
-            from: FROM_EMAIL,
-            to: email,
-            subject: 'Thank You for Contacting Trendy Decor ✨',
-            html: customerHtml,
-        })
-    } catch (err) {
+        const [adminRes, customerRes] = await Promise.all([
+            resend.emails.send({
+                from: FROM_EMAIL,
+                to: OWNER_EMAIL,
+                subject: `New Contact Inquiry: ${name} - Trendy Decor`,
+                html: adminHtml,
+            }),
+            resend.emails.send({
+                from: FROM_EMAIL,
+                to: email,
+                subject: 'We Received Your Message - Trendy Decor',
+                html: customerHtml,
+            }),
+        ])
+
+        if (adminRes.error || customerRes.error) {
+            const errorMsg =
+                adminRes.error?.message ||
+                customerRes.error?.message ||
+                'Failed to send contact email'
+            console.error('Resend error in sendContactUsEmail:', {
+                adminError: adminRes.error,
+                customerError: customerRes.error,
+            })
+            return {
+                success: false,
+                error: errorMsg,
+            }
+        }
+
+        return { success: true, data: adminRes.data }
+    } catch (err: any) {
         console.error('Error sending Contact Us email:', err)
+        return { success: false, error: err.message || 'Error sending Contact Us email' }
     }
 }
