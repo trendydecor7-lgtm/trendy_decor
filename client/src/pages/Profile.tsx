@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import SEO from '../components/common/SEO'
 import {
     LogOut,
     MapPin,
@@ -96,6 +97,10 @@ export const Profile: React.FC = () => {
             className="w-full min-h-screen bg-[#e8e3da] py-12 md:py-16 px-6 md:px-12 select-none"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
+            <SEO
+                title="My Profile & Order History"
+                description="Manage your Trendy Decor account, saved shipping addresses, and view order history."
+            />
             <div className="max-w-[1200px] mx-auto space-y-6">
                 {/* ── 1. USER PROFILE HEADER CARD ── */}
                 <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

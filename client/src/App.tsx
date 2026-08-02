@@ -17,12 +17,21 @@ import Cart from './pages/Cart'
 import ProductDetail from './pages/ProductDetail'
 import AddProduct from './pages/AddProduct'
 import Inventory from './pages/Inventory'
+import { useState } from 'react'
 import EditProduct from './pages/EditProduct'
+import NotFound from './pages/NotFound'
 import OwnerRoute from './components/common/OwnerRoute'
+import IntroAnimation from './components/common/IntroAnimation'
 
 const App = () => {
     const location = useLocation()
     const isAuthPage = location.pathname === '/auth'
+
+    const [showIntro, setShowIntro] = useState(true)
+
+    const handleIntroComplete = () => {
+        setShowIntro(false)
+    }
 
     useEffect(() => {
         const scroll = new LocomotiveScroll({
@@ -53,6 +62,7 @@ const App = () => {
         <ToastProvider>
             <AuthProvider>
                 <CartProvider>
+                    {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
                     <div className="min-h-screen bg-[#e8e3da] flex flex-col justify-between">
                         <div>
                             {!isAuthPage && <Navbar />}
@@ -114,6 +124,8 @@ const App = () => {
                                 />
                                 <Route path="/auth" element={<Auth />} />
                                 <Route path="/cart" element={<Cart />} />
+                                <Route path="/404" element={<NotFound />} />
+                                <Route path="*" element={<NotFound />} />
                             </Routes>
                         </div>
                         {!isAuthPage && <Footer />}

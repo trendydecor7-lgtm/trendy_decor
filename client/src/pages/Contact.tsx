@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Mail, Phone, MapPin, Send, CheckCircle2, Loader2 } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 import { API_BASE_URL } from '../config/api'
+import SEO from '../components/common/SEO'
 
 const Contact = () => {
     const { toast } = useToast()
@@ -42,6 +43,10 @@ const Contact = () => {
 
     return (
         <main className="w-full select-none" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
+            <SEO
+                title="Contact Us | Inquiry & Consultation"
+                description="Get in touch with Trendy Decor for custom home decor consultation, orders, and inquiries."
+            />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 {/* ── HEADER BANNER ─────────────────────────────────── */}
                 <section className="w-full bg-[#f4f1ea] py-14 md:py-20 px-8 text-center border-b border-[#b6ac9f]/30">

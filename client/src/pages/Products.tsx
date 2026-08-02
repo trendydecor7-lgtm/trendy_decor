@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import SEO from '../components/common/SEO'
 import {
     ShoppingBag,
     Plus,
@@ -434,6 +435,11 @@ const Products: React.FC = () => {
             className="w-full select-none min-h-screen bg-[#e8e3da]"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
+            <SEO
+                title="Curated Collection | Gift Hampers, Chocolates, Bouquets & Rakhis"
+                description="Browse our collection of customized gift hampers, handcrafted chocolates, fresh bouquets, designer rakhis, and celebration decor from Trendy Decor Gidderbaha."
+                keywords="gift hampers, customized chocolates, bouquets, designer rakhis, event decor, trendy decor gidderbaha"
+            />
             <div className="flex flex-col bg-[#e8e3da]">
                 {/* ── HEADER BANNER ── */}
                 <section className="w-full bg-[#f4f1ea] py-16 md:py-20 px-6 md:px-12 text-center border-b border-[#b6ac9f]/30">

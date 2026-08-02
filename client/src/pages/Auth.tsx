@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Navigate, useNavigate, Link } from 'react-router-dom'
+import SEO from '../components/common/SEO'
 import { ArrowLeft, CheckCircle2, ShieldCheck, Loader2, KeyRound, Lock } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -239,6 +240,10 @@ const Auth: React.FC = () => {
             className="w-full min-h-screen flex flex-col lg:flex-row bg-[#f4f1ea] text-[#1c1c1c] select-none"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
+            <SEO
+                title="Sign In | Member Portal"
+                description="Sign in or register an account with Trendy Decor to manage your orders, saved addresses, and profile."
+            />
             {/* ── LEFT PANEL ── */}
             <div className="hidden lg:flex lg:w-1/2 bg-[#1c1c1c] text-[#f4f1ea] flex-col justify-between p-12 relative overflow-hidden">
                 <div className="relative z-10 flex items-center justify-between">

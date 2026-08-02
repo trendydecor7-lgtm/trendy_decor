@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import SEO from '../components/common/SEO'
 import {
     ShoppingBag,
     Share2,
@@ -198,6 +199,10 @@ const ProductDetail: React.FC = () => {
     if (error || !product) {
         return (
             <main className="w-full min-h-screen bg-[#e8e3da] py-24 px-6">
+                <SEO
+                    title="Product Not Found | 404 - Trendy Decor"
+                    description="The requested decor piece could not be found in our catalog."
+                />
                 <div className="max-w-md mx-auto bg-[#f4f1ea] border border-[#b6ac9f]/60 p-8 rounded-2xl text-center space-y-6 shadow-xl">
                     <h2 className="text-2xl font-normal text-[#1c1c1c]">Product Not Found</h2>
                     <p className="text-[14px] font-light text-[#1c1c1c]/70">
@@ -220,6 +225,32 @@ const ProductDetail: React.FC = () => {
             className="w-full bg-[#e8e3da] text-[#1c1c1c] min-h-screen select-none animate-smooth-appear"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
+            <SEO
+                title={product?.name || 'Product Details'}
+                description={
+                    product?.description ||
+                    'Explore custom gift hampers, artisanal chocolates, floral bouquets, designer rakhis, and celebration decor.'
+                }
+                image={product?.images?.[0] || product?.image || undefined}
+                type="product"
+                schema={
+                    product
+                        ? {
+                              '@context': 'https://schema.org/',
+                              '@type': 'Product',
+                              name: product.name,
+                              image: product?.images?.[0] || product?.image,
+                              description: product.description,
+                              offers: {
+                                  '@type': 'Offer',
+                                  priceCurrency: 'USD',
+                                  price: product.price,
+                                  availability: 'https://schema.org/InStock',
+                              },
+                          }
+                        : undefined
+                }
+            />
             {/* ── BREADCRUMB & TOP NAV BAR ── */}
             <div className="w-full border-b border-[#b6ac9f]/30 bg-[#f4f1ea]/60 backdrop-blur-sm">
                 <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-4 flex items-center justify-between text-[12px] uppercase tracking-wider text-[#1c1c1c]/60 overflow-x-auto">

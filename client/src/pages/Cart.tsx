@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import SEO from '../components/common/SEO'
 import {
     Trash2,
     Plus,
@@ -175,6 +176,10 @@ const Cart: React.FC = () => {
             className="w-full min-h-screen bg-[#e8e3da] py-12 md:py-16 px-6 md:px-12 select-none"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
+            <SEO
+                title="Your Shopping Bag | Secure Checkout"
+                description="Review your curated home decor items in your shopping bag and proceed to order."
+            />
             <div className="max-w-[1600px] mx-auto px-2 md:px-6 space-y-8">
                 {/* ── HEADER ── */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#b6ac9f]/40 pb-6">
