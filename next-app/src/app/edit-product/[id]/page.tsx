@@ -16,6 +16,12 @@ import {
     Star,
     Sparkles,
 } from 'lucide-react'
+import {
+    validateMediaFile,
+    compressMediaFile,
+    parseUploadResponse,
+    MAX_IMAGE_SIZE_MB,
+} from '@/lib/imageCompression'
 
 const CATEGORIES = ['Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates']
 
@@ -99,18 +105,36 @@ export default function EditProduct() {
         fetchProduct()
     }, [id])
 
-    const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
 
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            const base64Data = reader.result as string
-            setStagedThumbnailBase64(base64Data)
-            setThumbnailPreview(base64Data)
-            toast.info('New thumbnail image staged. Save changes to update.')
+        const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+        if (!validation.valid) {
+            toast.error(validation.error || `Image size exceeds ${MAX_IMAGE_SIZE_MB}MB limit.`)
+            e.target.value = ''
+            return
         }
-        reader.readAsDataURL(file)
+
+        try {
+            toast.info('Processing thumbnail image...')
+            const result = await compressMediaFile(file, {
+                maxMB: MAX_IMAGE_SIZE_MB,
+                maxDimension: 1600,
+            })
+            setStagedThumbnailBase64(result.base64)
+            setThumbnailPreview(result.base64)
+            if (result.compressed && result.originalMB > 1.0) {
+                toast.success(
+                    `Thumbnail optimized (${result.originalMB.toFixed(1)}MB → ${result.finalMB.toFixed(2)}MB)`
+                )
+            } else {
+                toast.info('New thumbnail image staged. Save changes to update.')
+            }
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to process thumbnail image.')
+            e.target.value = ''
+        }
     }
 
     const handleRemoveThumbnail = () => {
@@ -134,22 +158,35 @@ export default function EditProduct() {
         toast.success('Set as primary showcase image!')
     }
 
-    const handleSelectNewFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSelectNewFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || [])
         if (files.length === 0) return
 
-        files.forEach((file) => {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                const base64Data = reader.result as string
+        let addedCount = 0
+        for (const file of files) {
+            const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+            if (!validation.valid) {
+                toast.error(`Skipped "${file.name}": ${validation.error}`)
+                continue
+            }
+            try {
+                const result = await compressMediaFile(file, {
+                    maxMB: MAX_IMAGE_SIZE_MB,
+                    maxDimension: 1920,
+                })
                 setStagedNewImages((prev) => [
                     ...prev,
-                    { base64: base64Data, preview: base64Data, name: file.name },
+                    { base64: result.base64, preview: result.base64, name: file.name },
                 ])
+                addedCount++
+            } catch (err: any) {
+                toast.error(`Failed to process "${file.name}": ${err.message}`)
             }
-            reader.readAsDataURL(file)
-        })
-        toast.info(`${files.length} new media file(s) staged for gallery`)
+        }
+        if (addedCount > 0) {
+            toast.info(`${addedCount} new media file(s) staged for gallery`)
+        }
+        e.target.value = ''
     }
 
     const handleRemoveStagedImage = (indexToRemove: number) => {
@@ -184,8 +221,8 @@ export default function EditProduct() {
                         resourceType: 'image',
                     }),
                 })
-                const uploadData = await uploadRes.json()
-                if (uploadRes.ok && uploadData.success && (uploadData.mediaUrl || uploadData.url)) {
+                const uploadData = await parseUploadResponse(uploadRes)
+                if (uploadData.success && (uploadData.mediaUrl || uploadData.url)) {
                     finalThumbnailUrl = uploadData.mediaUrl || uploadData.url
                 }
             }
@@ -206,8 +243,8 @@ export default function EditProduct() {
                         resourceType: 'image',
                     }),
                 })
-                const uploadData = await uploadRes.json()
-                if (uploadRes.ok && uploadData.success && (uploadData.mediaUrl || uploadData.url)) {
+                const uploadData = await parseUploadResponse(uploadRes)
+                if (uploadData.success && (uploadData.mediaUrl || uploadData.url)) {
                     newlyUploadedUrls.push(uploadData.mediaUrl || uploadData.url)
                 }
             }
@@ -242,8 +279,8 @@ export default function EditProduct() {
                 body: JSON.stringify(updatePayload),
             })
 
-            const data = await res.json()
-            if (res.ok && data.success) {
+            const data = await parseUploadResponse(res)
+            if (data.success) {
                 toast.success(`Updated "${name}" successfully!`)
                 router.push('/inventory')
             } else {

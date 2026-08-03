@@ -44,9 +44,8 @@ const ImageWithSkeleton: React.FC<{
                 decoding="async"
                 fetchPriority={fetchPriority}
                 onLoad={handleLoad}
-                className={`${className} ${
-                    isLoaded ? 'opacity-100' : 'opacity-0'
-                } transition-opacity duration-300`}
+                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                    } transition-opacity duration-300`}
             />
         </div>
     )
@@ -65,11 +64,11 @@ export default function Home() {
         if (video1Ref.current) {
             video1Ref.current.muted = true
             video1Ref.current.playbackRate = 0.2
-            video1Ref.current.play().catch(() => {})
+            video1Ref.current.play().catch(() => { })
         }
         if (secondVideoRef.current) {
             secondVideoRef.current.muted = true
-            secondVideoRef.current.play().catch(() => {})
+            secondVideoRef.current.play().catch(() => { })
         }
     }, [])
 

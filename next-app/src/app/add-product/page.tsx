@@ -7,6 +7,12 @@ import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { API_BASE_URL } from '@/config/api'
 import { ArrowLeft, Upload, Plus, X, Loader2, PackagePlus } from 'lucide-react'
+import {
+    validateMediaFile,
+    compressMediaFile,
+    parseUploadResponse,
+    MAX_IMAGE_SIZE_MB,
+} from '@/lib/imageCompression'
 
 export default function AddProduct() {
     const { user, token, isLoading } = useAuth()
@@ -42,33 +48,64 @@ export default function AddProduct() {
         }
     }, [user, isLoading, router])
 
-    const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
 
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            const base64Data = reader.result as string
-            setStagedThumbnailBase64(base64Data)
-            setThumbnailPreview(base64Data)
-            toast.info('Thumbnail file selected (will upload on submit)')
+        const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+        if (!validation.valid) {
+            toast.error(validation.error || `Image size exceeds ${MAX_IMAGE_SIZE_MB}MB limit.`)
+            e.target.value = ''
+            return
         }
-        reader.readAsDataURL(file)
+
+        try {
+            toast.info('Processing thumbnail image...')
+            const result = await compressMediaFile(file, {
+                maxMB: MAX_IMAGE_SIZE_MB,
+                maxDimension: 1600,
+            })
+            setStagedThumbnailBase64(result.base64)
+            setThumbnailPreview(result.base64)
+            if (result.compressed && result.originalMB > 1.0) {
+                toast.success(
+                    `Thumbnail optimized (${result.originalMB.toFixed(1)}MB → ${result.finalMB.toFixed(2)}MB)`
+                )
+            } else {
+                toast.info('Thumbnail file selected (will upload on submit)')
+            }
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to process thumbnail image.')
+            e.target.value = ''
+        }
     }
 
-    const handleMultipleImagesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMultipleImagesSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || [])
         if (files.length === 0) return
 
-        files.forEach((file) => {
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                const base64Data = reader.result as string
-                setStagedImagesBase64((prev) => [...prev, base64Data])
+        let addedCount = 0
+        for (const file of files) {
+            const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+            if (!validation.valid) {
+                toast.error(`Skipped "${file.name}": ${validation.error}`)
+                continue
             }
-            reader.readAsDataURL(file)
-        })
-        toast.info(`${files.length} gallery image(s) selected`)
+            try {
+                const result = await compressMediaFile(file, {
+                    maxMB: MAX_IMAGE_SIZE_MB,
+                    maxDimension: 1920,
+                })
+                setStagedImagesBase64((prev) => [...prev, result.base64])
+                addedCount++
+            } catch (err: any) {
+                toast.error(`Failed to process "${file.name}": ${err.message}`)
+            }
+        }
+        if (addedCount > 0) {
+            toast.info(`${addedCount} gallery image(s) processed and ready`)
+        }
+        e.target.value = ''
     }
 
     const handleAddExtraImageUrl = () => {
@@ -116,8 +153,8 @@ export default function AddProduct() {
                         resourceType: 'image',
                     }),
                 })
-                const data = await res.json()
-                if (!res.ok || !data.success) {
+                const data = await parseUploadResponse(res)
+                if (!data.success) {
                     throw new Error(data.message || 'Failed to upload thumbnail to Cloudinary')
                 }
                 finalThumbnailUrl = data.url
@@ -137,8 +174,8 @@ export default function AddProduct() {
                         resourceType: prodMediaType,
                     }),
                 })
-                const data = await res.json()
-                if (!res.ok || !data.success) {
+                const data = await parseUploadResponse(res)
+                if (!data.success) {
                     throw new Error(
                         data.message || `Failed to upload ${prodMediaType} to Cloudinary`
                     )
@@ -174,8 +211,8 @@ export default function AddProduct() {
                             resourceType: 'image',
                         }),
                     })
-                    const data = await res.json()
-                    if (res.ok && data.success && data.url) {
+                    const data = await parseUploadResponse(res)
+                    if (data.success && data.url) {
                         uploadedImageUrls.push(data.url)
                     }
                 }
@@ -206,7 +243,7 @@ export default function AddProduct() {
                 }),
             })
 
-            const data = await res.json()
+            const data = await parseUploadResponse(res)
 
             if (res.ok && data.success) {
                 toast.success(`Product "${prodName}" created successfully!`)

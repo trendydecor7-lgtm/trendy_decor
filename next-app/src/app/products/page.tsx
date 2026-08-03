@@ -30,6 +30,13 @@ const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolate
 
 const loadedMediaCache = new Set<string>()
 
+import {
+    validateMediaFile,
+    compressMediaFile,
+    parseUploadResponse,
+    MAX_IMAGE_SIZE_MB,
+} from '@/lib/imageCompression'
+
 const ProductMediaWithSkeleton: React.FC<{
     mediaType?: 'image' | 'video'
     image?: string
@@ -240,36 +247,72 @@ function ProductsContent() {
         setCreationStep('')
     }
 
-    const handleThumbnailSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleThumbnailSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
 
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            const base64Data = reader.result as string
-            setStagedThumbnailBase64(base64Data)
-            setThumbnailPreview(base64Data)
-            toast.info('Thumbnail selected')
+        const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+        if (!validation.valid) {
+            toast.error(validation.error || `Image size exceeds ${MAX_IMAGE_SIZE_MB}MB limit.`)
+            e.target.value = ''
+            return
         }
-        reader.readAsDataURL(file)
+
+        try {
+            toast.info('Processing thumbnail...')
+            const result = await compressMediaFile(file, {
+                maxMB: MAX_IMAGE_SIZE_MB,
+                maxDimension: 1600,
+            })
+            setStagedThumbnailBase64(result.base64)
+            setThumbnailPreview(result.base64)
+            if (result.compressed && result.originalMB > 1.0) {
+                toast.success(
+                    `Thumbnail optimized (${result.originalMB.toFixed(1)}MB → ${result.finalMB.toFixed(2)}MB)`
+                )
+            } else {
+                toast.info('Thumbnail selected')
+            }
+        } catch (err: any) {
+            toast.error(err.message || 'Failed to process thumbnail image.')
+            e.target.value = ''
+        }
     }
 
-    const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMediaSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
+
+        const validation = validateMediaFile(file, MAX_IMAGE_SIZE_MB)
+        if (!validation.valid) {
+            toast.error(validation.error || `File size exceeds ${MAX_IMAGE_SIZE_MB}MB limit.`)
+            e.target.value = ''
+            return
+        }
 
         const isVideo = file.type.startsWith('video/')
         const type: 'image' | 'video' = isVideo ? 'video' : 'image'
         setMediaType(type)
 
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            const base64Data = reader.result as string
-            setStagedMediaBase64(base64Data)
-            setMediaPreview(base64Data)
-            toast.info(`${isVideo ? 'Video' : 'Image'} selected`)
+        try {
+            toast.info(`Processing ${isVideo ? 'video' : 'image'}...`)
+            const result = await compressMediaFile(file, {
+                maxMB: MAX_IMAGE_SIZE_MB,
+                maxDimension: 1920,
+            })
+            setStagedMediaBase64(result.base64)
+            setMediaPreview(result.base64)
+            if (result.compressed && result.originalMB > 1.0) {
+                toast.success(
+                    `Image optimized (${result.originalMB.toFixed(1)}MB → ${result.finalMB.toFixed(2)}MB)`
+                )
+            } else {
+                toast.info(`${isVideo ? 'Video' : 'Image'} selected`)
+            }
+        } catch (err: any) {
+            toast.error(err.message || `Failed to process ${isVideo ? 'video' : 'image'} file.`)
+            e.target.value = ''
         }
-        reader.readAsDataURL(file)
     }
 
     const handleCreateProduct = async (e: React.FormEvent) => {
@@ -300,8 +343,8 @@ function ProductsContent() {
                         resourceType: 'image',
                     }),
                 })
-                const data = await res.json()
-                if (!res.ok || !data.success) {
+                const data = await parseUploadResponse(res)
+                if (!data.success) {
                     throw new Error(data.message || 'Failed to upload thumbnail to Cloudinary')
                 }
                 finalThumbnailUrl = data.url
@@ -321,8 +364,8 @@ function ProductsContent() {
                         resourceType: mediaType,
                     }),
                 })
-                const data = await res.json()
-                if (!res.ok || !data.success) {
+                const data = await parseUploadResponse(res)
+                if (!data.success) {
                     throw new Error(data.message || `Failed to upload ${mediaType} to Cloudinary`)
                 }
 
@@ -360,9 +403,9 @@ function ProductsContent() {
                 }),
             })
 
-            const data = await res.json()
+            const data = await parseUploadResponse(res)
 
-            if (res.ok) {
+            if (data.success) {
                 toast.success('Product created successfully!')
                 resetAndCloseModal()
                 fetchProducts()
