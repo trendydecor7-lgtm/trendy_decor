@@ -1,10 +1,16 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Explore Products Catalog | Trendy Decor Gidderbaha',
+    title: 'Trendy Decor | Products & Luxury Gifts Catalog | Gidderbaha',
     description:
-        'Browse customized gift hampers, artisanal chocolates, floral bouquets, designer rakhis, and luxury celebration decor at Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja.',
+        'Browse customized gift hampers, artisanal chocolates, floral bouquets, designer rakhis, and luxury celebration decor at Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja across Gidderbaha, Bathinda & Malout.',
     keywords: [
+        'trendy decor',
+        'trendy decors',
+        'trendy decor gidderbaha',
+        'trendydecor24.shop',
+        'trendydecors.shop',
+        'trendydecor.store',
         'hampers gidderbaha',
         'custom chocolates punjab',
         'designer rakhis',
@@ -13,7 +19,7 @@ export const metadata: Metadata = {
         'event decor',
     ],
     openGraph: {
-        title: 'Explore Products Catalog | Trendy Decor Gidderbaha',
+        title: 'Trendy Decor | Products & Luxury Gifts Catalog | Gidderbaha',
         description:
             'Browse customized gift hampers, artisanal chocolates, floral bouquets, designer rakhis, and luxury celebration decor at Trendy Decor Gidderbaha.',
         url: 'https://trendydecor24.shop/products',

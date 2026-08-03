@@ -108,9 +108,9 @@ export default function Home() {
     return (
         <main className="w-full select-none" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
             <SEO
-                title="Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha"
-                description="Explore Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja. Premium event decoration, customized gift hampers, artisanal chocolates, bouquets, and designer rakhis."
-                keywords="trendy decor, gidderbaha, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, harish ahuja, hitin ahuja"
+                title="Trendy Decor | Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha"
+                description="Explore Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja. Premier event decoration, customized gift hampers, artisanal chocolates, bouquets, designer rakhis across Gidderbaha, Bathinda & Malout."
+                keywords="trendy decor, trendy decors, trendydecor, trendy decor store, trendy decor gidderbaha, trendy decors gidderbaha, trendydecor24.shop, trendydecors.shop, trendydecor.store, gidderbaha, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, harish ahuja, hitin ahuja"
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 <section

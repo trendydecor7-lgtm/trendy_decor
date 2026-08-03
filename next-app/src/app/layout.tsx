@@ -7,13 +7,21 @@ import LayoutShell from '@/components/LayoutShell'
 
 export const metadata: Metadata = {
     title: {
-        default: 'Trendy Decor Gidderbaha | Event Decor, Gift Hampers & Customized Chocolates',
-        template: '%s | Trendy Decor Gidderbaha',
+        default: 'Trendy Decor | Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha',
+        template: '%s | Trendy Decor — Gidderbaha',
     },
     description:
         'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, handcrafted chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.',
     keywords: [
         'trendy decor',
+        'trendy decors',
+        'trendydecor',
+        'trendy decor store',
+        'trendy decor gidderbaha',
+        'trendy decors gidderbaha',
+        'trendydecor24.shop',
+        'trendydecors.shop',
+        'trendydecor.store',
         'gidderbaha',
         'harish ahuja',
         'hitin ahuja',
@@ -34,14 +42,15 @@ export const metadata: Metadata = {
     },
     icons: {
         icon: [
-            { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+            { url: '/logo.png', sizes: '32x32', type: 'image/png' },
             { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+            { url: '/logo.png', sizes: '512x512', type: 'image/png' },
             { url: '/favicon.ico' },
         ],
-        shortcut: '/icon.png',
+        shortcut: '/logo.png',
         apple: [
-            { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
             { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+            { url: '/logo.png', sizes: '192x192', type: 'image/png' },
         ],
     },
     openGraph: {
@@ -86,10 +95,10 @@ export default function RootLayout({
     return (
         <html lang="en" className="h-full antialiased scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
             <head>
-                <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
                 <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
-                <link rel="shortcut icon" href="/favicon.ico" />
-                <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+                <link rel="shortcut icon" href="/logo.png" />
+                <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
                 <meta property="og:image" content="https://trendydecor24.shop/hero-assets/hero1.png" />
                 <meta property="og:image:secure_url" content="https://trendydecor24.shop/hero-assets/hero1.png" />
                 <meta property="og:image:type" content="image/png" />
@@ -108,19 +117,46 @@ export default function RootLayout({
                             {
                                 '@context': 'https://schema.org',
                                 '@type': 'Organization',
-                                name: 'Trendy Decor Gidderbaha',
+                                name: 'Trendy Decor',
+                                alternateName: [
+                                    'Trendy Decors',
+                                    'Trendy Decor Store',
+                                    'Trendy Decor 24',
+                                    'Trendy Decor Gidderbaha',
+                                    'TrendyDecor',
+                                    'Trendy Decors Shop',
+                                ],
                                 url: 'https://trendydecor24.shop',
                                 logo: 'https://trendydecor24.shop/logo.png',
                                 image: 'https://trendydecor24.shop/hero-assets/hero1.png',
-                                sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
+                                sameAs: [
+                                    'https://trendydecor24.shop',
+                                    'https://trendydecors.shop',
+                                    'https://trendydecor.store',
+                                    'https://www.instagram.com/trendy_decor_gdb',
+                                ],
                             },
                             {
                                 '@context': 'https://schema.org',
                                 '@type': 'LocalBusiness',
-                                name: 'Trendy Decor Gidderbaha',
+                                name: 'Trendy Decor',
+                                alternateName: [
+                                    'Trendy Decors',
+                                    'Trendy Decor Store',
+                                    'Trendy Decor 24',
+                                    'Trendy Decor Gidderbaha',
+                                    'TrendyDecor',
+                                    'Trendy Decors Shop',
+                                ],
                                 url: 'https://trendydecor24.shop',
                                 logo: 'https://trendydecor24.shop/logo.png',
                                 image: 'https://trendydecor24.shop/hero-assets/hero1.png',
+                                sameAs: [
+                                    'https://trendydecor24.shop',
+                                    'https://trendydecors.shop',
+                                    'https://trendydecor.store',
+                                    'https://www.instagram.com/trendy_decor_gdb',
+                                ],
                                 description:
                                     'Premier event decoration service, bespoke gift hampers, customized chocolates, bouquets, and designer rakhis operated by Harish Ahuja & Hitin Ahuja.',
                                 telephone: '+919417718844',

@@ -9,6 +9,10 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/admin/', '/api/', '/inventory/'],
             },
         ],
-        sitemap: 'https://trendydecor24.shop/sitemap.xml',
+        sitemap: [
+            'https://trendydecor24.shop/sitemap.xml',
+            'https://trendydecors.shop/sitemap.xml',
+            'https://trendydecor.store/sitemap.xml',
+        ],
     }
 }

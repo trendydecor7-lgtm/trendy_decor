@@ -13,11 +13,11 @@ export interface SEOProps {
     schema?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
-const DEFAULT_TITLE = 'Trendy Decor Gidderbaha | Event Decor, Gift Hampers & Customized Chocolates'
+const DEFAULT_TITLE = 'Trendy Decor | Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha'
 const DEFAULT_DESCRIPTION =
     'Trendy Decor in Gidderbaha, Punjab — managed by Harish Ahuja & Hitin Ahuja. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, baby welcome decor, and milestone event styling across Gidderbaha, Bathinda & Malout.'
 const DEFAULT_KEYWORDS =
-    'trendy decor, gidderbaha, harish ahuja, hitin ahuja, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, baby welcome setups, bathinda, malout, punjab'
+    'trendy decor, trendy decors, trendydecor, trendy decor store, trendy decor gidderbaha, trendy decors gidderbaha, trendydecor24.shop, trendydecors.shop, trendydecor.store, gidderbaha, harish ahuja, hitin ahuja, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, baby welcome setups, bathinda, malout, punjab'
 const DEFAULT_IMAGE = 'https://trendydecor24.shop/logo.png'
 const DEFAULT_URL = 'https://trendydecor24.shop'
 
@@ -55,7 +55,11 @@ const SEO = ({
     const pathname = usePathname()
 
     useEffect(() => {
-        const finalTitle = title ? `${title} | Trendy Decor` : DEFAULT_TITLE
+        const finalTitle = title
+            ? title.toLowerCase().includes('trendy decor')
+                ? title
+                : `${title} | Trendy Decor`
+            : DEFAULT_TITLE
         document.title = finalTitle
 
         updateMetaTag('name', 'description', description)

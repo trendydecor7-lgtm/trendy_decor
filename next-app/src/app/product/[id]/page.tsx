@@ -33,7 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         keywords: [
             product.name,
             product.category,
+            'trendy decor',
+            'trendy decors',
             'trendy decor gidderbaha',
+            'trendydecor24.shop',
+            'trendydecors.shop',
+            'trendydecor.store',
             'harish ahuja',
             'hitin ahuja',
             'gift hampers',

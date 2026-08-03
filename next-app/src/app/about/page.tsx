@@ -4,11 +4,16 @@ import type { Metadata } from 'next'
 import { Phone, MapPin, Clock, AtSign, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-    title: 'About Us | Trendy Decor Gidderbaha — Harish Ahuja & Hitin Ahuja',
+    title: 'Trendy Decor | About Us | Gidderbaha — Harish Ahuja & Hitin Ahuja',
     description:
         'Learn about Trendy Decor Gidderbaha, operated by Harish Ahuja & Hitin Ahuja in Burf Wali Gali, Gidderbaha, Punjab. Specializing in customized gift hampers, chocolates, bouquets, designer rakhis, and milestone event decorations across Gidderbaha, Bathinda & Malout.',
     keywords: [
+        'trendy decor',
+        'trendy decors',
         'trendy decor gidderbaha',
+        'trendydecor24.shop',
+        'trendydecors.shop',
+        'trendydecor.store',
         'harish ahuja',
         'hitin ahuja',
         'gift hampers gidderbaha',
@@ -19,7 +24,7 @@ export const metadata: Metadata = {
         'burf wali gali',
     ],
     openGraph: {
-        title: 'About Us | Trendy Decor Gidderbaha — Harish Ahuja & Hitin Ahuja',
+        title: 'Trendy Decor | About Us | Gidderbaha — Harish Ahuja & Hitin Ahuja',
         description:
             'Learn about Trendy Decor Gidderbaha, operated by Harish Ahuja & Hitin Ahuja in Burf Wali Gali, Gidderbaha, Punjab.',
         url: 'https://trendydecor24.shop/about',

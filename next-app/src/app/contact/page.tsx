@@ -4,11 +4,17 @@ import { Mail, Phone, MapPin, CheckCircle2 } from 'lucide-react'
 import ContactForm from '@/components/contact/ContactForm'
 
 export const metadata: Metadata = {
-    title: 'Contact Us | Inquiry & Consultation — Trendy Decor Gidderbaha',
+    title: 'Trendy Decor | Contact Us | Gidderbaha — Harish Ahuja & Hitin Ahuja',
     description:
         'Get in touch with Trendy Decor in Gidderbaha for custom gift hamper orders, floral decor consultations, customized chocolates, and event inquiries across Gidderbaha, Bathinda & Malout.',
     keywords: [
+        'trendy decor',
+        'trendy decors',
         'contact trendy decor',
+        'trendy decor gidderbaha',
+        'trendydecor24.shop',
+        'trendydecors.shop',
+        'trendydecor.store',
         'gidderbaha decor contact',
         'harish ahuja contact',
         'hitin ahuja',
@@ -16,7 +22,7 @@ export const metadata: Metadata = {
         'gift hamper inquiry',
     ],
     openGraph: {
-        title: 'Contact Us | Trendy Decor Gidderbaha',
+        title: 'Trendy Decor | Contact Us | Gidderbaha',
         description:
             'Get in touch with Trendy Decor in Gidderbaha for custom gift hamper orders and event consultations.',
         url: 'https://trendydecor24.shop/contact',

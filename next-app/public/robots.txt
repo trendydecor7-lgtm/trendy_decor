@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin/
 Disallow: /profile
 Disallow: /cart
-
 Sitemap: https://trendydecor24.shop/sitemap.xml
+Sitemap: https://trendydecors.shop/sitemap.xml
+Sitemap: https://trendydecor.store/sitemap.xml
