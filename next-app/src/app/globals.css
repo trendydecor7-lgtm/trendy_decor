@@ -101,3 +101,32 @@ html.lenis body {
         opacity: 1 !important;
     }
 }
+
+/* ── Endless Marquee Top Announcement Bar ── */
+@keyframes endlessMarquee {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+}
+.animate-endless-marquee {
+    display: flex;
+    width: max-content;
+    animation: endlessMarquee 35s linear infinite;
+    will-change: transform;
+}
+.animate-endless-marquee:hover {
+    animation-play-state: paused;
+}
+
+/* ── Marquee Gradient Fade Mask (Invisibility at start & end edges) ── */
+.marquee-mask {
+    mask-image: linear-gradient(to right, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 48px, black calc(100% - 48px), transparent 100%);
+}
+@media (max-width: 640px) {
+    .marquee-mask {
+        mask-image: linear-gradient(to right, transparent 0%, black 24px, black calc(100% - 24px), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 24px, black calc(100% - 24px), transparent 100%);
+    }
+}
+
+

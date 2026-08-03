@@ -101,7 +101,7 @@ export default function ProductDetailClient({
     const inStock = product.inStock !== false && product.stock > 0
 
     const priceNum = parseFloat(product.price.replace(/[^0-9.]/g, '')) || 0
-    const freeShippingLeft = Math.max(0, 1500 - priceNum)
+    const freeShippingLeft = 0 // Rakhi Offer: Free shipping on all orders
 
     /* Gallery */
     const galleryItems: { url: string; type: 'image' | 'video' }[] = []
@@ -145,8 +145,8 @@ export default function ProductDetailClient({
         },
         {
             id: 'shipping',
-            title: 'Shipping & Pan-India Delivery',
-            body: ['Orders dispatched within 1–2 business days.', 'Free delivery on orders above ₹1,500.', 'Delivery across India via courier partners.'],
+            title: 'Shipping & Pan-India Delivery (Rakhi Special)',
+            body: ['Orders dispatched within 1–2 business days.', 'FREE shipping on ALL orders — Rakhi Special Offer (₹0 Shipping Fee)!', 'Delivery across India via our trusted courier partners.'],
         },
     ]
 
@@ -252,10 +252,10 @@ export default function ProductDetailClient({
                             <Check size={9} strokeWidth={3} />
                             {inStock ? 'In Stock' : 'Out of Stock'}
                         </span>
-                        {freeShippingLeft > 0 && priceNum > 0 && (
-                            <div className="flex items-center gap-2 text-[11px] text-[#1c1c1c]/60 border-t border-[#b6ac9f]/20 pt-2">
-                                <Truck size={12} />
-                                Free delivery on orders above ₹1,500 (Add ₹{freeShippingLeft.toLocaleString('en-IN')} more)
+                        {priceNum > 0 && (
+                            <div className="flex items-center gap-2 text-[11px] text-emerald-800 font-medium border-t border-[#b6ac9f]/20 pt-2">
+                                <Truck size={12} className="shrink-0" />
+                                <span>FREE Pan-India Shipping — <strong className="font-semibold">Rakhi Special Offer (₹0 Fee)</strong></span>
                             </div>
                         )}
                     </div>
@@ -436,10 +436,10 @@ export default function ProductDetailClient({
                             </div>
 
                             {/* Shipping notice */}
-                            {freeShippingLeft > 0 && priceNum > 0 && (
-                                <div className="flex items-center gap-2 text-[12px] text-[#1c1c1c]/55 border-t border-b border-[#b6ac9f]/20 py-3">
-                                    <Truck size={13} />
-                                    Free delivery on orders above ₹1,500 — add ₹{freeShippingLeft.toLocaleString('en-IN')} more
+                            {priceNum > 0 && (
+                                <div className="flex items-center gap-2 text-[12px] text-emerald-800 font-medium border-t border-b border-[#b6ac9f]/20 py-3">
+                                    <Truck size={14} className="shrink-0" />
+                                    <span>FREE Pan-India Shipping — <strong className="font-semibold">Rakhi Special Offer (₹0 Fee)</strong></span>
                                 </div>
                             )}
 

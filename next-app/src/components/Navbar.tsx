@@ -22,6 +22,59 @@ const Navbar = () => {
 
     return (
         <>
+            {/* Rakhi Special Offer Endless Marquee Top Nav (Scrolls with page, not sticky) */}
+            <div
+                className="w-full bg-[#c8bfb6] text-[#1c1c1c] py-2.5 border-b border-[#b6ac9f]/70 select-none text-[11px] sm:text-xs tracking-wide"
+                style={{ fontFamily: "'Playpen Sans', sans-serif" }}
+            >
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12">
+                    <div className="w-full overflow-hidden relative marquee-mask">
+                        {/* Left Gradient Overlay Fade (Aligned with Main Nav Start) */}
+                        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-14 bg-gradient-to-r from-[#c8bfb6] via-[#c8bfb6]/85 to-transparent z-10 pointer-events-none" />
+                        {/* Right Gradient Overlay Fade (Aligned with Main Nav End) */}
+                        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-14 bg-gradient-to-l from-[#c8bfb6] via-[#c8bfb6]/85 to-transparent z-10 pointer-events-none" />
+
+                        <div className="animate-endless-marquee flex items-center">
+                            {[0, 1, 2, 3].map((idx) => (
+                                <div key={idx} className="flex items-center gap-6 sm:gap-10 px-3 sm:px-5 shrink-0">
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="font-semibold uppercase tracking-wider text-[#1c1c1c]">
+                                            ★ Rakhi Special Offer
+                                        </span>
+                                        <span className="text-[#1c1c1c]/60">—</span>
+                                        <span className="font-normal text-[#1c1c1c]">
+                                            FREE Pan-India Shipping on ALL Orders (₹0 Shipping Fee)!
+                                        </span>
+                                    </span>
+                                    <span className="text-[#1c1c1c]/35">•</span>
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="font-semibold uppercase tracking-wider text-[#1c1c1c]">
+                                            Festival Ready
+                                        </span>
+                                        <span className="text-[#1c1c1c]/60">—</span>
+                                        <span className="font-normal text-[#1c1c1c]">
+                                            Handcrafted Luxury Hampers & Designer Rakhis
+                                        </span>
+                                    </span>
+                                    <span className="text-[#1c1c1c]/35">•</span>
+                                    <span className="inline-flex items-center gap-1.5">
+                                        <span className="font-semibold uppercase tracking-wider text-[#1c1c1c]">
+                                            Express Delivery
+                                        </span>
+                                        <span className="text-[#1c1c1c]/60">—</span>
+                                        <span className="font-normal text-[#1c1c1c]">
+                                            Always ₹0 Shipping Fee Across India
+                                        </span>
+                                    </span>
+                                    <span className="text-[#1c1c1c]/35">•</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Navigation Header (Sticky Top) */}
             <header
                 className="w-full bg-[#f4f1ea] border-b border-black/10 select-none sticky top-0 z-50"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}

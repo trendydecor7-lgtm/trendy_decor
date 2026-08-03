@@ -44,7 +44,7 @@ export default function Cart() {
         }
     }, [user])
 
-    const shippingFee = subtotal >= 1500 || cartItems.length === 0 ? 0 : 150
+    const shippingFee = 0 // Rakhi Offer: Free Shipping on ALL orders
     const finalTotal = Math.max(0, subtotal + shippingFee)
 
     const getProductId = (product: any): string => {
@@ -157,7 +157,7 @@ export default function Cart() {
         })
 
         message += `\n*Total Amount:* ₹${finalTotal.toLocaleString('en-IN')}\n`
-        message += `*Shipping Fee:* ${shippingFee === 0 ? 'FREE (Above ₹1,500)' : `₹${shippingFee}`}\n\n`
+        message += `*Shipping Fee:* FREE (Rakhi Special Offer - ₹0 Shipping!)\n\n`
         message += `Please confirm my order. Thank you!`
 
         const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || process.env.VITE_WHATSAPP_NUMBER || '919463694623'
@@ -325,11 +325,11 @@ export default function Cart() {
                                 <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex items-center gap-3">
                                     <Truck size={20} className="text-[#1c1c1c]/70" />
                                     <div>
-                                        <p className="text-[13px] font-medium text-[#1c1c1c]">
+                                        <p className="text-[13px] font-medium text-[#1c1c1c] flex items-center gap-1.5">
                                             Free Express Shipping
                                         </p>
-                                        <p className="text-[11px] font-light text-[#1c1c1c]/60">
-                                            On all orders above ₹1,500 across India
+                                        <p className="text-[11px] font-light text-[#1c1c1c]/70">
+                                            ₹0 Shipping fee on ALL orders across India
                                         </p>
                                     </div>
                                 </div>
@@ -365,10 +365,8 @@ export default function Cart() {
                                         <span className="text-[#1c1c1c]/70">
                                             Estimated Delivery Fee
                                         </span>
-                                        <span className="font-mono font-medium text-emerald-800">
-                                            {shippingFee === 0
-                                                ? 'FREE (Above ₹1,500)'
-                                                : `₹${shippingFee}`}
+                                        <span className="font-mono font-semibold text-emerald-800 flex items-center gap-1">
+                                            FREE <span className="text-[11px] font-normal text-emerald-700">(Rakhi Offer)</span>
                                         </span>
                                     </div>
                                 </div>
@@ -405,11 +403,10 @@ export default function Cart() {
                                                     <label
                                                         key={addrId}
                                                         onClick={() => setSelectedAddressId(addrId)}
-                                                        className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${
-                                                            isSelected
+                                                        className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${isSelected
                                                                 ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c]'
                                                                 : 'bg-[#e8e3da]/60 text-[#1c1c1c] border-[#b6ac9f]/40 hover:border-[#1c1c1c]/50'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <input
                                                             type="radio"
