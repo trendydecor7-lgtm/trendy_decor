@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface SafeVideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
     videoRef?: React.RefObject<HTMLVideoElement | null> | ((instance: HTMLVideoElement | null) => void)
@@ -15,16 +15,9 @@ export default function SafeVideo({
     muted = true,
     ...props
 }: SafeVideoProps) {
-    const [isMounted, setIsMounted] = useState(false)
     const localRef = useRef<HTMLVideoElement | null>(null)
 
     useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
-    useEffect(() => {
-        if (!isMounted) return
-
         const el = (typeof videoRef === 'object' && videoRef && 'current' in videoRef && videoRef.current) 
             ? videoRef.current 
             : localRef.current
@@ -36,11 +29,7 @@ export default function SafeVideo({
                 el.play().catch(() => {})
             }
         }
-    }, [isMounted, videoRef, playbackRate, autoPlay, muted])
-
-    if (!isMounted) {
-        return <div className={className} />
-    }
+    }, [videoRef, playbackRate, autoPlay, muted])
 
     const setRef = (node: HTMLVideoElement | null) => {
         localRef.current = node
@@ -58,6 +47,8 @@ export default function SafeVideo({
             autoPlay={autoPlay}
             muted={muted}
             playsInline
+            preload="auto"
+            suppressHydrationWarning
             {...props}
         />
     )

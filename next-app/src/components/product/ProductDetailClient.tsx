@@ -255,7 +255,7 @@ export default function ProductDetailClient({
                         {priceNum > 0 && (
                             <div className="flex items-center gap-2 text-[11px] text-emerald-800 font-medium border-t border-[#b6ac9f]/20 pt-2">
                                 <Truck size={12} className="shrink-0" />
-                                <span>FREE Pan-India Shipping — <strong className="font-semibold">Rakhi Special Offer (₹0 Fee)</strong></span>
+                                <span>FREE Pan-India Delivery on <strong className="font-semibold">Orders Above ₹1,000</strong></span>
                             </div>
                         )}
                     </div>

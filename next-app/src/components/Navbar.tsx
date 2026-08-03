@@ -43,7 +43,7 @@ const Navbar = () => {
                                         </span>
                                         <span className="text-[#1c1c1c]/60">—</span>
                                         <span className="font-normal text-[#1c1c1c]">
-                                            FREE Pan-India Shipping on ALL Orders (₹0 Shipping Fee)!
+                                            FREE Pan-India Delivery on Orders Above ₹1,000!
                                         </span>
                                     </span>
                                     <span className="text-[#1c1c1c]/35">•</span>
@@ -63,7 +63,7 @@ const Navbar = () => {
                                         </span>
                                         <span className="text-[#1c1c1c]/60">—</span>
                                         <span className="font-normal text-[#1c1c1c]">
-                                            Always ₹0 Shipping Fee Across India
+                                            FREE Delivery on Orders Above ₹1,000 Across India
                                         </span>
                                     </span>
                                     <span className="text-[#1c1c1c]/35">•</span>

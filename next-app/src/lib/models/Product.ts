@@ -70,6 +70,13 @@ const productSchema = new mongoose.Schema(
     { timestamps: true }
 )
 
+// MongoDB compound and single-field indexes for ultra-fast query execution
+productSchema.index({ createdAt: -1 })
+productSchema.index({ category: 1, createdAt: -1 })
+productSchema.index({ inStock: 1, category: 1 })
+productSchema.index({ isNewProduct: 1, createdAt: -1 })
+productSchema.index({ name: 'text', description: 'text', category: 'text' })
+
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema)
 
 export default Product

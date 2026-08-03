@@ -189,7 +189,6 @@ export default function RootLayout({
                                     { '@type': 'Person', name: 'Harish Ahuja' },
                                     { '@type': 'Person', name: 'Hitin Ahuja' },
                                 ],
-                                sameAs: ['https://www.instagram.com/trendy_decor_gdb'],
                             },
                         ]),
                     }}

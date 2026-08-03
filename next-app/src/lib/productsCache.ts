@@ -9,7 +9,8 @@ interface CacheEntry<T> {
 }
 
 const memoryCache = new Map<string, CacheEntry<any>>()
-const MEMORY_TTL_MS = 10 * 1000 // 10 seconds in-memory TTL
+const inFlightRequests = new Map<string, Promise<any>>()
+const MEMORY_TTL_MS = 15 * 1000 // 15 seconds in-memory TTL
 
 function getMemoryCache<T>(key: string): T | null {
     const entry = memoryCache.get(key)
@@ -33,6 +34,7 @@ function setMemoryCache<T>(key: string, data: T, ttlMs = MEMORY_TTL_MS) {
  */
 export function clearProductsCache(productId?: string) {
     memoryCache.clear()
+    inFlightRequests.clear()
     try {
         revalidateTag('products', 'max')
         if (productId) {
@@ -63,7 +65,7 @@ const fetchAllProductsFromDB = async () => {
 export const getCachedProducts = unstable_cache(
     async () => fetchAllProductsFromDB(),
     ['all-products-cache'],
-    { revalidate: 1, tags: ['products'] }
+    { revalidate: 30, tags: ['products'] }
 )
 
 // 2. Fetch single product by ID from MongoDB Atlas
@@ -79,7 +81,7 @@ export const getCachedProductById = (id: string) =>
     unstable_cache(
         async () => fetchProductByIdFromDB(id),
         [`product-${id}-cache`],
-        { revalidate: 1, tags: ['products', `product-${id}`] }
+        { revalidate: 30, tags: ['products', `product-${id}`] }
     )()
 
 /**
@@ -92,22 +94,46 @@ export async function getProductsFast() {
     const mem = getMemoryCache<any[]>('all_products')
     if (mem) return mem
 
-    const products = await getCachedProducts()
-    setMemoryCache('all_products', products)
-    return products
+    let inFlight = inFlightRequests.get('all_products')
+    if (!inFlight) {
+        inFlight = getCachedProducts()
+            .then((products) => {
+                setMemoryCache('all_products', products)
+                inFlightRequests.delete('all_products')
+                return products
+            })
+            .catch((err) => {
+                inFlightRequests.delete('all_products')
+                throw err
+            })
+        inFlightRequests.set('all_products', inFlight)
+    }
+    return inFlight
 }
 
 /**
- * Fast Multi-Layer Fetcher for Single Product
+ * Fast Multi-Layer Fetcher for Single Product with Promise Coalescing
  */
 export async function getProductByIdFast(id: string) {
     const memKey = `product_${id}`
     const mem = getMemoryCache<any>(memKey)
     if (mem) return mem
 
-    const product = await getCachedProductById(id)
-    if (product) {
-        setMemoryCache(memKey, product)
+    let inFlight = inFlightRequests.get(memKey)
+    if (!inFlight) {
+        inFlight = getCachedProductById(id)
+            .then((product) => {
+                if (product) {
+                    setMemoryCache(memKey, product)
+                }
+                inFlightRequests.delete(memKey)
+                return product
+            })
+            .catch((err) => {
+                inFlightRequests.delete(memKey)
+                throw err
+            })
+        inFlightRequests.set(memKey, inFlight)
     }
-    return product
+    return inFlight
 }

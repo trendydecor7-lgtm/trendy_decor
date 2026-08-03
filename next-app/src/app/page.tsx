@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import SEO from '@/components/common/SEO'
 import SafeVideo from '@/components/common/SafeVideo'
 import IntroAnimation from '@/components/common/IntroAnimation'
@@ -16,15 +17,9 @@ const ImageWithSkeleton: React.FC<{
     fetchPriority?: 'high' | 'low' | 'auto'
 }> = ({ src, alt, className = '', fetchPriority }) => {
     const [isLoaded, setIsLoaded] = useState<boolean>(() => loadedMediaCache.has(src))
-    const imgRef = useRef<HTMLImageElement | null>(null)
 
     useEffect(() => {
         if (loadedMediaCache.has(src)) {
-            setIsLoaded(true)
-            return
-        }
-        if (imgRef.current && imgRef.current.complete) {
-            loadedMediaCache.add(src)
             setIsLoaded(true)
         }
     }, [src])
@@ -37,15 +32,17 @@ const ImageWithSkeleton: React.FC<{
     return (
         <div className="relative w-full h-full overflow-hidden">
             {!isLoaded && <div className="absolute inset-0 skeleton-shimmer z-10" />}
-            <img
-                ref={imgRef}
+            <Image
                 src={src}
                 alt={alt}
-                decoding="async"
-                fetchPriority={fetchPriority}
+                fill
+                priority={fetchPriority === 'high'}
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onLoad={handleLoad}
-                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
-                    } transition-opacity duration-300`}
+                className={`${className} ${
+                    isLoaded ? 'opacity-100' : 'opacity-0'
+                } transition-opacity duration-300`}
             />
         </div>
     )
@@ -73,32 +70,39 @@ export default function Home() {
     }, [])
 
     useEffect(() => {
+        let ticking = false
         const handleScroll = () => {
-            if (window.innerWidth < 768) {
-                setParallaxY1(0)
-                setParallaxY2(0)
-                return
-            }
-
-            if (heroSectionRef.current) {
-                const rect1 = heroSectionRef.current.getBoundingClientRect()
-                const topOffset1 = -rect1.top
-                if (topOffset1 > 0) {
-                    setParallaxY1(topOffset1 * 0.35)
-                } else {
+            if (ticking) return
+            ticking = true
+            requestAnimationFrame(() => {
+                if (window.innerWidth < 768) {
                     setParallaxY1(0)
-                }
-            }
-
-            if (secondSectionRef.current) {
-                const rect2 = secondSectionRef.current.getBoundingClientRect()
-                const topOffset2 = -rect2.top
-                if (topOffset2 > 0) {
-                    setParallaxY2(topOffset2 * 0.35)
-                } else {
                     setParallaxY2(0)
+                    ticking = false
+                    return
                 }
-            }
+
+                if (heroSectionRef.current) {
+                    const rect1 = heroSectionRef.current.getBoundingClientRect()
+                    const topOffset1 = -rect1.top
+                    if (topOffset1 > 0) {
+                        setParallaxY1(topOffset1 * 0.35)
+                    } else {
+                        setParallaxY1(0)
+                    }
+                }
+
+                if (secondSectionRef.current) {
+                    const rect2 = secondSectionRef.current.getBoundingClientRect()
+                    const topOffset2 = -rect2.top
+                    if (topOffset2 > 0) {
+                        setParallaxY2(topOffset2 * 0.35)
+                    } else {
+                        setParallaxY2(0)
+                    }
+                }
+                ticking = false
+            })
         }
 
         window.addEventListener('scroll', handleScroll, { passive: true })

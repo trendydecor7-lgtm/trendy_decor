@@ -44,7 +44,7 @@ export default function Cart() {
         }
     }, [user])
 
-    const shippingFee = 0 // Rakhi Offer: Free Shipping on ALL orders
+    const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 99 // Free delivery on orders above ₹1,000
     const finalTotal = Math.max(0, subtotal + shippingFee)
 
     const getProductId = (product: any): string => {
@@ -157,7 +157,7 @@ export default function Cart() {
         })
 
         message += `\n*Total Amount:* ₹${finalTotal.toLocaleString('en-IN')}\n`
-        message += `*Shipping Fee:* FREE (Rakhi Special Offer - ₹0 Shipping!)\n\n`
+        message += `*Shipping Fee:* ${shippingFee === 0 ? 'FREE (Order Above ₹1,000)' : `₹${shippingFee}`}\n\n`
         message += `Please confirm my order. Thank you!`
 
         const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || process.env.VITE_WHATSAPP_NUMBER || '919463694623'
@@ -326,10 +326,10 @@ export default function Cart() {
                                     <Truck size={20} className="text-[#1c1c1c]/70" />
                                     <div>
                                         <p className="text-[13px] font-medium text-[#1c1c1c] flex items-center gap-1.5">
-                                            Free Express Shipping
+                                            Free Express Delivery
                                         </p>
                                         <p className="text-[11px] font-light text-[#1c1c1c]/70">
-                                            ₹0 Shipping fee on ALL orders across India
+                                            FREE Shipping on orders above ₹1,000 across India
                                         </p>
                                     </div>
                                 </div>
@@ -353,6 +353,16 @@ export default function Cart() {
                                     Order Summary
                                 </h2>
 
+                                {subtotal < 1000 && subtotal > 0 ? (
+                                    <div className="p-3 bg-amber-50 border border-amber-200/80 text-[12px] text-amber-900">
+                                        Add <strong>₹{(1000 - subtotal).toLocaleString('en-IN')}</strong> more to your bag for <strong>FREE Delivery</strong>!
+                                    </div>
+                                ) : (
+                                    <div className="p-3 bg-emerald-50 border border-emerald-200/80 text-[12px] text-emerald-900">
+                                        🎉 You have unlocked <strong>FREE Delivery</strong>!
+                                    </div>
+                                )}
+
                                 <div className="space-y-3 text-[14px] font-light text-[#1c1c1c]">
                                     <div className="flex items-center justify-between">
                                         <span className="text-[#1c1c1c]/70">Bag Subtotal</span>
@@ -365,8 +375,14 @@ export default function Cart() {
                                         <span className="text-[#1c1c1c]/70">
                                             Estimated Delivery Fee
                                         </span>
-                                        <span className="font-mono font-semibold text-emerald-800 flex items-center gap-1">
-                                            FREE <span className="text-[11px] font-normal text-emerald-700">(Rakhi Offer)</span>
+                                        <span className="font-mono font-semibold text-[#1c1c1c] flex items-center gap-1">
+                                            {shippingFee === 0 ? (
+                                                <span className="text-emerald-800 flex items-center gap-1">
+                                                    FREE <span className="text-[11px] font-normal text-emerald-700">(Above ₹1,000)</span>
+                                                </span>
+                                            ) : (
+                                                `₹${shippingFee}`
+                                            )}
                                         </span>
                                     </div>
                                 </div>
