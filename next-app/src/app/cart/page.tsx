@@ -44,7 +44,7 @@ export default function Cart() {
         }
     }, [user])
 
-    const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 99 // Free delivery on orders above ₹1,000
+    const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 49 // Free delivery on orders above ₹1,000
     const finalTotal = Math.max(0, subtotal + shippingFee)
 
     const getProductId = (product: any): string => {
