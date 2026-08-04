@@ -42,7 +42,7 @@ const ImageWithSkeleton: React.FC<{
                 sizes={sizes}
                 unoptimized={unoptimized}
                 onLoad={handleLoad}
-                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                className={`${className} ${isLoaded || fetchPriority === 'high' ? 'opacity-100' : 'opacity-0'
                     } transition-opacity duration-300`}
             />
         </div>
@@ -61,7 +61,7 @@ export default function Home() {
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 {/* ══════════ FIRST SECTION (FULL SCREEN HERO BANNER) ══════════ */}
-                <section className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[calc(100dvh-160px)] md:h-[calc(100vh-40px)]">
+                <section className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[540px] xs:h-[600px] sm:h-[680px] md:h-[calc(100vh-40px)]">
                     <div className="relative overflow-hidden cursor-pointer w-full h-full">
                         {/* Mobile Full Screen Hero Banner (mb-hero.png) */}
                         <Link

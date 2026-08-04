@@ -22,9 +22,10 @@ const Navbar = () => {
 
     return (
         <>
-            {/* Rakhi Special Offer Endless Marquee Top Nav (Scrolls with page, not sticky) */}
+            <div className="sticky top-0 z-50 w-full">
+            {/* Rakhi Special Offer Endless Marquee Top Nav */}
             <div
-                className="w-full bg-[#c8bfb6] text-[#1c1c1c] py-2.5 border-b border-[#b6ac9f]/70 select-none text-[11px] sm:text-xs tracking-wide"
+                className="w-full bg-[#c8bfb6] text-[#1c1c1c] py-2 border-b border-[#b6ac9f]/70 select-none text-[11px] sm:text-xs tracking-wide"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
             >
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12">
@@ -74,9 +75,9 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Main Navigation Header (Sticky Top) */}
+            {/* Main Navigation Header */}
             <header
-                className="w-full bg-[#f4f1ea] border-b border-black/10 select-none sticky top-0 z-50"
+                className="w-full bg-[#f4f1ea] border-b border-black/10 select-none"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
             >
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12 h-16 sm:h-20 flex items-center justify-between">
@@ -153,6 +154,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </header>
+        </div>
 
             {/* Smooth Mobile Drawer */}
             <div
