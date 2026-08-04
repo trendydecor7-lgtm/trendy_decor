@@ -108,11 +108,11 @@ export default function Profile() {
         >
             <SEO
                 title="My Profile & Order History"
-                description="Manage your Trendy Decor account, saved shipping addresses, and view order history."
+                description="Manage your Trendy Decor account, saved delivery addresses, and view order history."
             />
             <div className="max-w-[1200px] mx-auto space-y-6">
-                <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
+                <div className="bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-md p-5 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 overflow-hidden max-w-full">
+                    <div className="flex items-center gap-4 sm:gap-5 min-w-0 max-w-full">
                         <div className="relative shrink-0">
                             {user.avatar && user.avatar.trim() !== '' && !imgError ? (
                                 <img
@@ -120,27 +120,27 @@ export default function Profile() {
                                     alt={user.name || 'User Profile'}
                                     referrerPolicy="no-referrer"
                                     onError={() => setImgError(true)}
-                                    className="w-16 h-16 rounded-full object-cover border border-[#b6ac9f]/40 shrink-0"
+                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border border-[#b6ac9f]/40 shrink-0"
                                 />
                             ) : (
-                                <div className="w-16 h-16 rounded-full bg-[#1c1c1c] text-[#f4f1ea] flex items-center justify-center font-normal text-2xl border border-[#b6ac9f]/40 uppercase shrink-0">
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#1c1c1c] text-[#f4f1ea] flex items-center justify-center font-normal text-xl sm:text-2xl border border-[#b6ac9f]/40 uppercase shrink-0">
                                     {user.name && user.name.trim() ? user.name.trim().charAt(0) : 'U'}
                                 </div>
                             )}
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="space-y-1 min-w-0 max-w-full overflow-hidden">
                             <div className="flex flex-wrap items-center gap-2.5">
                                 {isEditingUsername ? (
                                     <form
                                         onSubmit={handleSaveUsername}
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 max-w-full"
                                     >
                                         <input
                                             type="text"
                                             value={usernameInput}
                                             onChange={(e) => setUsernameInput(e.target.value)}
-                                            className="px-3 py-1 bg-white border border-[#b6ac9f] rounded-md text-lg font-normal text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c]"
+                                            className="px-3 py-1 bg-white border border-[#b6ac9f] rounded-md text-base sm:text-lg font-normal text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] max-w-[180px] sm:max-w-none"
                                             autoFocus
                                             disabled={isUpdatingUsername}
                                         />
@@ -165,8 +165,8 @@ export default function Profile() {
                                         </button>
                                     </form>
                                 ) : (
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="text-2xl font-normal text-[#1c1c1c]">
+                                    <div className="flex items-center gap-2 min-w-0 max-w-full">
+                                        <h1 className="text-xl sm:text-2xl font-normal text-[#1c1c1c] truncate">
                                             Hello, {user.name}
                                         </h1>
                                         {isLocalUser && (
@@ -175,7 +175,7 @@ export default function Profile() {
                                                     setUsernameInput(user.name)
                                                     setIsEditingUsername(true)
                                                 }}
-                                                className="p-1 text-[#1c1c1c]/60 hover:text-[#1c1c1c] hover:bg-[#e8e3da] rounded-md transition-colors cursor-pointer"
+                                                className="p-1 text-[#1c1c1c]/60 hover:text-[#1c1c1c] hover:bg-[#e8e3da] rounded-md transition-colors cursor-pointer shrink-0"
                                                 title="Edit Username"
                                             >
                                                 <Pencil size={15} />
@@ -184,13 +184,14 @@ export default function Profile() {
                                     </div>
                                 )}
                                 {user.isOwner && (
-                                    <span className="px-2.5 py-0.5 bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] font-light text-[10px] uppercase tracking-wider rounded-full">
+                                    <span className="px-2.5 py-0.5 bg-[#e8e3da] border border-[#b6ac9f]/40 text-[#1c1c1c] font-light text-[10px] uppercase tracking-wider rounded-full shrink-0">
                                         STORE OWNER
                                     </span>
                                 )}
                             </div>
-                            <p className="text-[13px] text-[#1c1c1c]/70 font-light">
-                                {user.email} • Member since {getFormattedMemberSince()}
+                            <p className="text-[12px] sm:text-[13px] text-[#1c1c1c]/70 font-light truncate max-w-full" title={`${user.email} • Member since ${getFormattedMemberSince()}`}>
+                                <span className="break-all">{user.email}</span>
+                                <span className="inline-block ml-1 opacity-75">• Member since {getFormattedMemberSince()}</span>
                             </p>
                         </div>
                     </div>
@@ -269,7 +270,7 @@ export default function Profile() {
                                 <span className="text-[#1c1c1c]/50 block text-[10px] uppercase tracking-wider">
                                     Email Address
                                 </span>
-                                <p className="font-normal text-[#1c1c1c]">{user.email}</p>
+                                <p className="font-normal text-[#1c1c1c] break-all text-[12px] sm:text-[13px]">{user.email}</p>
                             </div>
                             <div>
                                 <span className="text-[#1c1c1c]/50 block text-[10px] uppercase tracking-wider">

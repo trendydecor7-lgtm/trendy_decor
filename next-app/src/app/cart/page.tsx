@@ -35,6 +35,7 @@ export default function Cart() {
     const [newAddrState, setNewAddrState] = useState('')
     const [newAddrZip, setNewAddrZip] = useState('')
     const [newAddrPhone, setNewAddrPhone] = useState('')
+    const [newCustomerName, setNewCustomerName] = useState('')
 
     useEffect(() => {
         if (user?.addresses && user.addresses.length > 0) {
@@ -44,8 +45,7 @@ export default function Cart() {
         }
     }, [user])
 
-    const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 49 // Free delivery on orders above ₹1,000
-    const finalTotal = Math.max(0, subtotal + shippingFee)
+    const finalTotal = subtotal
 
     const getProductId = (product: any): string => {
         return (product._id || product.id || product.name).toString()
@@ -68,6 +68,10 @@ export default function Cart() {
         }
         if (!newAddrStreet || !newAddrCity || !newAddrState || !newAddrZip || !newAddrPhone) {
             toast.error('Please fill in all required address fields.')
+            return
+        }
+        if (!newCustomerName.trim() && (user?.isGuest || user?.name === 'Guest User' || !user?.name)) {
+            toast.error('Please enter your Full Name for the order delivery.')
             return
         }
 
@@ -117,6 +121,14 @@ export default function Cart() {
             user.addresses?.find((a) => (a._id || a.id || a.street) === selectedAddressId) ||
             user.addresses?.[0]
 
+        const customerName = newCustomerName.trim() || user.name
+
+        if (!customerName || customerName === 'Guest User') {
+            toast.error('Please add/enter your Full Name before placing your order.')
+            setIsAddAddressOpen(true)
+            return
+        }
+
         if (!selectedAddress && !user.address?.street) {
             toast.error('Please select or add a delivery address to proceed.')
             setIsAddAddressOpen(true)
@@ -126,7 +138,7 @@ export default function Cart() {
         let message = `*NEW ORDER - TRENDY DECOR*\n\n`
 
         message += `*Customer Details:*\n`
-        message += `• Name: ${user.name || user.email || 'Customer'}\n`
+        message += `• Name: ${customerName}\n`
         message += `• Email: ${user.email || 'N/A'}\n`
         if (selectedAddress?.phone || user.phone) {
             message += `• Contact Phone: ${selectedAddress?.phone || user.phone}\n`
@@ -156,8 +168,7 @@ export default function Cart() {
             }
         })
 
-        message += `\n*Total Amount:* ₹${finalTotal.toLocaleString('en-IN')}\n`
-        message += `*Shipping Fee:* ${shippingFee === 0 ? 'FREE (Order Above ₹1,000)' : `₹${shippingFee}`}\n\n`
+        message += `\n*Total Amount:* ₹${finalTotal.toLocaleString('en-IN')}\n\n`
         message += `Please confirm my order. Thank you!`
 
         const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || process.env.VITE_WHATSAPP_NUMBER || '919463694623'
@@ -370,21 +381,6 @@ export default function Cart() {
                                             ₹{subtotal.toLocaleString('en-IN')}
                                         </span>
                                     </div>
-
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[#1c1c1c]/70">
-                                            Estimated Delivery Fee
-                                        </span>
-                                        <span className="font-mono font-semibold text-[#1c1c1c] flex items-center gap-1">
-                                            {shippingFee === 0 ? (
-                                                <span className="text-emerald-800 flex items-center gap-1">
-                                                    FREE <span className="text-[11px] font-normal text-emerald-700">(Above ₹1,000)</span>
-                                                </span>
-                                            ) : (
-                                                `₹${shippingFee}`
-                                            )}
-                                        </span>
-                                    </div>
                                 </div>
 
                                 <div className="space-y-3 pt-4 border-t border-[#b6ac9f]/30">
@@ -502,6 +498,19 @@ export default function Cart() {
                         </div>
 
                         <form onSubmit={handleAddAddressSubmit} className="space-y-3 text-[12px]">
+                            <div>
+                                <label className="block font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
+                                    Full Name (for order delivery) *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={newCustomerName}
+                                    onChange={(e) => setNewCustomerName(e.target.value)}
+                                    placeholder="Enter your full name"
+                                    className="w-full px-3.5 py-2.5 bg-[#e8e3da]/70 border border-[#b6ac9f]/40 text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c]"
+                                />
+                            </div>
                             <div>
                                 <label className="block font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Address Label (e.g. Home, Office)

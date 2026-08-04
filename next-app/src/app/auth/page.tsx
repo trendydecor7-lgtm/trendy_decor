@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import SEO from '@/components/common/SEO'
-import { ArrowLeft, CheckCircle2, ShieldCheck, Loader2, KeyRound, Lock } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, ShieldCheck, Loader2, KeyRound, Lock, UserCheck } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { API_BASE_URL } from '@/config/api'
@@ -31,7 +31,7 @@ const GoogleIcon: React.FC = () => (
 )
 
 export default function Auth() {
-    const { user, login } = useAuth()
+    const { user, login, loginAsGuest } = useAuth()
     const { toast } = useToast()
     const router = useRouter()
 
@@ -237,6 +237,19 @@ export default function Auth() {
         window.location.href = `${API_BASE_URL}/auth/google`
     }
 
+    const handleGuestAuth = async () => {
+        setLoading(true)
+        try {
+            await loginAsGuest()
+            toast.success('Signed in as Guest! Welcome.')
+            router.push('/profile')
+        } catch (err: any) {
+            toast.error('Failed to sign in as guest.')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <main
             className="w-full min-h-screen flex flex-col lg:flex-row bg-[#f4f1ea] text-[#1c1c1c] select-none"
@@ -429,21 +442,31 @@ export default function Auth() {
                         </form>
                     ) : (
                         <>
-                            <button
-                                type="button"
-                                onClick={handleGoogleAuth}
-                                className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-2xl border border-[#e2dbce] bg-white hover:bg-[#f9f7f3] transition-colors text-sm font-medium text-[#1c1c1c] shadow-xs cursor-pointer"
-                            >
-                                <GoogleIcon />
-                                Continue with Google
-                            </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleGoogleAuth}
+                                    className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-2xl border border-[#e2dbce] bg-white hover:bg-[#f9f7f3] transition-colors text-sm font-medium text-[#1c1c1c] shadow-xs cursor-pointer"
+                                >
+                                    <GoogleIcon />
+                                    <span>Google</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleGuestAuth}
+                                    className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-2xl bg-[#1c1c1c] hover:bg-black transition-colors text-sm font-medium text-[#f4f1ea] shadow-xs cursor-pointer"
+                                >
+                                    <UserCheck size={18} />
+                                    <span>Continue as Guest</span>
+                                </button>
+                            </div>
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center">
                                     <div className="w-full border-t border-[#e2dbce]" />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
                                     <span className="bg-[#f4f1ea] px-3 text-[#1c1c1c]/40">
-                                        or continue with email
+                                        or continue with credentials
                                     </span>
                                 </div>
                             </div>

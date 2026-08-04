@@ -436,7 +436,7 @@ function ProductsContent() {
                 keywords="gift hampers, customized chocolates, bouquets, designer rakhis, event decor, trendy decor gidderbaha"
             />
             <div className="flex flex-col bg-[#e8e3da]">
-                <section className="w-full bg-[#f4f1ea] py-10 md:py-16 px-4 sm:px-6 md:px-12 text-center border-b border-[#b6ac9f]/30">
+                <section className="w-full bg-[#f4f1ea] py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-12 text-center border-b border-[#b6ac9f]/30">
                     <div className="max-w-3xl mx-auto space-y-3">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#e8e3da]/80 border border-[#b6ac9f]/40 text-[11px] font-medium uppercase tracking-[0.2em] text-[#1c1c1c]/80 rounded-full">
                             <Sparkles size={13} className="text-[#1c1c1c]/70" /> Artisanal & Handcrafted
@@ -451,6 +451,126 @@ function ProductsContent() {
                     </div>
                 </section>
 
+                {/* ══════════ REFINED STICKY FILTER BAR (DESKTOP & MOBILE ENHANCED) ══════════ */}
+                <div className="sticky top-16 sm:top-20 z-40 w-full bg-[#f4f1ea]/95 backdrop-blur-md border-y border-[#d8d2c6] shadow-xs select-none">
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
+                        {/* Category Dropdown Selector */}
+                        <div className="flex items-center gap-3 min-w-0">
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                                    className="flex items-center gap-2.5 px-4 py-2 bg-white text-[#1c1c1c] border border-[#d8d2c6] rounded-full text-xs sm:text-sm font-semibold tracking-wide hover:bg-[#e8e3da] transition-all cursor-pointer shadow-xs shrink-0"
+                                >
+                                    <SlidersHorizontal size={14} className="text-[#1c1c1c]/70" />
+                                    <span>
+                                        Filter: <span className="text-[#1c1c1c] font-bold">{selectedCategory}</span>
+                                    </span>
+                                    <span className="text-[10px] font-mono bg-[#1c1c1c] text-[#f4f1ea] px-2 py-0.5 rounded-full font-bold">
+                                        {filteredProducts.length}
+                                    </span>
+                                    <ChevronDown size={14} className={`text-[#1c1c1c]/70 transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {/* Refined Dropdown Menu */}
+                                {isFilterOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-40"
+                                            onClick={() => setIsFilterOpen(false)}
+                                        />
+                                        <div className="absolute left-0 top-full mt-2 w-64 sm:w-72 bg-white border border-[#d8d2c6] rounded-2xl p-3 shadow-2xl z-50 space-y-2 animate-fadeIn">
+                                            <div className="flex items-center justify-between pb-2 border-b border-[#e8e3da]">
+                                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#1c1c1c]/60 flex items-center gap-1.5">
+                                                    <SlidersHorizontal size={13} /> Select Category
+                                                </span>
+                                                <button
+                                                    onClick={() => setIsFilterOpen(false)}
+                                                    className="p-1 text-[#1c1c1c]/50 hover:text-[#1c1c1c] cursor-pointer"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                            <nav className="flex flex-col gap-1 max-h-64 overflow-y-auto pr-1">
+                                                {CATEGORIES.map((cat) => {
+                                                    const count =
+                                                        cat === 'All'
+                                                            ? products.length
+                                                            : products.filter((p) => p.category === cat).length
+                                                    const isSelected = selectedCategory === cat
+
+                                                    return (
+                                                        <button
+                                                            key={cat}
+                                                            onClick={() => {
+                                                                handleSelectCategory(cat)
+                                                                setIsFilterOpen(false)
+                                                            }}
+                                                            className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs tracking-wide transition-all flex items-center justify-between cursor-pointer ${
+                                                                isSelected
+                                                                    ? 'bg-[#1c1c1c] text-[#f4f1ea] font-medium shadow-xs'
+                                                                    : 'text-[#1c1c1c]/80 hover:bg-[#f4f1ea] hover:text-[#1c1c1c]'
+                                                            }`}
+                                                        >
+                                                            <span className="flex items-center gap-2 truncate">
+                                                                {isSelected && <Check size={14} className="text-[#f4f1ea]" />}
+                                                                {cat}
+                                                            </span>
+                                                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                                                                isSelected ? 'bg-white/20 text-[#f4f1ea]' : 'bg-[#e8e3da] text-[#1c1c1c]/70'
+                                                            }`}>
+                                                                {count} items
+                                                            </span>
+                                                        </button>
+                                                    )
+                                                })}
+                                            </nav>
+                                            {user?.isOwner && (
+                                                <div className="pt-2 border-t border-[#e8e3da]">
+                                                    <button
+                                                        onClick={() => {
+                                                            setIsFilterOpen(false)
+                                                            setIsCreateModalOpen(true)
+                                                        }}
+                                                        className="w-full py-2.5 px-3 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-medium uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 hover:bg-black transition-colors cursor-pointer"
+                                                    >
+                                                        <Plus size={13} /> Add Product
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Large Screen Quick Category Pills */}
+                            <div className="hidden lg:flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                                {CATEGORIES.map((cat) => {
+                                    const isSelected = selectedCategory === cat
+                                    return (
+                                        <button
+                                            key={cat}
+                                            onClick={() => handleSelectCategory(cat)}
+                                            className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap border ${
+                                                isSelected
+                                                    ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c] shadow-2xs font-semibold'
+                                                    : 'bg-white text-[#1c1c1c]/80 border-[#d8d2c6] hover:bg-[#e8e3da] hover:text-[#1c1c1c]'
+                                            }`}
+                                        >
+                                            {cat}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Right Info Label */}
+                        <span className="text-xs text-[#1c1c1c]/60 font-light shrink-0">
+                            Showing <strong className="text-[#1c1c1c] font-semibold">{filteredProducts.length}</strong> items
+                        </span>
+                    </div>
+                </div>
+
+                {/* Product Grid Section */}
                 <div className="w-full max-w-[1400px] mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 md:py-10">
                     {loading ? (
                         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5 md:gap-7 w-full">
@@ -604,94 +724,6 @@ function ProductsContent() {
                         </div>
                     )}
                 </div>
-            </div>
-            <div className="fixed bottom-6 left-4 md:left-12 z-40 flex flex-col items-start">
-                {isFilterOpen && (
-                    <div className="mb-3 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-4 shadow-[0_16px_40px_rgba(0,0,0,0.25)] space-y-3 animate-fadeIn">
-                        <div className="flex items-center justify-between pb-2 border-b border-[#b6ac9f]/20">
-                            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1c1c1c]/60">
-                                <SlidersHorizontal size={14} /> Filter Categories
-                            </div>
-                            <button
-                                onClick={() => setIsFilterOpen(false)}
-                                className="p-1 text-[#1c1c1c]/50 hover:text-[#1c1c1c] transition-colors cursor-pointer"
-                            >
-                                <X size={14} />
-                            </button>
-                        </div>
-
-                        <nav className="flex flex-col gap-1 max-h-60 overflow-y-auto pr-1">
-                            {CATEGORIES.map((cat) => {
-                                const count =
-                                    cat === 'All'
-                                        ? products.length
-                                        : products.filter((p) => p.category === cat).length
-                                const isSelected = selectedCategory === cat
-
-                                return (
-                                    <button
-                                        key={cat}
-                                        onClick={() => {
-                                            handleSelectCategory(cat)
-                                            setIsFilterOpen(false)
-                                        }}
-                                        className={`w-full text-left px-3.5 py-2.5 rounded-xl text-[13px] tracking-wide transition-all flex items-center justify-between cursor-pointer ${
-                                            isSelected
-                                                ? 'bg-[#1c1c1c] text-[#f4f1ea] font-medium shadow-sm'
-                                                : 'text-[#1c1c1c]/70 hover:bg-[#e8e3da] hover:text-[#1c1c1c]'
-                                        }`}
-                                    >
-                                        <span className="flex items-center gap-2">
-                                            {isSelected && (
-                                                <Check size={14} className="text-[#f4f1ea]" />
-                                            )}
-                                            {cat}
-                                        </span>
-                                        <span
-                                            className={`text-[11px] font-mono px-2 py-0.5 rounded-full ${
-                                                isSelected
-                                                    ? 'bg-white/20 text-[#f4f1ea]'
-                                                    : 'bg-[#e8e3da] text-[#1c1c1c]/60'
-                                            }`}
-                                        >
-                                            {count}
-                                        </span>
-                                    </button>
-                                )
-                            })}
-                        </nav>
-                        {user?.isOwner && (
-                            <div className="pt-2 border-t border-[#b6ac9f]/20">
-                                <button
-                                    onClick={() => {
-                                        setIsFilterOpen(false)
-                                        setIsCreateModalOpen(true)
-                                    }}
-                                    className="w-full py-2.5 px-3 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-medium uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 hover:bg-black transition-colors cursor-pointer"
-                                >
-                                    <Plus size={14} /> Add Product
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-                <button
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                    className="px-6 py-3 bg-[#1c1c1c]/95 text-[#f4f1ea] backdrop-blur-md border border-white/20 shadow-[0_12px_32px_rgba(0,0,0,0.3)] rounded-full flex items-center gap-3 hover:bg-black transition-all cursor-pointer group active:scale-95"
-                >
-                    <SlidersHorizontal
-                        size={15}
-                        className="text-[#f4f1ea]/80 group-hover:scale-110 transition-transform"
-                    />
-                    <span className="text-[12px] font-medium uppercase tracking-wider">
-                        Filter:{' '}
-                        <span className="text-[#f4f1ea] font-semibold">{selectedCategory}</span>
-                    </span>
-                    <span className="text-[11px] font-mono bg-white/20 px-2 py-0.5 rounded-full font-medium ml-1">
-                        {filteredProducts.length}
-                    </span>
-                    {isFilterOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
-                </button>
             </div>
             {isCreateModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">

@@ -128,15 +128,15 @@ const Navbar = () => {
                             <User size={25} strokeWidth={1.5} />
                         </Link>
 
-                        {/* Cart Link (Desktop only) */}
+                        {/* Cart Link (Mobile & Desktop) */}
                         <Link
                             href="/cart"
-                            className="hidden md:flex relative p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors"
+                            className="flex relative p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors cursor-pointer"
                             aria-label="Shopping Cart"
                         >
-                            <ShoppingBag size={25} strokeWidth={1.5} />
+                            <ShoppingBag size={24} strokeWidth={1.5} />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#1c1c1c] text-[#f4f1ea] text-[9px] font-semibold rounded-full flex items-center justify-center">
+                                <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-[#1c1c1c] text-[#f4f1ea] text-[9px] font-semibold rounded-full flex items-center justify-center font-mono">
                                     {cartCount}
                                 </span>
                             )}
@@ -205,25 +205,6 @@ const Navbar = () => {
                             </Link>
                         ))}
 
-                        {/* Cart inside Hamburger Drawer */}
-                        <Link
-                            href="/cart"
-                            onClick={() => setIsMobileOpen(false)}
-                            className={`py-3.5 text-[16px] font-light tracking-wide border-b border-black/5 transition-colors flex items-center justify-between ${isActive('/cart')
-                                ? 'text-[#1c1c1c] font-semibold underline underline-offset-4'
-                                : 'text-neutral-500 hover:text-[#1c1c1c]'
-                                }`}
-                        >
-                            <div className="flex items-center gap-3">
-                                <ShoppingBag size={20} strokeWidth={1.5} />
-                                <span>Cart</span>
-                            </div>
-                            {cartCount > 0 && (
-                                <span className="px-2 py-0.5 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-bold rounded-full font-mono">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </Link>
 
                         {/* Profile Link */}
                         <Link

@@ -252,12 +252,6 @@ export default function ProductDetailClient({
                             <Check size={9} strokeWidth={3} />
                             {inStock ? 'In Stock' : 'Out of Stock'}
                         </span>
-                        {priceNum > 0 && (
-                            <div className="flex items-center gap-2 text-[11px] text-emerald-800 font-medium border-t border-[#b6ac9f]/20 pt-2">
-                                <Truck size={12} className="shrink-0" />
-                                <span>FREE Pan-India Delivery on <strong className="font-semibold">Orders Above ₹1,000</strong></span>
-                            </div>
-                        )}
                     </div>
 
                     {/* Description */}
@@ -435,13 +429,7 @@ export default function ProductDetailClient({
                                 </div>
                             </div>
 
-                            {/* Shipping notice */}
-                            {priceNum > 0 && (
-                                <div className="flex items-center gap-2 text-[12px] text-emerald-800 font-medium border-t border-b border-[#b6ac9f]/20 py-3">
-                                    <Truck size={14} className="shrink-0" />
-                                    <span>FREE Pan-India Shipping — <strong className="font-semibold">Rakhi Special Offer (₹0 Fee)</strong></span>
-                                </div>
-                            )}
+
 
                             {/* Description */}
                             {product.description && (

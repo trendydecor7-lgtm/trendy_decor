@@ -15,7 +15,10 @@ const ImageWithSkeleton: React.FC<{
     alt: string
     className?: string
     fetchPriority?: 'high' | 'low' | 'auto'
-}> = ({ src, alt, className = '', fetchPriority }) => {
+    sizes?: string
+    quality?: number
+    unoptimized?: boolean
+}> = ({ src, alt, className = '', fetchPriority, sizes = '100vw', quality = 100, unoptimized = true }) => {
     const [isLoaded, setIsLoaded] = useState<boolean>(() => loadedMediaCache.has(src))
 
     useEffect(() => {
@@ -37,12 +40,12 @@ const ImageWithSkeleton: React.FC<{
                 alt={alt}
                 fill
                 priority={fetchPriority === 'high'}
-                quality={85}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                quality={quality}
+                sizes={sizes}
+                unoptimized={unoptimized}
                 onLoad={handleLoad}
-                className={`${className} ${
-                    isLoaded ? 'opacity-100' : 'opacity-0'
-                } transition-opacity duration-300`}
+                className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'
+                    } transition-opacity duration-300`}
             />
         </div>
     )
@@ -117,44 +120,38 @@ export default function Home() {
                 keywords="trendy decor, trendy decors, trendydecor, trendy decor store, trendy decor gidderbaha, trendy decors gidderbaha, trendydecor24.shop, trendydecors.shop, trendydecor.store, gidderbaha, gift hampers, customized chocolates, bouquets, designer rakhis, event decor, harish ahuja, hitin ahuja"
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
+                {/* ══════════ FIRST SECTION (FULL SCREEN HERO BANNER) ══════════ */}
                 <section
                     ref={heroSectionRef}
-                    className="relative md:sticky top-0 w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[50vh] xs:h-[60vh] sm:h-[65vh] md:h-[calc(85vh-64px)]"
+                    className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[calc(100dvh-170px)] md:h-[calc(100vh-40px)]"
                 >
-                    <div
-                        className="relative overflow-hidden cursor-pointer w-full h-full grid grid-cols-2 will-change-transform"
-                        style={{
-                            gap: '3px',
-                            transform: `translate3d(0, ${parallaxY1}px, 0)`,
-                            transition: 'transform 0.1s ease-out',
-                        }}
-                    >
+                    <div className="relative overflow-hidden cursor-pointer w-full h-full">
+                        {/* Mobile Full Screen Hero Banner (mb-hero.png) - Fits 100% with NO black portions */}
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="relative overflow-hidden cursor-pointer w-full h-full group block"
+                            className="md:hidden relative overflow-hidden cursor-pointer w-full h-full block"
                         >
                             <ImageWithSkeleton
-                                src="/hero-assets/hero1.png"
-                                alt="Luxury Hampers & Decor"
+                                src="/hero-assets/mb-hero.png"
+                                alt="Trendy Decor Mobile Hero Banner"
                                 fetchPriority="high"
-                                className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
+                                className="absolute inset-0 w-full h-full object-cover object-center"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-all duration-500" />
                         </Link>
 
+                        {/* Desktop Full Screen Hero Banner (hero.png) - Fits 100% with NO black portions */}
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="relative overflow-hidden cursor-pointer w-full h-full group block"
+                            className="hidden md:block relative overflow-hidden cursor-pointer w-full h-full"
                         >
                             <ImageWithSkeleton
-                                src="/hero-assets/hero2.png"
-                                alt="Festive Celebrations"
+                                src="/hero-assets/hero.png"
+                                alt="Trendy Decor Desktop Hero Banner"
                                 fetchPriority="high"
-                                className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out "
+                                className="absolute inset-0 w-full h-full object-cover object-center"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85 transition-all duration-500" />
                         </Link>
                     </div>
                 </section>
@@ -320,33 +317,7 @@ export default function Home() {
                         </Link>
                     </section>
                 </div>
-                <section
-                    ref={secondSectionRef}
-                    className="block relative md:sticky top-0 w-full overflow-hidden z-10 h-[50vh] sm:h-[65vh] md:h-screen"
-                >
-                    <div
-                        className="absolute inset-0 bg-[#bfb9ae] will-change-transform"
-                        style={{
-                            transform: parallaxY2 ? `translate3d(0, ${parallaxY2}px, 0)` : 'none',
-                            transition: parallaxY2 ? 'transform 0.1s ease-out' : 'none',
-                        }}
-                    >
-                        <SafeVideo
-                            videoRef={secondVideoRef}
-                            src="/hero-assets/video.mp4"
-                            autoPlay
-                            loop
-                            muted
-                            className="w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-black/25 pointer-events-none" />
-                        <div className="absolute bottom-10 left-10 z-10 pr-6">
-                            <span className="text-xs font-light text-white/90 uppercase tracking-[0.25em] bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
-                                Crafted With Passion
-                            </span>
-                        </div>
-                    </div>
-                </section>
+
                 <div className="relative z-20 flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                     <section
                         className="w-full flex flex-col md:flex-row"

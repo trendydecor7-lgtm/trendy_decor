@@ -23,7 +23,8 @@ export interface User {
     phone?: string
     avatar?: string
     isOwner?: boolean
-    authProvider?: 'local' | 'google'
+    isGuest?: boolean
+    authProvider?: 'local' | 'google' | 'guest'
     createdAt?: string
     address?: {
         street?: string
@@ -46,6 +47,7 @@ interface AuthContextType {
     activeTab: ProfileTab
     setActiveTab: (tab: ProfileTab) => void
     login: (userData: Partial<User>, token?: string) => void
+    loginAsGuest: (guestName?: string) => Promise<boolean>
     logout: () => void
     syncUser: (overrideToken?: string) => Promise<void>
     addAddress: (newAddr: AddressItem) => Promise<boolean>
@@ -125,11 +127,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             })
 
             if (response.status === 401 || response.status === 403) {
-                console.warn('Backend rejected token (401/403). Logging out automatically.')
-                deleteCookie('token')
-                setToken(null)
-                setUser(null)
-                localStorage.removeItem(STORAGE_KEY)
+                if (user?.isGuest || user?.authProvider === 'guest') {
+                    console.warn('Guest user bypasses 401/403 backend check.')
+                } else {
+                    console.warn('Backend rejected token (401/403). Logging out automatically.')
+                    deleteCookie('token')
+                    setToken(null)
+                    setUser(null)
+                    localStorage.removeItem(STORAGE_KEY)
+                }
             } else if (response.ok) {
                 const data = await response.json()
                 if (data.success && data.user) {
@@ -286,6 +292,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         syncUser(effectiveToken)
     }
 
+    const loginAsGuest = async (guestName?: string): Promise<boolean> => {
+        try {
+            const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || '/api').replace(/\/$/, '')
+            const res = await fetch(`${API_BASE}/auth/guest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: guestName || 'Guest User' }),
+            })
+            const data = await res.json()
+            if (res.ok && data.success && data.token) {
+                const guestUser: User = {
+                    ...DEFAULT_DEMO_USER,
+                    id: data.user.id || data.user._id,
+                    name: data.user.username || data.user.name || guestName || 'Guest User',
+                    email: data.user.email,
+                    isGuest: true,
+                    authProvider: 'guest',
+                    addresses: [],
+                    memberSince: 'Just now',
+                    ordersCount: 0,
+                }
+                setCookie('token', data.token, 7)
+                setToken(data.token)
+                setUser(guestUser)
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(guestUser))
+                return true
+            }
+        } catch (err) {
+            console.error('Guest login API error:', err)
+        }
+
+        const guestId = 'guest_' + Date.now()
+        const guestUser: User = {
+            id: guestId,
+            name: guestName || 'Guest User',
+            email: `${guestId}@guest.trendydecor.com`,
+            isGuest: true,
+            authProvider: 'guest',
+            addresses: [],
+            memberSince: 'Just now',
+            ordersCount: 0,
+        }
+        const effectiveToken = 'guest_jwt_token_' + Date.now()
+        setCookie('token', effectiveToken, 7)
+        setToken(effectiveToken)
+        setUser(guestUser)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(guestUser))
+        return true
+    }
+
     const logout = () => {
         deleteCookie('token')
         setToken(null)
@@ -296,6 +352,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const addAddress = async (newAddr: AddressItem): Promise<boolean> => {
         if (user?.addresses && user.addresses.length >= 3) {
             return false
+        }
+        if (user?.isGuest || user?.authProvider === 'guest') {
+            setUser((prev) => {
+                if (!prev) return prev
+                const newId = 'addr_' + Date.now()
+                const addrWithId = { ...newAddr, _id: newId, id: newId }
+                const updated: User = {
+                    ...prev,
+                    addresses: [...(prev.addresses || []), addrWithId],
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+                return updated
+            })
+            return true
         }
         try {
             const activeToken = token || getCookie('token')
@@ -489,6 +559,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 activeTab,
                 setActiveTab,
                 login,
+                loginAsGuest,
                 logout,
                 syncUser,
                 addAddress,
