@@ -20,6 +20,72 @@ import {
 } from 'lucide-react'
 import { AddressModal } from '@/components/common/AddressModal'
 
+function ProfileSkeleton() {
+    return (
+        <main
+            className="w-full min-h-screen bg-[#e8e3da] py-10 md:py-16 px-4 sm:px-6 md:px-12 select-none"
+            style={{ fontFamily: "'Playpen Sans', sans-serif" }}
+        >
+            <div className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
+                {/* Profile Header Card Skeleton */}
+                <div className="relative bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-6 md:p-8 shadow-sm space-y-6 overflow-hidden">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left w-full">
+                            {/* Avatar Circle */}
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#e8e3da] skeleton-shimmer shrink-0 border-2 border-[#b6ac9f]/40" />
+                            <div className="space-y-2.5 w-full max-w-sm">
+                                <div className="h-6 sm:h-7 bg-[#e8e3da] skeleton-shimmer rounded-md w-3/4 mx-auto sm:mx-0" />
+                                <div className="h-4 bg-[#e8e3da] skeleton-shimmer rounded-md w-full mx-auto sm:mx-0" />
+                                <div className="h-4 bg-[#e8e3da] skeleton-shimmer rounded-md w-1/2 mx-auto sm:mx-0" />
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                            <div className="h-10 w-28 bg-[#e8e3da] skeleton-shimmer rounded-xl" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Grid Skeletons */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+                    {/* Account Details Card Skeleton */}
+                    <div className="lg:col-span-1 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-6 shadow-sm space-y-5">
+                        <div className="h-5 w-40 bg-[#e8e3da] skeleton-shimmer rounded-md pb-2 border-b border-[#b6ac9f]/20" />
+                        <div className="space-y-4">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div key={i} className="space-y-1.5">
+                                    <div className="h-3 w-20 bg-[#e8e3da] skeleton-shimmer rounded-sm" />
+                                    <div className="h-5 w-3/4 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Delivery Addresses Skeleton */}
+                    <div className="lg:col-span-2 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-6 shadow-sm space-y-5">
+                        <div className="flex items-center justify-between pb-2 border-b border-[#b6ac9f]/20">
+                            <div className="h-5 w-44 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                            <div className="h-9 w-32 bg-[#e8e3da] skeleton-shimmer rounded-xl" />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {[1, 2].map((i) => (
+                                <div key={i} className="p-4 bg-[#e8e3da]/60 border border-[#b6ac9f]/30 rounded-xl space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="h-4 w-16 bg-[#e8e3da] skeleton-shimmer rounded-full" />
+                                        <div className="h-4 w-4 bg-[#e8e3da] skeleton-shimmer rounded-full" />
+                                    </div>
+                                    <div className="h-4 w-full bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                                    <div className="h-4 w-4/5 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                                    <div className="h-3 w-24 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    )
+}
+
 export default function Profile() {
     const { user, isLoading, logout, addAddress, deleteAddress, updateUsername, syncUser } =
         useAuth()
@@ -48,11 +114,7 @@ export default function Profile() {
     }, [user, isLoading, router])
 
     if (isLoading || !user) {
-        return (
-            <div className="min-h-screen bg-[#e8e3da] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#1c1c1c] border-t-transparent" />
-            </div>
-        )
+        return <ProfileSkeleton />
     }
 
     const isLocalUser = !user.authProvider || user.authProvider === 'local'

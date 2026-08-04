@@ -19,12 +19,75 @@ import { useCart, parseNumericPrice } from '@/context/CartContext'
 import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
 
+function CartSkeleton() {
+    return (
+        <main
+            className="w-full min-h-screen bg-[#e8e3da] py-12 md:py-16 px-6 md:px-12 select-none"
+            style={{ fontFamily: "'Playpen Sans', sans-serif" }}
+        >
+            <div className="max-w-[1600px] mx-auto px-2 md:px-6 space-y-8">
+                {/* Header Skeleton */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#b6ac9f]/40 pb-6">
+                    <div className="space-y-3">
+                        <div className="h-4 w-36 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                        <div className="h-8 md:h-10 w-48 bg-[#e8e3da] skeleton-shimmer rounded-lg" />
+                    </div>
+                    <div className="h-4 w-28 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                </div>
+
+                {/* 2 Column Layout Skeleton */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                    {/* Cart Items List Skeleton (Left Column - 7/12) */}
+                    <div className="lg:col-span-7 space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <div
+                                key={i}
+                                className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-[#f4f1ea] border border-[#b6ac9f]/40 p-4 sm:p-5 rounded-2xl shadow-xs"
+                            >
+                                {/* Image placeholder */}
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 bg-[#e8e3da] skeleton-shimmer rounded-xl shrink-0 border border-[#b6ac9f]/30" />
+                                <div className="flex-1 space-y-2.5 w-full text-center sm:text-left">
+                                    <div className="h-3 w-20 bg-[#e8e3da] skeleton-shimmer rounded-sm mx-auto sm:mx-0" />
+                                    <div className="h-5 w-3/4 bg-[#e8e3da] skeleton-shimmer rounded-md mx-auto sm:mx-0" />
+                                    <div className="h-5 w-24 bg-[#e8e3da] skeleton-shimmer rounded-md mx-auto sm:mx-0" />
+                                    <div className="h-8 w-28 bg-[#e8e3da] skeleton-shimmer rounded-lg mx-auto sm:mx-0" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Summary Sidebar Skeleton (Right Column - 5/12) */}
+                    <div className="lg:col-span-5 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+                        <div className="h-6 w-44 bg-[#e8e3da] skeleton-shimmer rounded-md border-b border-[#b6ac9f]/30 pb-4" />
+                        <div className="space-y-3">
+                            <div className="h-4 w-28 bg-[#e8e3da] skeleton-shimmer rounded-sm" />
+                            <div className="h-16 w-full bg-[#e8e3da] skeleton-shimmer rounded-xl" />
+                        </div>
+                        <div className="space-y-3 pt-4 border-t border-[#b6ac9f]/30">
+                            <div className="flex justify-between">
+                                <div className="h-4 w-20 bg-[#e8e3da] skeleton-shimmer rounded-sm" />
+                                <div className="h-4 w-16 bg-[#e8e3da] skeleton-shimmer rounded-sm" />
+                            </div>
+                            <div className="flex justify-between">
+                                <div className="h-5 w-24 bg-[#e8e3da] skeleton-shimmer rounded-sm" />
+                                <div className="h-6 w-24 bg-[#e8e3da] skeleton-shimmer rounded-md" />
+                            </div>
+                        </div>
+                        <div className="h-12 w-full bg-[#e8e3da] skeleton-shimmer rounded-xl" />
+                    </div>
+                </div>
+            </div>
+        </main>
+    )
+}
+
 export default function Cart() {
     const { cartItems, updateQuantity, removeFromCart, clearCart, subtotal, totalCount } = useCart()
     const { toast } = useToast()
     const { user, addAddress } = useAuth()
     const router = useRouter()
 
+    const [mounted, setMounted] = useState<boolean>(false)
     const [selectedAddressId, setSelectedAddressId] = useState<string>('')
     const [isAddAddressOpen, setIsAddAddressOpen] = useState<boolean>(false)
     const [isSavingAddress, setIsSavingAddress] = useState<boolean>(false)
@@ -38,12 +101,20 @@ export default function Cart() {
     const [newCustomerName, setNewCustomerName] = useState('')
 
     useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    useEffect(() => {
         if (user?.addresses && user.addresses.length > 0) {
             const defaultAddr = user.addresses.find((a) => a.isDefault) || user.addresses[0]
             const addrId = defaultAddr._id || defaultAddr.id || defaultAddr.street
             setSelectedAddressId(addrId)
         }
     }, [user])
+
+    if (!mounted) {
+        return <CartSkeleton />
+    }
 
     const finalTotal = subtotal
 

@@ -1,12 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import SEO from '@/components/common/SEO'
-import SafeVideo from '@/components/common/SafeVideo'
-import IntroAnimation from '@/components/common/IntroAnimation'
 
 const loadedMediaCache = new Set<string>()
 
@@ -53,67 +51,9 @@ const ImageWithSkeleton: React.FC<{
 
 export default function Home() {
     const router = useRouter()
-    const heroSectionRef = useRef<HTMLDivElement>(null)
-    const video1Ref = useRef<HTMLVideoElement>(null)
-    const secondVideoRef = useRef<HTMLVideoElement>(null)
-    const secondSectionRef = useRef<HTMLDivElement>(null)
-    const [parallaxY1, setParallaxY1] = useState(0)
-    const [parallaxY2, setParallaxY2] = useState(0)
-
-    useEffect(() => {
-        if (video1Ref.current) {
-            video1Ref.current.muted = true
-            video1Ref.current.playbackRate = 0.2
-            video1Ref.current.play().catch(() => { })
-        }
-        if (secondVideoRef.current) {
-            secondVideoRef.current.muted = true
-            secondVideoRef.current.play().catch(() => { })
-        }
-    }, [])
-
-    useEffect(() => {
-        let ticking = false
-        const handleScroll = () => {
-            if (ticking) return
-            ticking = true
-            requestAnimationFrame(() => {
-                if (window.innerWidth < 768) {
-                    setParallaxY1(0)
-                    setParallaxY2(0)
-                    ticking = false
-                    return
-                }
-
-                if (heroSectionRef.current) {
-                    const rect1 = heroSectionRef.current.getBoundingClientRect()
-                    const topOffset1 = -rect1.top
-                    if (topOffset1 > 0) {
-                        setParallaxY1(topOffset1 * 0.35)
-                    } else {
-                        setParallaxY1(0)
-                    }
-                }
-
-                if (secondSectionRef.current) {
-                    const rect2 = secondSectionRef.current.getBoundingClientRect()
-                    const topOffset2 = -rect2.top
-                    if (topOffset2 > 0) {
-                        setParallaxY2(topOffset2 * 0.35)
-                    } else {
-                        setParallaxY2(0)
-                    }
-                }
-                ticking = false
-            })
-        }
-
-        window.addEventListener('scroll', handleScroll, { passive: true })
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
 
     return (
-        <main className="w-full select-none" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
+        <main className="w-full select-none bg-[#e8e3da]" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
             <SEO
                 title="Trendy Decor | Event Decor, Gift Hampers & Customized Chocolates | Gidderbaha"
                 description="Explore Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja. Premier event decoration, customized gift hampers, artisanal chocolates, bouquets, designer rakhis across Gidderbaha, Bathinda & Malout."
@@ -121,12 +61,9 @@ export default function Home() {
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 {/* ══════════ FIRST SECTION (FULL SCREEN HERO BANNER) ══════════ */}
-                <section
-                    ref={heroSectionRef}
-                    className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[calc(100dvh-170px)] md:h-[calc(100vh-40px)]"
-                >
+                <section className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[calc(100dvh-160px)] md:h-[calc(100vh-40px)]">
                     <div className="relative overflow-hidden cursor-pointer w-full h-full">
-                        {/* Mobile Full Screen Hero Banner (mb-hero.png) - Fits 100% with NO black portions */}
+                        {/* Mobile Full Screen Hero Banner (mb-hero.png) */}
                         <Link
                             href="/products"
                             prefetch={true}
@@ -136,11 +73,11 @@ export default function Home() {
                                 src="/hero-assets/mb-hero.png"
                                 alt="Trendy Decor Mobile Hero Banner"
                                 fetchPriority="high"
-                                className="absolute inset-0 w-full h-full object-cover object-center"
+                                className="absolute inset-0 w-full h-full object-cover object-[25%_center]"
                             />
                         </Link>
 
-                        {/* Desktop Full Screen Hero Banner (hero.png) - Fits 100% with NO black portions */}
+                        {/* Desktop Full Screen Hero Banner (hero.png) */}
                         <Link
                             href="/products"
                             prefetch={true}
@@ -155,29 +92,8 @@ export default function Home() {
                         </Link>
                     </div>
                 </section>
+
                 <div className="relative z-10 flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
-                    <section
-                        className="relative w-full overflow-hidden h-[50vh] sm:h-[65vh] md:h-screen"
-                    >
-                        <SafeVideo
-                            videoRef={video1Ref}
-                            src="/hero-assets/slower.mp4"
-                            autoPlay
-                            loop
-                            muted
-                            playbackRate={0.2}
-                            className="absolute inset-0 w-full h-full object-cover object-center"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-                        <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 z-10 pr-6">
-                            <p
-                                className="text-xs sm:text-sm md:text-[15px] font-light text-white/90 tracking-widest uppercase drop-shadow-md border-l-2 border-[#b6ac9f] pl-3"
-                                style={{ fontFamily: "'Playpen Sans', sans-serif" }}
-                            >
-                                Trendy Decor — Luxury Gifting Universe
-                            </p>
-                        </div>
-                    </section>
                     <section className="w-full bg-[#f4f1ea]">
                         <div className="w-full flex items-center justify-center py-5 sm:py-8 border-b border-black/8 px-4 text-center">
                             <h2
