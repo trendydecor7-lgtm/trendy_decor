@@ -349,6 +349,7 @@ export default function Auth() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full rounded-2xl border border-[#e2dbce] bg-white px-4 py-3 text-sm text-[#1c1c1c] placeholder:text-[#1c1c1c]/30 focus:outline-none focus:ring-2 focus:ring-[#1c1c1c]/20"
                                 />
+
                             </div>
 
                             <div>
