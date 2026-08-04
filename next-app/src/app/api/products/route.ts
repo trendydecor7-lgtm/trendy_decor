@@ -5,6 +5,7 @@ import Newsletter from '@/lib/models/Newsletter'
 import { verifyTokenAndGetUser } from '@/lib/auth'
 import { sendNewProductNotificationEmail } from '@/lib/resend'
 import { getProductsFast, clearProductsCache } from '@/lib/productsCache'
+import { cleanProductDescription } from '@/lib/formatDescription'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
             video: video || '',
             mediaType: mediaType || (video ? 'video' : 'image'),
             isNewProduct: Boolean(isNewProduct),
-            description: description || '',
+            description: cleanProductDescription(description || ''),
             createdBy: user._id,
         })
 

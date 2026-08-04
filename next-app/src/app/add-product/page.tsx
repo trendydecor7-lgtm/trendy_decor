@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { API_BASE_URL } from '@/config/api'
+import { cleanProductDescription } from '@/lib/formatDescription'
+import MarkdownEditor from '@/components/common/MarkdownEditor'
 import { ArrowLeft, Upload, Plus, X, Loader2, PackagePlus } from 'lucide-react'
 import {
     validateMediaFile,
@@ -239,7 +241,7 @@ export default function AddProduct() {
                     images: uploadedImageUrls,
                     video: finalVideoUrl,
                     mediaType: prodMediaType,
-                    description: prodDescription,
+                    description: cleanProductDescription(prodDescription),
                 }),
             })
 
@@ -330,14 +332,10 @@ export default function AddProduct() {
                             <label className="text-[13px] font-medium text-[#1c1c1c] block">
                                 Product Description <span className="text-rose-600">*</span>
                             </label>
-                            <textarea
-                                rows={4}
-                                required
-                                disabled={savingProduct}
+                            <MarkdownEditor
                                 value={prodDescription}
-                                onChange={(e) => setProdDescription(e.target.value)}
+                                onChange={setProdDescription}
                                 placeholder="Handcrafted luxury description detailing materials, items included, and gifting occasions..."
-                                className="w-full px-4 py-2.5 bg-[#f7f5f0] border border-[#e2dbce] rounded-md text-[14px] text-[#1c1c1c] placeholder:text-[#1c1c1c]/40 focus:outline-none focus:border-[#1c1c1c] disabled:opacity-60 transition-colors resize-none"
                             />
                         </div>
 
@@ -355,8 +353,8 @@ export default function AddProduct() {
                                     <option value="Hampers">Hampers</option>
                                     <option value="Bouquets">Bouquets</option>
                                     <option value="Rakhis">Rakhis</option>
-                                    <option value="Customize Chocolates">
-                                        Customize Chocolates
+                                    <option value="Customized">
+                                        Customized
                                     </option>
                                 </select>
                             </div>

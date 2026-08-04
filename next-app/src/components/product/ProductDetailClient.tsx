@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import SafeVideo from '@/components/common/SafeVideo'
+import FormattedProductDescription from '@/components/product/FormattedProductDescription'
 import {
     ShoppingBag,
     Share2,
@@ -258,9 +259,7 @@ export default function ProductDetailClient({
                     {product.description && (
                         <div className="space-y-1.5 border-t border-[#b6ac9f]/20 pt-4">
                             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Description</p>
-                            <p className="text-[13px] font-light text-[#1c1c1c]/75 leading-[1.85] whitespace-pre-line">
-                                {product.description}
-                            </p>
+                            <FormattedProductDescription description={product.description} />
                         </div>
                     )}
 
@@ -435,9 +434,7 @@ export default function ProductDetailClient({
                             {product.description && (
                                 <div className="space-y-2">
                                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Description</p>
-                                    <p className="text-[14px] font-light text-[#1c1c1c]/70 leading-[1.9] whitespace-pre-line">
-                                        {product.description}
-                                    </p>
+                                    <FormattedProductDescription description={product.description} />
                                 </div>
                             )}
 

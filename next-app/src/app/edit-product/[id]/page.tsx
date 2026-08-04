@@ -6,6 +6,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { API_BASE_URL } from '@/config/api'
+import { cleanProductDescription } from '@/lib/formatDescription'
+import MarkdownEditor from '@/components/common/MarkdownEditor'
 import {
     ArrowLeft,
     Upload,
@@ -23,7 +25,7 @@ import {
     MAX_IMAGE_SIZE_MB,
 } from '@/lib/imageCompression'
 
-const CATEGORIES = ['Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates']
+const CATEGORIES = ['Hampers', 'Bouquets', 'Rakhis', 'Customized']
 
 export default function EditProduct() {
     const params = useParams()
@@ -75,7 +77,7 @@ export default function EditProduct() {
                     setPrice((p.price || '').replace('₹', ''))
                     setStock(p.stock !== undefined ? p.stock : 10)
                     setInStock(p.inStock !== false)
-                    setDescription(p.description || '')
+                    setDescription(cleanProductDescription(p.description || ''))
                     setVideoUrl(p.video || '')
                     setMediaType(p.mediaType || 'image')
                     setThumbnailUrl(p.thumbnail || '')
@@ -630,12 +632,10 @@ export default function EditProduct() {
                                 <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#1c1c1c]/80 mb-1.5 font-mono">
                                     Description & Details
                                 </label>
-                                <textarea
-                                    rows={4}
+                                <MarkdownEditor
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={setDescription}
                                     placeholder="Enter artisanal details, care instructions, and product highlight features..."
-                                    className="w-full px-4 py-3 bg-[#e8e3da]/80 border border-[#b6ac9f]/50 rounded-none text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] transition-colors text-[13px] leading-relaxed"
                                 />
                             </div>
 

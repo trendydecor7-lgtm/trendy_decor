@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { cleanProductDescription } from '@/lib/formatDescription'
 import {
     Package,
     Plus,
@@ -21,7 +22,7 @@ import { useToast } from '@/context/ToastContext'
 import { type ProductItem } from '@/context/CartContext'
 import { API_BASE_URL } from '@/config/api'
 
-const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates']
+const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customized']
 
 export default function Inventory() {
     const router = useRouter()
@@ -295,7 +296,7 @@ export default function Inventory() {
                                                                 {p.name}
                                                             </p>
                                                             <p className="text-[11px] font-light text-[#1c1c1c]/60 truncate max-w-xs mt-0.5">
-                                                                {p.description ||
+                                                                {cleanProductDescription(p.description) ||
                                                                     'No description provided.'}
                                                             </p>
                                                         </div>

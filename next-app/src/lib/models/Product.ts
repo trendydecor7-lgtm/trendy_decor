@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: ['Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates'],
+            enum: ['Hampers', 'Bouquets', 'Rakhis', 'Customized', 'Customize Chocolates', 'Customized Chocolates'],
             required: true,
         },
         price: {

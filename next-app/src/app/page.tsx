@@ -148,7 +148,7 @@ export default function Home() {
                                 </div>
                             </Link>
                             <Link
-                                href="/products?category=Customize Chocolates"
+                                href="/products?category=Customized"
                                 prefetch={true}
                                 className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
                             >

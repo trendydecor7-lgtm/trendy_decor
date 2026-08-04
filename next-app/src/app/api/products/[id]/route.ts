@@ -3,6 +3,7 @@ import { dbConnect } from '@/lib/dbConnect'
 import Product from '@/lib/models/Product'
 import { verifyTokenAndGetUser } from '@/lib/auth'
 import { getProductByIdFast, clearProductsCache } from '@/lib/productsCache'
+import { cleanProductDescription } from '@/lib/formatDescription'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -56,6 +57,9 @@ export async function PUT(
         }
 
         const updates = await req.json()
+        if (updates.description !== undefined) {
+            updates.description = cleanProductDescription(updates.description)
+        }
         if (updates.price && !String(updates.price).startsWith('₹')) {
             updates.price = `₹${updates.price}`
         }

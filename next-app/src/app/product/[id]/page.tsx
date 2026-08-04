@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProductByIdFast, getProductsFast } from '@/lib/productsCache'
+import { cleanProductDescription } from '@/lib/formatDescription'
 import ProductDetailClient, { type ProductDetailData } from '@/components/product/ProductDetailClient'
 import { ArrowLeft } from 'lucide-react'
 
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const title = `${product.name} | Trendy Decor Gidderbaha`
     const description =
-        product.description ||
+        cleanProductDescription(product.description) ||
         `Buy ${product.name} - ${product.category} at Trendy Decor Gidderbaha by Harish Ahuja & Hitin Ahuja. Premium handcrafted gift hampers, chocolates, and decor.`
     const imageUrl = product.image || product.thumbnail || (product.images && product.images[0]) || 'https://trendydecor24.shop/logo.png'
 

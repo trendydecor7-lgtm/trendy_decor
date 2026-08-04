@@ -54,11 +54,17 @@ export function clearProductsCache(productId?: string) {
     }
 }
 
+import { cleanProductDescription } from '@/lib/formatDescription'
+
 // 1. Fetch raw products array from MongoDB Atlas
 const fetchAllProductsFromDB = async () => {
     await dbConnect()
     const products = await Product.find().sort({ createdAt: -1 }).lean()
-    return JSON.parse(JSON.stringify(products))
+    const cleaned = products.map((p: any) => ({
+        ...p,
+        description: cleanProductDescription(p?.description),
+    }))
+    return JSON.parse(JSON.stringify(cleaned))
 }
 
 // Next.js Data Cache for all products
@@ -73,7 +79,11 @@ const fetchProductByIdFromDB = async (id: string) => {
     await dbConnect()
     const product = await Product.findById(id).lean()
     if (!product) return null
-    return JSON.parse(JSON.stringify(product))
+    const cleaned = {
+        ...(product as any),
+        description: cleanProductDescription((product as any)?.description),
+    }
+    return JSON.parse(JSON.stringify(cleaned))
 }
 
 // Next.js Data Cache for single product

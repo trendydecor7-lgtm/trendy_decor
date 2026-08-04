@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import SEO from '@/components/common/SEO'
 import SafeVideo from '@/components/common/SafeVideo'
+import MarkdownEditor from '@/components/common/MarkdownEditor'
 import {
     ShoppingBag,
     Plus,
@@ -26,7 +27,7 @@ import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
 import { API_BASE_URL } from '@/config/api'
 
-const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customize Chocolates']
+const CATEGORIES = ['All', 'Hampers', 'Bouquets', 'Rakhis', 'Customized']
 
 const loadedMediaCache = new Set<string>()
 
@@ -161,7 +162,7 @@ function ProductsContent() {
 
     const [name, setName] = useState('')
     const [category, setCategory] = useState<
-        'Hampers' | 'Bouquets' | 'Rakhis' | 'Customize Chocolates'
+        'Hampers' | 'Bouquets' | 'Rakhis' | 'Customized' | string
     >('Hampers')
     const [price, setPrice] = useState('')
     const [stock, setStock] = useState(50)
@@ -423,7 +424,11 @@ function ProductsContent() {
     const filteredProducts =
         selectedCategory === 'All'
             ? products
-            : products.filter((p) => p.category === selectedCategory)
+            : products.filter((p) =>
+                  selectedCategory === 'Customized'
+                      ? p.category === 'Customized' || p.category === 'Customize Chocolates' || p.category === 'Customized Chocolates'
+                      : p.category === selectedCategory
+              )
 
     return (
         <main
@@ -452,7 +457,7 @@ function ProductsContent() {
                 </section>
 
                 {/* ══════════ REFINED STICKY FILTER BAR (DESKTOP & MOBILE ENHANCED) ══════════ */}
-                <div className="sticky top-16 sm:top-20 z-40 w-full bg-[#f4f1ea]/95 backdrop-blur-md border-y border-[#d8d2c6] shadow-xs select-none">
+                <div className="sticky top-[97px] sm:top-[113px] z-30 w-full bg-[#f4f1ea]/95 backdrop-blur-md border-y border-[#d8d2c6] shadow-xs select-none">
                     <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
                         {/* Category Dropdown Selector */}
                         <div className="flex items-center gap-3 min-w-0">
@@ -768,8 +773,8 @@ function ProductsContent() {
                                         <option value="Hampers">Hampers</option>
                                         <option value="Bouquets">Bouquets</option>
                                         <option value="Rakhis">Rakhis</option>
-                                        <option value="Customize Chocolates">
-                                            Customize Chocolates
+                                        <option value="Customized">
+                                            Customized
                                         </option>
                                     </select>
                                 </div>
@@ -819,12 +824,11 @@ function ProductsContent() {
                                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#1c1c1c]/70 mb-1">
                                     Description
                                 </label>
-                                <textarea
-                                    rows={3}
+                                <MarkdownEditor
                                     value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
+                                    onChange={setDescription}
                                     placeholder="Brief product description..."
-                                    className="w-full px-3.5 py-2.5 bg-[#e8e3da]/60 border border-[#b6ac9f]/40 rounded-xl text-[#1c1c1c] focus:outline-none focus:border-[#1c1c1c] transition-colors resize-none"
+                                    rows={4}
                                 />
                             </div>
                             <div>

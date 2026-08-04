@@ -6,7 +6,7 @@ export interface ProductItem {
     _id?: string
     id?: string
     name: string
-    category: 'Hampers' | 'Bouquets' | 'Rakhis' | 'Customize Chocolates'
+    category: 'Hampers' | 'Bouquets' | 'Rakhis' | 'Customized' | 'Customize Chocolates' | string
     price: string
     bgColor?: string
     image?: string
