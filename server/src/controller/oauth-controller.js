@@ -18,9 +18,11 @@ export const googleOauthController = (req, res, next) => {
             }
 
             const token = generateToken(user._id)
+            const redirectPath = req.query.state || '/'
+            const finalPath = redirectPath.startsWith('/') ? redirectPath : '/'
 
             res.redirect(
-                `${process.env.CLIENT_URL}/?oauth=success&token=${encodeURIComponent(token)}&user=${encodeURIComponent(JSON.stringify({ userId: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl }))}`
+                `${process.env.CLIENT_URL}${finalPath}?oauth=success&token=${encodeURIComponent(token)}&user=${encodeURIComponent(JSON.stringify({ userId: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl }))}`
             )
         })(req, res, next)
     } catch (err) {

@@ -241,7 +241,8 @@ export default function Auth() {
     }
 
     const handleGoogleAuth = () => {
-        window.location.href = `${API_BASE_URL}/auth/google`
+        const redirectUrl = getRedirectUrl()
+        window.location.href = `${API_BASE_URL}/auth/google?state=${encodeURIComponent(redirectUrl)}`
     }
 
     const handleGuestAuth = async () => {
@@ -309,18 +310,6 @@ export default function Auth() {
 
             <div className="flex-1 flex items-center justify-center p-8 lg:p-16">
                 <div className="w-full max-w-md space-y-6">
-                    <div>
-                        <Link
-                            href="/"
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md border border-[#b6ac9f]/40 text-xs font-light tracking-widest uppercase text-[#1c1c1c]/70 hover:text-[#1c1c1c] hover:border-[#1c1c1c] hover:bg-[#e8e3da]/50 transition-all group"
-                        >
-                            <ArrowLeft
-                                size={14}
-                                className="group-hover:-translate-x-1 transition-transform"
-                            />
-                            <span>Back to Home</span>
-                        </Link>
-                    </div>
                     <div>
                         <div className="lg:hidden text-xl font-bold text-[#1c1c1c] mb-2 uppercase">
                             Trendy Decor

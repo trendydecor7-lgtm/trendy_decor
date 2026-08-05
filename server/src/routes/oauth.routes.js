@@ -6,10 +6,13 @@ const router = express.Router()
 
 router.get(
     '/google',
-    passport.authenticate('google', {
-        scope: ['profile', 'email'],
-        session: false,
-    })
+    (req, res, next) => {
+        passport.authenticate('google', {
+            scope: ['profile', 'email'],
+            session: false,
+            state: req.query.state,
+        })(req, res, next)
+    }
 )
 
 router.get('/google/callback', googleOauthController)

@@ -12,9 +12,11 @@ export async function GET(req: NextRequest) {
         )
     }
 
+    const state = req.nextUrl.searchParams.get('state') || '/'
+
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
         redirectUri
-    )}&response_type=code&scope=${encodeURIComponent('email profile')}&access_type=offline&prompt=consent`
+    )}&response_type=code&scope=${encodeURIComponent('email profile')}&access_type=offline&prompt=consent&state=${encodeURIComponent(state)}`
 
     return NextResponse.redirect(googleAuthUrl)
 }

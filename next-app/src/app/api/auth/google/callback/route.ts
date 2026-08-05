@@ -97,8 +97,11 @@ export async function GET(req: NextRequest) {
             avatarUrl: user.avatarUrl,
         })
 
+        const state = searchParams.get('state') || '/'
+        const redirectPath = state.startsWith('/') ? state : '/'
+
         return NextResponse.redirect(
-            `${baseUrl}/?oauth=success&token=${encodeURIComponent(token)}&user=${encodeURIComponent(userObj)}`
+            `${baseUrl}${redirectPath}?oauth=success&token=${encodeURIComponent(token)}&user=${encodeURIComponent(userObj)}`
         )
     } catch (err: any) {
         console.error('Google OAuth callback API error:', err)
