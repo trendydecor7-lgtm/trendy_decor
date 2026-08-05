@@ -54,9 +54,16 @@ export default function Auth() {
 
     useEffect(() => {
         if (user) {
-            router.replace('/profile')
+            const params = new URLSearchParams(window.location.search)
+            const redirectUrl = params.get('redirect') || '/profile'
+            router.replace(redirectUrl)
         }
     }, [user, router])
+
+    const getRedirectUrl = () => {
+        const params = new URLSearchParams(window.location.search)
+        return params.get('redirect') || '/profile'
+    }
 
     if (user) {
         return null
@@ -193,7 +200,7 @@ export default function Auth() {
                         data.token
                     )
                     toast.success('Account created! Check your email for a welcome message.')
-                    router.push('/profile')
+                    router.push(getRedirectUrl())
                 } else {
                     setErrorMsg(data.message || 'Registration failed. Please try again.')
                 }
@@ -220,7 +227,7 @@ export default function Auth() {
                         data.token
                     )
                     toast.success('Welcome back!')
-                    router.push('/profile')
+                    router.push(getRedirectUrl())
                 } else {
                     setErrorMsg(data.message || 'Invalid email or password.')
                 }
@@ -242,7 +249,7 @@ export default function Auth() {
         try {
             await loginAsGuest()
             toast.success('Signed in as Guest! Welcome.')
-            router.push('/profile')
+            router.push(getRedirectUrl())
         } catch (err: any) {
             toast.error('Failed to sign in as guest.')
         } finally {

@@ -184,7 +184,7 @@ export default function Cart() {
         }
         if (!user) {
             toast.info('Please sign in to complete your checkout.')
-            router.push('/auth')
+            router.push('/auth?redirect=/cart')
             return
         }
 

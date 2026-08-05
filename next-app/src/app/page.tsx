@@ -160,7 +160,7 @@ export default function Home() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent group-hover:from-black/80 transition-all duration-500" />
                                 <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10 space-y-0.5 sm:space-y-1">
                                     <p className="text-sm sm:text-lg md:text-xl font-normal text-white tracking-wide drop-shadow-md leading-tight">
-                                        Chocolates
+                                        Customizations
                                     </p>
                                     <p className="text-[9px] sm:text-[11px] font-light text-white/80 tracking-wider uppercase flex items-center gap-1">
                                         Explore <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
