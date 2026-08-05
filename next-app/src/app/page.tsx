@@ -110,7 +110,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Hampers"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/hamper.png"
@@ -130,7 +130,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Rakhis"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/rakhi.png"
@@ -150,7 +150,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Customized"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/choco.png"
@@ -170,7 +170,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Bouquets"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[620px] overflow-hidden cursor-pointer group bg-[#b0aaa0] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#b0aaa0] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/bouque.png"
@@ -271,9 +271,6 @@ export default function Home() {
                             />
                             <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors duration-500" />
                             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10">
-                                <span className="text-[10px] sm:text-xs font-light text-white uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                                    Signature Hampers
-                                </span>
                             </div>
                         </Link>
                         <Link
@@ -288,9 +285,6 @@ export default function Home() {
                             />
                             <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors duration-500" />
                             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10">
-                                <span className="text-[10px] sm:text-xs font-light text-white uppercase tracking-[0.2em] bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                                    Custom Styling
-                                </span>
                             </div>
                         </Link>
                     </section>
