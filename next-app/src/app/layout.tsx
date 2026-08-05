@@ -4,6 +4,7 @@ import { ToastProvider } from '@/context/ToastContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
 import LayoutShell from '@/components/LayoutShell'
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
     title: {
@@ -205,6 +206,7 @@ export default function RootLayout({
                         </CartProvider>
                     </AuthProvider>
                 </ToastProvider>
+                <Analytics />
             </body>
         </html>
     )
