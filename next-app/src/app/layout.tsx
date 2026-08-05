@@ -5,6 +5,8 @@ import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
 import LayoutShell from '@/components/LayoutShell'
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import WhatsAppButton from '@/components/WhatsAppButton'
 
 export const metadata: Metadata = {
     title: {
@@ -206,7 +208,9 @@ export default function RootLayout({
                         </CartProvider>
                     </AuthProvider>
                 </ToastProvider>
+                <WhatsAppButton />
                 <Analytics />
+                <SpeedInsights />
             </body>
         </html>
     )

@@ -175,10 +175,19 @@ export default function About() {
                                 Instagram and bringing the team's creative work to a broader
                                 audience.
                             </p>
-                            <span className="inline-flex items-center gap-2 text-[12px] font-light text-[#1c1c1c]/60">
-                                <AtSign size={12} strokeWidth={1.5} />
-                                @trendy_decor_gdb
-                            </span>
+                            <div className="flex flex-col gap-2">
+                                <span className="inline-flex items-center gap-2 text-[12px] font-light text-[#1c1c1c]/60">
+                                    <AtSign size={12} strokeWidth={1.5} />
+                                    @trendy_decor_gdb
+                                </span>
+                                <a
+                                    href="tel:+917468857000"
+                                    className="inline-flex items-center gap-2 text-[12px] font-light text-[#1c1c1c]/60 hover:text-[#1c1c1c] transition-colors"
+                                >
+                                    <Phone size={12} strokeWidth={1.5} />
+                                    +91 74688 57000
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,7 +222,14 @@ export default function About() {
                             >
                                 +91 9417718844
                             </a>
-                            <p className="text-[12px] font-light text-[#1c1c1c]/55">Harish Ahuja</p>
+                            <p className="text-[12px] font-light text-[#1c1c1c]/55 mb-2">Harish Ahuja</p>
+                            <a
+                                href="tel:+917468857000"
+                                className="text-[13px] font-normal text-[#1c1c1c] hover:opacity-70 transition-opacity"
+                            >
+                                +91 74688 57000
+                            </a>
+                            <p className="text-[12px] font-light text-[#1c1c1c]/55">Hitin Ahuja</p>
                         </div>
 
                         <div className="flex flex-col gap-1">

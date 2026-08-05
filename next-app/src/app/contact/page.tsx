@@ -92,7 +92,19 @@ export default function Contact() {
                                             <p className="text-[11px] font-light uppercase tracking-wider text-[#1c1c1c]/50">
                                                 Phone
                                             </p>
-                                            <p className="pt-0.5 text-[14px]">+91 9417718844</p>
+                                            <p className="pt-0.5 text-[14px]">+91 94177 18844</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-9 h-9 rounded-full bg-[#e8e3da] flex items-center justify-center text-[#1c1c1c] shrink-0 border border-[#b6ac9f]/40">
+                                            <Phone size={16} strokeWidth={1.5} />
+                                        </div>
+                                        <div>
+                                            <p className="text-[11px] font-light uppercase tracking-wider text-[#1c1c1c]/50">
+                                                Phone (Hitin Ahuja - Owner)
+                                            </p>
+                                            <p className="pt-0.5 text-[14px]">+91 74688 57000</p>
                                         </div>
                                     </div>
 

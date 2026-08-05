@@ -82,6 +82,12 @@ const Footer: React.FC = () => {
                             <Instagram size={16} strokeWidth={1.5} />
                             <span>@trendydecor</span>
                         </a>
+                        <div className="flex flex-col space-y-1 pt-2">
+                            <span className="text-[14px] font-medium text-[#1c1c1c]">Hitin Ahuja (Owner)</span>
+                            <a href="tel:+917468857000" className="text-[14px] font-light text-[#1c1c1c]/80 hover:text-black transition-colors">
+                                +91 74688 57000
+                            </a>
+                        </div>
                     </div>
 
                     <div className="hidden md:block md:col-span-3 space-y-4">
