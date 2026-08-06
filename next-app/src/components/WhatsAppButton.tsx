@@ -1,7 +1,22 @@
+'use client'
+
 import React from 'react'
+import { usePathname } from 'next/navigation'
 
 const WhatsAppButton = () => {
-    const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    const pathname = usePathname()
+    const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+
+    const isAuthPage =
+        pathname === '/auth' ||
+        pathname?.startsWith('/auth/') ||
+        pathname === '/login' ||
+        pathname?.startsWith('/login/') ||
+        pathname === '/signup' ||
+        pathname?.startsWith('/signup/')
+
+    if (isAuthPage) return null
+
     return (
         <a
             href={`https://wa.me/${number}?text=Hi..%20i%20want%20to%20know%20more..`}

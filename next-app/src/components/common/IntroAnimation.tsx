@@ -41,6 +41,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
 
     useEffect(() => {
         document.body.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden'
 
         const startDelay = setTimeout(() => {
             setPhase('loading')
@@ -57,7 +58,8 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
                     setTimeout(() => setPhase('curtain-out'), 600)
                     setTimeout(() => {
                         setPhase('done')
-                        document.body.style.overflow = ''
+                        document.body.style.overflow = 'unset'
+                        document.documentElement.style.overflow = 'unset'
                         onComplete?.()
                     }, 1800)
                 }
@@ -67,7 +69,8 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         return () => {
             clearTimeout(startDelay)
             if (intervalRef.current) clearInterval(intervalRef.current)
-            document.body.style.overflow = ''
+            document.body.style.overflow = 'unset'
+            document.documentElement.style.overflow = 'unset'
         }
     }, [onComplete])
 

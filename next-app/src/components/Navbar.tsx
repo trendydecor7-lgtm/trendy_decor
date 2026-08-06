@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ShoppingBag, User, Menu, X } from 'lucide-react'
@@ -10,6 +10,27 @@ const Navbar = () => {
     const pathname = usePathname()
     const [isMobileOpen, setIsMobileOpen] = useState(false)
     const { totalCount: cartCount } = useCart()
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setIsMobileOpen(false)
+            }
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    useEffect(() => {
+        if (isMobileOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'unset'
+        }
+        return () => {
+            document.body.style.overflow = 'unset'
+        }
+    }, [isMobileOpen])
 
     const navLinks = [
         { label: 'Home', to: '/' },
@@ -28,7 +49,7 @@ const Navbar = () => {
                 className="w-full bg-[#c8bfb6] text-[#1c1c1c] py-2 border-b border-[#b6ac9f]/70 select-none text-[11px] sm:text-xs tracking-wide"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
             >
-                <div className="max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
                     <div className="w-full overflow-hidden relative marquee-mask">
                         {/* Left Gradient Overlay Fade (Aligned with Main Nav Start) */}
                         <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-14 bg-gradient-to-r from-[#c8bfb6] via-[#c8bfb6]/85 to-transparent z-10 pointer-events-none" />
@@ -80,7 +101,7 @@ const Navbar = () => {
                 className="w-full bg-[#f4f1ea] border-b border-black/10 select-none"
                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
             >
-                <div className="max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12 h-16 sm:h-20 flex items-center justify-between">
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
                     {/* Brand Logo & Title */}
                     <div className="flex items-center">
                         <Link
@@ -88,7 +109,7 @@ const Navbar = () => {
                             className="flex items-center gap-2.5 sm:gap-3 hover:opacity-85 transition-opacity shrink-0"
                         >
                             <span
-                                className="text-xl sm:text-2xl md:text-3xl font-normal tracking-tight text-[#1c1c1c]"
+                                className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-normal tracking-tight text-[#1c1c1c]"
                                 style={{ fontFamily: "'Playpen Sans', sans-serif" }}
                             >
                                 Trendy Decor
@@ -97,12 +118,12 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center gap-8">
+                    <nav className="hidden md:flex items-center gap-4 lg:gap-8">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.to}
                                 href={link.to}
-                                className={`text-[17px] font-light tracking-[0.08em] uppercase transition-colors relative group ${isActive(link.to)
+                                className={`text-xs md:text-sm lg:text-[17px] font-light md:tracking-wide lg:tracking-[0.08em] uppercase transition-colors relative group whitespace-nowrap ${isActive(link.to)
                                     ? 'text-[#1c1c1c]'
                                     : 'text-neutral-500 hover:text-[#1c1c1c]'
                                     }`}
@@ -119,14 +140,14 @@ const Navbar = () => {
                     </nav>
 
                     {/* Header Action Buttons */}
-                    <div className="flex items-center justify-end gap-5">
+                    <div className="flex items-center justify-end gap-3 sm:gap-5">
                         {/* Profile Link (Desktop) */}
                         <Link
                             href="/profile"
                             className="hidden md:flex p-1 text-[#1c1c1c] hover:text-neutral-500 transition-colors"
                             aria-label="Profile"
                         >
-                            <User size={25} strokeWidth={1.5} />
+                            <User size={23} strokeWidth={1.5} />
                         </Link>
 
                         {/* Cart Link (Mobile & Desktop) */}

@@ -267,6 +267,7 @@ export default function Auth() {
                 title="Sign In | Member Portal"
                 description="Sign in or register an account with Trendy Decor to manage your orders, saved addresses, and profile."
             />
+            {/* Desktop Left Dark Banner (Large Screens Only) */}
             <div className="hidden lg:flex lg:w-1/2 bg-[#1c1c1c] text-[#f4f1ea] flex-col justify-between p-12 relative overflow-hidden">
                 <div className="relative z-10 flex items-center justify-between">
                     <div>
@@ -301,17 +302,18 @@ export default function Auth() {
                 </div>
 
                 <div className="relative z-10 text-xs text-[#f4f1ea]/30">
-                    © 2026 Trendy Decor. All rights reserved.
+                    © {new Date().getFullYear()} Trendy Decor. All rights reserved.
                 </div>
 
-                <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full" />
-                <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-white/5 rounded-full" />
+                <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-white/5 rounded-full pointer-events-none" />
             </div>
 
-            <div className="flex-1 flex items-center justify-center p-8 lg:p-16">
+            {/* Auth Form Container — Clean Centered Layout like Small Screens */}
+            <div className="flex-1 flex items-center justify-center p-6 sm:p-8 md:p-12 lg:p-16">
                 <div className="w-full max-w-md space-y-6">
                     <div>
-                        <div className="lg:hidden text-xl font-bold text-[#1c1c1c] mb-2 uppercase">
+                        <div className="lg:hidden text-xl font-bold text-[#1c1c1c] mb-2 uppercase tracking-tight">
                             Trendy Decor
                         </div>
                         <h2 className="text-3xl font-bold text-[#1c1c1c]">

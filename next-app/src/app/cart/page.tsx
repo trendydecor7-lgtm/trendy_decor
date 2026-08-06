@@ -318,13 +318,13 @@ export default function Cart() {
                                 return (
                                     <div
                                         key={prodId}
-                                        className="p-4 md:p-6 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xs"
+                                        className="p-4 sm:p-5 md:p-6 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 shadow-xs hover:shadow-md transition-shadow"
                                     >
                                         <div className="flex items-center gap-4 w-full sm:w-auto">
                                             <Link
                                                 href={`/product/${prodId}`}
                                                 prefetch={true}
-                                                className="w-20 h-24 md:w-24 md:h-28 shrink-0 overflow-hidden relative border border-[#b6ac9f]/30 block hover:opacity-90 transition-opacity"
+                                                className="w-20 h-24 sm:w-24 sm:h-28 shrink-0 overflow-hidden relative border border-[#b6ac9f]/30 rounded-xl block hover:opacity-90 transition-opacity"
                                                 style={{
                                                     backgroundColor:
                                                         item.product.bgColor || '#cec9be',
@@ -349,7 +349,7 @@ export default function Cart() {
                                                 <Link
                                                     href={`/product/${prodId}`}
                                                     prefetch={true}
-                                                    className="text-[16px] font-normal text-[#1c1c1c] hover:underline block"
+                                                    className="text-[16px] sm:text-[17px] font-normal text-[#1c1c1c] hover:underline block"
                                                 >
                                                     {item.product.name}
                                                 </Link>
@@ -359,8 +359,8 @@ export default function Cart() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 border-[#b6ac9f]/30 pt-4 sm:pt-0">
-                                            <div className="flex items-center border border-[#b6ac9f]/40 bg-[#e8e3da]/70 overflow-hidden">
+                                        <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto border-t sm:border-t-0 border-[#b6ac9f]/30 pt-3 sm:pt-0">
+                                            <div className="flex items-center border border-[#b6ac9f]/40 bg-[#e8e3da]/70 rounded-xl overflow-hidden">
                                                 <button
                                                     onClick={() =>
                                                         updateQuantity(prodId, item.quantity - 1)
@@ -385,7 +385,7 @@ export default function Cart() {
                                             </div>
 
                                             <div className="text-right space-y-1">
-                                                <p className="text-[16px] font-bold text-[#1c1c1c] font-mono">
+                                                <p className="text-[16px] sm:text-[17px] font-bold text-[#1c1c1c] font-mono">
                                                     ₹{itemTotal.toLocaleString('en-IN')}
                                                 </p>
                                                 <button
@@ -403,9 +403,9 @@ export default function Cart() {
                                 )
                             })}
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                                <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex items-center gap-3">
-                                    <Truck size={20} className="text-[#1c1c1c]/70" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                                <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-xl flex items-center gap-3 shadow-2xs">
+                                    <Truck size={20} className="text-[#1c1c1c]/70 shrink-0" />
                                     <div>
                                         <p className="text-[13px] font-medium text-[#1c1c1c] flex items-center gap-1.5">
                                             Free Express Delivery
@@ -415,8 +415,8 @@ export default function Cart() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 flex items-center gap-3">
-                                    <ShieldCheck size={20} className="text-[#1c1c1c]/70" />
+                                <div className="p-4 bg-[#f4f1ea] border border-[#b6ac9f]/30 rounded-xl flex items-center gap-3 shadow-2xs">
+                                    <ShieldCheck size={20} className="text-[#1c1c1c]/70 shrink-0" />
                                     <div>
                                         <p className="text-[13px] font-medium text-[#1c1c1c]">
                                             Handcrafted Guarantee
@@ -430,17 +430,17 @@ export default function Cart() {
                         </div>
 
                         <div className="lg:col-span-5 space-y-6">
-                            <div className="p-6 md:p-8 bg-[#f4f1ea] border border-[#b6ac9f]/30 shadow-sm space-y-6 sticky top-24">
+                            <div className="p-6 md:p-8 bg-[#f4f1ea] border border-[#b6ac9f]/40 rounded-2xl shadow-sm space-y-6 lg:sticky lg:top-24">
                                 <h2 className="text-xl font-normal text-[#1c1c1c] border-b border-[#b6ac9f]/30 pb-3">
                                     Order Summary
                                 </h2>
 
                                 {subtotal < 1000 && subtotal > 0 ? (
-                                    <div className="p-3 bg-amber-50 border border-amber-200/80 text-[12px] text-amber-900">
+                                    <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-[12px] text-amber-900">
                                         Add <strong>₹{(1000 - subtotal).toLocaleString('en-IN')}</strong> more to your bag for <strong>FREE Delivery</strong>!
                                     </div>
                                 ) : (
-                                    <div className="p-3 bg-emerald-50 border border-emerald-200/80 text-[12px] text-emerald-900">
+                                    <div className="p-3 bg-emerald-50 border border-emerald-200/80 rounded-xl text-[12px] text-emerald-900">
                                         🎉 You have unlocked <strong>FREE Delivery</strong>!
                                     </div>
                                 )}
@@ -460,7 +460,7 @@ export default function Cart() {
                                             <MapPin size={14} /> Delivery Address
                                         </span>
                                         {user?.addresses && user.addresses.length >= 3 ? (
-                                            <span className="text-[10px] font-mono text-[#1c1c1c]/50 bg-[#e8e3da] px-2 py-0.5">
+                                            <span className="text-[10px] font-mono text-[#1c1c1c]/50 bg-[#e8e3da] px-2 py-0.5 rounded-md">
                                                 (Max 3 saved)
                                             </span>
                                         ) : (
@@ -486,7 +486,7 @@ export default function Cart() {
                                                     <label
                                                         key={addrId}
                                                         onClick={() => setSelectedAddressId(addrId)}
-                                                        className={`flex items-start gap-3 p-3 border transition-all cursor-pointer ${isSelected
+                                                        className={`flex items-start gap-3 p-3.5 border rounded-xl transition-all cursor-pointer ${isSelected
                                                                 ? 'bg-[#1c1c1c] text-[#f4f1ea] border-[#1c1c1c]'
                                                                 : 'bg-[#e8e3da]/60 text-[#1c1c1c] border-[#b6ac9f]/40 hover:border-[#1c1c1c]/50'
                                                             }`}
@@ -517,14 +517,14 @@ export default function Cart() {
                                             })}
                                         </div>
                                     ) : (
-                                        <div className="p-4 bg-[#e8e3da]/60 border border-[#b6ac9f]/30 text-center space-y-2">
+                                        <div className="p-4 bg-[#e8e3da]/60 border border-[#b6ac9f]/30 rounded-xl text-center space-y-2">
                                             <p className="text-[12px] font-light text-[#1c1c1c]/70">
                                                 No saved delivery address found.
                                             </p>
                                             <button
                                                 type="button"
                                                 onClick={() => setIsAddAddressOpen(true)}
-                                                className="py-2 px-4 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-medium uppercase tracking-wider hover:bg-black transition-colors cursor-pointer"
+                                                className="py-2 px-4 bg-[#1c1c1c] text-[#f4f1ea] text-[11px] font-medium uppercase tracking-wider rounded-lg hover:bg-black transition-colors cursor-pointer"
                                             >
                                                 + Add Address
                                             </button>
@@ -542,7 +542,7 @@ export default function Cart() {
 
                                     <button
                                         onClick={handleCheckout}
-                                        className="w-full py-3.5 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-medium uppercase tracking-widest hover:bg-black transition-colors shadow-md cursor-pointer text-center"
+                                        className="w-full py-3.5 bg-[#1c1c1c] text-[#f4f1ea] text-[12px] font-medium uppercase tracking-widest rounded-xl hover:bg-black transition-colors shadow-md cursor-pointer text-center"
                                     >
                                         Buy Now
                                     </button>

@@ -58,9 +58,9 @@ const Footer: React.FC = () => {
             className="w-full bg-[#c8bfb6] border-t border-[#b6ac9f]/70 select-none text-[#1c1c1c] mt-[4px]"
             style={{ fontFamily: "'Playpen Sans', sans-serif" }}
         >
-            <div className="max-w-[1600px] mx-auto px-8 md:px-12 py-12 md:py-16">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start">
-                    <div className="md:col-span-5 space-y-4">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 md:gap-6 lg:gap-8 items-start">
+                    <div className="sm:col-span-2 md:col-span-5 space-y-4">
                         <Link
                             href="/"
                             className="text-3xl md:text-4xl font-normal tracking-tight text-[#1c1c1c] inline-block hover:opacity-70 transition-opacity"
@@ -90,7 +90,7 @@ const Footer: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="hidden md:block md:col-span-3 space-y-4">
+                    <div className="sm:col-span-1 md:col-span-3 space-y-4">
                         <h3 className="text-[16px] font-medium tracking-wide text-[#1c1c1c]">
                             Company
                         </h3>
@@ -121,7 +121,7 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    <div className="md:col-span-4 space-y-4">
+                    <div className="sm:col-span-1 md:col-span-4 space-y-4">
                         <h3 className="text-[16px] font-medium tracking-wide text-[#1c1c1c]">
                             Subscribe to our newsletter
                         </h3>

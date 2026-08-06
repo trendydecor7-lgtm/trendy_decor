@@ -94,9 +94,9 @@ export default function About() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
             />
-            <div className="max-w-[1600px] mx-auto px-8 md:px-12">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
                 <div className="py-12 md:py-16 border-b border-[#b6ac9f]/30">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20">
                         <div>
                             <h1 className="text-2xl md:text-3xl font-normal text-[#1c1c1c] tracking-tight leading-snug mb-4">
                                 Trendy Decor Gidderbaha

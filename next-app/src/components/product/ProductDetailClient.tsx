@@ -338,7 +338,7 @@ export default function ProductDetailClient({
 
                 {/* Breadcrumb */}
                 <div className="w-full border-b border-[#b6ac9f]/20 bg-[#e8e3da]">
-                    <div className="max-w-[1400px] mx-auto px-10 lg:px-16 py-3.5 flex items-center justify-between text-[11px] uppercase tracking-wider text-[#1c1c1c]/50">
+                    <div className="max-w-[1400px] mx-auto px-6 md:px-8 lg:px-16 py-3.5 flex items-center justify-between text-[11px] uppercase tracking-wider text-[#1c1c1c]/50">
                         <div className="flex items-center gap-2">
                             <button onClick={() => router.back()} className="w-7 h-7 flex items-center justify-center border border-[#b6ac9f]/40 text-[#1c1c1c] hover:bg-[#b6ac9f]/20 cursor-pointer mr-1" aria-label="Back">
                                 <ArrowLeft size={13} />
@@ -358,14 +358,14 @@ export default function ProductDetailClient({
                 </div>
 
                 {/* Product area */}
-                <div className="max-w-[1400px] mx-auto px-10 lg:px-16 py-12 lg:py-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+                <div className="max-w-[1400px] mx-auto px-6 md:px-8 lg:px-16 py-8 md:py-10 lg:py-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-20 items-start">
 
                         {/* Left: Media */}
-                        <div className="space-y-3 lg:sticky lg:top-6">
+                        <div className="space-y-3 md:sticky md:top-24 lg:top-6">
                             <div
                                 className="relative w-full overflow-hidden"
-                                style={{ backgroundColor: product.bgColor || '#f4f1ea', aspectRatio: '4/5', maxHeight: '78vh' }}
+                                style={{ backgroundColor: product.bgColor || '#f4f1ea', aspectRatio: '4/5', maxHeight: '68vh' }}
                             >
                                 {activeMediaType === 'video' ? (
                                     <SafeVideo src={activeMediaUrl} controls autoPlay loop muted className="w-full h-full object-contain" />

@@ -1,10 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap');
 @import 'tailwindcss';
 
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 body {
     background-color: #e8e3da;
     color: #1c1c1c;
     font-family: 'Playpen Sans', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
 }
 
 html.lenis,

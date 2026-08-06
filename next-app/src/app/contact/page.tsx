@@ -34,8 +34,8 @@ export default function Contact() {
     return (
         <main className="w-full select-none" style={{ fontFamily: "'Playpen Sans', sans-serif" }}>
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
-                <section className="w-full bg-[#f4f1ea] py-14 md:py-20 px-8 text-center border-b border-[#b6ac9f]/30">
-                    <div className="max-w-[1600px] mx-auto px-8 md:px-12">
+                <section className="w-full bg-[#f4f1ea] py-14 md:py-20 px-4 text-center border-b border-[#b6ac9f]/30">
+                    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
                         <div className="max-w-xl mx-auto space-y-3">
                             <span className="inline-block text-[11px] md:text-[12px] font-light uppercase tracking-[0.2em] text-[#1c1c1c]/60 bg-[#e8e3da]/70 px-4 py-1 rounded-full border border-[#b6ac9f]/40">
                                 Atelier Concierge
@@ -52,9 +52,9 @@ export default function Contact() {
                 </section>
 
                 <section className="w-full bg-[#e8e3da] py-8 md:py-12">
-                    <div className="max-w-[1600px] mx-auto px-8 md:px-12">
+                    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
                         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '3px' }}>
-                            <div className="bg-[#f4f1ea] p-8 md:p-14 flex flex-col justify-between space-y-8">
+                            <div className="bg-[#f4f1ea] p-6 sm:p-8 md:p-10 lg:p-14 flex flex-col justify-between space-y-8">
                                 <div className="space-y-2">
                                     <p className="text-[12px] font-light uppercase tracking-widest text-[#1c1c1c]/50">
                                         Concierge

@@ -61,27 +61,27 @@ export default function Home() {
             />
             <div className="flex flex-col bg-[#e8e3da]" style={{ gap: '3px' }}>
                 {/* ══════════ FIRST SECTION (FULL SCREEN HERO BANNER) ══════════ */}
-                <section className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[540px] xs:h-[600px] sm:h-[680px] md:h-[calc(100vh-40px)]">
+                <section className="relative w-full flex bg-[#e8e3da] z-0 overflow-hidden h-[calc(100vh-97px)] sm:h-[calc(100vh-113px)] md:h-[calc(100vh-113px)] lg:h-[calc(100vh-113px)]">
                     <div className="relative overflow-hidden cursor-pointer w-full h-full">
-                        {/* Mobile Full Screen Hero Banner (mb-hero.png) */}
+                        {/* Mobile & Medium Screen Hero Banner (mb-hero.png) */}
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="md:hidden relative overflow-hidden cursor-pointer w-full h-full block"
+                            className="lg:hidden relative overflow-hidden cursor-pointer w-full h-full block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/mb-hero.png"
-                                alt="Trendy Decor Mobile Hero Banner"
+                                alt="Trendy Decor Hero Banner"
                                 fetchPriority="high"
-                                className="absolute inset-0 w-full h-full object-cover object-[25%_center]"
+                                className="absolute inset-0 w-full h-full object-cover object-[25%_center] sm:object-center md:object-center"
                             />
                         </Link>
 
-                        {/* Desktop Full Screen Hero Banner (hero.png) */}
+                        {/* Large Desktop Full Screen Hero Banner (hero.png) */}
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="hidden md:block relative overflow-hidden cursor-pointer w-full h-full"
+                            className="hidden lg:block relative overflow-hidden cursor-pointer w-full h-full"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero.png"
@@ -104,13 +104,13 @@ export default function Home() {
                             </h2>
                         </div>
                         <div
-                            className="w-full grid grid-cols-2 lg:grid-cols-4"
+                            className="w-full grid grid-cols-2 md:grid-cols-4"
                             style={{ gap: '3px', background: '#e8e3da' }}
                         >
                             <Link
                                 href="/products?category=Hampers"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[320px] md:h-[380px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/hamper.png"
@@ -130,7 +130,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Rakhis"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[320px] md:h-[380px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/rakhi.png"
@@ -150,7 +150,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Customized"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[320px] md:h-[380px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#bdb7ac] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/choco.png"
@@ -170,7 +170,7 @@ export default function Home() {
                             <Link
                                 href="/products?category=Bouquets"
                                 prefetch={true}
-                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[350px] md:h-[480px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#b0aaa0] block"
+                                className="relative w-full h-[220px] xs:h-[270px] sm:h-[320px] md:h-[380px] lg:h-[680px] overflow-hidden cursor-pointer group bg-[#b0aaa0] block"
                             >
                                 <ImageWithSkeleton
                                     src="/category/bouque.png"
@@ -239,19 +239,19 @@ export default function Home() {
                         className="w-full flex flex-col md:flex-row"
                         style={{ gap: '3px' }}
                     >
-                        <div className="hidden md:flex flex-1 bg-[#f4f1ea] flex-col items-center justify-center text-center px-8 md:px-12 py-16">
-                            <div className="max-w-sm space-y-4">
+                        <div className="hidden md:flex flex-1 bg-[#f4f1ea] flex-col items-center justify-center text-center px-4 md:px-5 lg:px-12 py-8 md:py-10 lg:py-16">
+                            <div className="max-w-sm space-y-2 md:space-y-3 lg:space-y-4">
                                 <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#1c1c1c]/50">
                                     Bespoke Gifting
                                 </span>
                                 <h2
-                                    className="text-3xl font-normal text-[#1c1c1c] tracking-tight"
+                                    className="text-2xl md:text-2xl lg:text-3xl font-normal text-[#1c1c1c] tracking-tight"
                                     style={{ fontFamily: "'Playpen Sans', sans-serif" }}
                                 >
                                     Trendy Decor
                                 </h2>
                                 <p
-                                    className="text-[14px] font-light text-[#1c1c1c]/75 leading-relaxed tracking-wide"
+                                    className="text-xs md:text-[13px] lg:text-[14px] font-light text-[#1c1c1c]/75 leading-relaxed tracking-wide"
                                     style={{ fontFamily: "'Playpen Sans', sans-serif" }}
                                 >
                                     A luxury gifting universe crafting bespoke hampers designed with
@@ -262,7 +262,7 @@ export default function Home() {
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
+                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[350px] lg:h-[450px] overflow-hidden cursor-pointer group bg-[#d4cec5] block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero3.jpeg"
@@ -276,7 +276,7 @@ export default function Home() {
                         <Link
                             href="/products"
                             prefetch={true}
-                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[450px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
+                            className="flex-1 relative h-[220px] xs:h-[260px] sm:h-[340px] md:h-[350px] lg:h-[450px] overflow-hidden cursor-pointer group bg-[#c9c3b8] block"
                         >
                             <ImageWithSkeleton
                                 src="/hero-assets/hero4.jpeg"

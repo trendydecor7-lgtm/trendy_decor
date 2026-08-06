@@ -521,7 +521,7 @@ function ProductsContent() {
                                                                 {cat}
                                                             </span>
                                                             <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
-                                                                isSelected ? 'bg-white/20 text-[#f4f1ea]' : 'bg-[#e8e3da] text-[#1c1c1c]/70'
+                                                                isSelected ? 'bg-white/20 text-[#f4f1ea]' : 'bg-[#e8e3da]'
                                                             }`}>
                                                                 {count} items
                                                             </span>
@@ -547,8 +547,8 @@ function ProductsContent() {
                                 )}
                             </div>
 
-                            {/* Large Screen Quick Category Pills */}
-                            <div className="hidden lg:flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                            {/* Medium & Large Screen Quick Category Pills */}
+                            <div className="hidden md:flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                                 {CATEGORIES.map((cat) => {
                                     const isSelected = selectedCategory === cat
                                     return (
@@ -578,7 +578,7 @@ function ProductsContent() {
                 {/* Product Grid Section */}
                 <div className="w-full max-w-[1400px] mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 md:py-10">
                     {loading ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-5 md:gap-7 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-7 w-full">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div
                                     key={i}
