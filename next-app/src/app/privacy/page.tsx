@@ -246,16 +246,12 @@ export default function PrivacyPolicy() {
             <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12 border-b border-[#b6ac9f]/30">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     {corePledges.map((pledge, index) => {
-                        const IconComponent = pledge.icon
                         return (
                             <div
                                 key={index}
                                 className="bg-[#ffffff] border border-[#e2dbce] rounded-xl p-6 md:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col justify-between"
                             >
                                 <div>
-                                    <div className="w-12 h-12 rounded-lg bg-[#f4f1ea] border border-[#b6ac9f]/40 flex items-center justify-center text-[#1c1c1c] mb-5">
-                                        <IconComponent size={22} strokeWidth={1.5} />
-                                    </div>
                                     <h3 className="text-lg font-normal text-[#1c1c1c] mb-2.5">
                                         {pledge.title}
                                     </h3>

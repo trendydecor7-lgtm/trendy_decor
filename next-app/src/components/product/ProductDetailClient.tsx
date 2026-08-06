@@ -147,7 +147,7 @@ export default function ProductDetailClient({
         {
             id: 'shipping',
             title: 'Shipping & Pan-India Delivery (Rakhi Special)',
-            body: ['Orders dispatched within 1–2 business days.', 'FREE shipping on ALL orders — Rakhi Special Offer (₹0 Shipping Fee)!', 'Delivery across India via our trusted courier partners.'],
+            body: ['Orders dispatched within 6-7 days.', 'FREE shipping on ALL orders above ₹1000 — Rakhi Special Offer (₹0 Shipping Fee)!', 'Delivery across India via our trusted courier partners.'],
         },
     ]
 
